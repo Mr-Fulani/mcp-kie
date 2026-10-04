@@ -239,6 +239,16 @@ def test_multiple_required_images_fail_instead_of_guessing():
         map_input(schema, {}, "", True, URL, "generate_video")
 
 
+@pytest.mark.parametrize("field", ["image_input", "input_urls"])
+def test_live_product_reference_fields_map_without_loosening_schema(field):
+    schema = {
+        "properties": {field: {"type": "array", "maxItems": 8}},
+        "required": [field],
+    }
+    data, image_field, _ = map_input(schema, {}, "", True, URL, "product_image_create")
+    assert image_field == field and data == {field: [URL]}
+
+
 @pytest.mark.parametrize(
     "operation,query", [("remove_background", "remove-background"), ("upscale_image", "upscale")]
 )
@@ -291,5 +301,10 @@ async def test_stdio_friendly_arguments_are_discoverable(tmp_path):
     assert "output_format" in schemas["edit_image"]["properties"]
     all_schemas = {t.name: t.inputSchema for t in listed.tools}
     assert "kie_compare_models" in all_schemas
+    assert "kie_preflight" in all_schemas
+    assert "image_path" not in schemas["product_image_create"].get("required", [])
+    descriptions = {t.name: t.description for t in listed.tools}
+    assert "фото для сравнения не требуется" in descriptions["kie_compare_models"]
+    assert "без загрузок" in descriptions["kie_preflight"]
     assert "result_label" in all_schemas["kie_download_result"]["properties"]
     assert all(s["properties"]["auto_select"]["default"] is False for s in schemas.values())

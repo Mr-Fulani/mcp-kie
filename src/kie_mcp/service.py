@@ -8,13 +8,21 @@ import time
 import uuid
 from pathlib import Path
 
+from jsonschema import Draft202012Validator
+
 from .client import KieClient
-from .comparison import capabilities
+from .comparison import (
+    capabilities,
+    confirmation_summary,
+    input_requirements,
+    operation_requirements,
+)
 from .config import Settings
 from .errors import KieAPIError
-from .friendly import map_input
+from .friendly import IMAGE_OPERATIONS, map_input
 from .ledger import GuardError, Ledger, digest
 from .models import (
+    apply_defaults,
     model_path,
     owner_quote,
     price_estimate,
@@ -83,6 +91,13 @@ class KieService:
                 estimate = quote
         return {
             **estimate,
+            "confirmation_summary_ru": confirmation_summary(
+                model,
+                {
+                    **estimate,
+                    "validated_input": payload["input"],
+                },
+            ),
             "resolved_schema": contract["schema"],
             "schema_digest": contract["schema_digest"],
             "validated_input": payload["input"],
@@ -300,7 +315,10 @@ class KieService:
         trusted_url = None
         if image_url and validate_url(image_url) == "tempfile.redpandaai.co":
             trusted_url = image_url
-        catalog = await self.model_candidates(operation, bool(image_path or image_url), query)
+        has_image = bool(image_path or image_url)
+        requirements = operation_requirements(operation, has_image)
+        comparison_has_image = has_image or operation in IMAGE_OPERATIONS
+        catalog = await self.model_candidates(operation, comparison_has_image, query)
         entries = catalog["models"]
         rows = []
         for candidate in entries[cursor : cursor + limit]:
@@ -321,11 +339,16 @@ class KieService:
                 contract = await self.contract(name)
                 schema = contract["schema"].get("properties", {}).get("input", {})
                 row["capabilities"] = capabilities(schema)
+                row["requirements"] = input_requirements(schema)
+                row["price_is_provisional"] = comparison_has_image and trusted_url is None
+                row["price_assumptions"] = (
+                    {"input_images": 1} if row["price_is_provisional"] else {}
+                )
                 mapped, image_field, mapping = map_input(
                     schema,
                     parameters or {},
                     prompt,
-                    bool(image_path or image_url),
+                    comparison_has_image,
                     trusted_url,
                     operation,
                     model_input,
@@ -374,6 +397,13 @@ class KieService:
         return {
             "operation": operation,
             "selection_required": True,
+            "requirements": requirements,
+            "message_ru": (
+                "Выберите модель. Сравнение не загружает файлы и не резервирует деньги. "
+                "При отсутствии URL загруженного исходника цена предварительная: "
+                "расчёт предполагает одно входное изображение. После выбора вызовите "
+                "kie_preflight; точный preview может загрузить исходник в KIE."
+            ),
             "models": rows,
             "catalog_count": len(entries),
             "cursor": cursor,
@@ -381,11 +411,114 @@ class KieService:
             "next_cursor": next_cursor,
             "reservation_created": False,
             "media_uploaded": False,
-            "next_step": "call_friendly_tool_with_selected_model",
+            "next_step": "kie_preflight_with_selected_model",
             "note": "Prices apply to the requested/default parameters. Unknown is not free. "
             "Quality descriptions are provider claims, not measured scores. "
             "Input URLs are not fetched; this comparison is not an executable approval.",
         }
+
+    async def preflight(
+        self,
+        operation: str,
+        model: str | None = None,
+        prompt: str = "",
+        image_path: str | None = None,
+        image_url: str | None = None,
+        parameters: dict | None = None,
+        model_input: dict | None = None,
+    ):
+        """Read-only requirements check; never open/fetch/upload media or reserve budget."""
+        if image_path and image_url:
+            raise GuardError("Supply one image source")
+        has_image = bool(image_path or image_url)
+        requirements = operation_requirements(operation, has_image)
+        result = {
+            "operation": operation,
+            "model": model,
+            "requirements": requirements,
+            "missing_inputs": list(requirements["missing_inputs"]),
+            "reservation_created": False,
+            "media_uploaded": False,
+            "source_verified": False,
+            "execution_ready": False,
+            "upload_may_be_required": has_image,
+            "message_ru": (
+                "Это предварительная проверка без загрузки файлов и списания денег. "
+                "Наличие, формат и размер файла ещё не проверены. Точный preview "
+                "может передать исходник в KIE; объясните это пользователю до вызова. "
+                "Покажите модель, параметры и цену по-русски перед платным запуском."
+            ),
+        }
+        if model is not None:
+            contract = await self.contract(model)
+            schema = contract["schema"].get("properties", {}).get("input", {})
+            result["model_requirements"] = input_requirements(schema)
+            result["local_upload_max_bytes"] = self.settings.max_upload_bytes
+            comparison_has_image = has_image or operation in IMAGE_OPERATIONS
+            try:
+                data, image_field, _ = map_input(
+                    schema,
+                    parameters or {},
+                    prompt,
+                    comparison_has_image,
+                    None,
+                    operation,
+                    model_input,
+                )
+                data = apply_defaults(data, schema)
+                missing = [key for key in schema.get("required", []) if key not in data]
+                if image_field and not has_image and "image_source" not in result["missing_inputs"]:
+                    result["missing_inputs"].append("image_source")
+                result["missing_inputs"].extend(missing)
+                errors = list(Draft202012Validator(schema).iter_errors(data))
+                result["invalid_fields"] = sorted(
+                    {
+                        str(error.path[0]) if error.path else "input"
+                        for error in errors
+                        if error.validator != "required"
+                    }
+                )
+                if not errors:
+                    preview = await self.estimate_contract(contract, model, data)
+                    result.update(
+                        {
+                            key: preview.get(key)
+                            for key in (
+                                "estimated_cost_usd",
+                                "estimated_credits",
+                                "confidence",
+                                "pricing_source",
+                            )
+                        }
+                    )
+                    result["effective_parameters"] = {
+                        key: data.get(info["field"], info.get("default"))
+                        for key, info in capabilities(schema).items()
+                    }
+                    result["price_is_provisional"] = comparison_has_image
+                    result["price_assumptions"] = (
+                        {"input_images": 1} if comparison_has_image else {}
+                    )
+            except GuardError as exc:
+                result["reason"] = str(exc)
+                result["message_ru"] += " Параметры нельзя сопоставить со схемой выбранной модели."
+        else:
+            result["missing_inputs"].append("model")
+        result["status"] = (
+            "needs_input"
+            if result["missing_inputs"]
+            else "needs_parameters"
+            if result.get("invalid_fields") or result.get("reason")
+            else "ready_for_preview"
+        )
+        result["next_step"] = (
+            "supply_missing_inputs"
+            if result["status"] == "needs_input"
+            else "review_parameters"
+            if result["status"] == "needs_parameters"
+            else "friendly_tool_dry_run"
+        )
+        return result
 
     async def friendly(
         self,

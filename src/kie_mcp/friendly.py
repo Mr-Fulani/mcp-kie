@@ -22,10 +22,15 @@ IMAGE_FIELDS = {
     "image_urls",
     "input_image_url",
     "input_image_urls",
+    "image_input",
+    "input_urls",
     "first_frame",
     "first_frame_url",
     "start_image_url",
 }
+
+IMAGE_OPERATIONS = {"edit_image", "remove_background", "upscale_image", "product_image_create"}
+OPERATIONS = IMAGE_OPERATIONS | {"generate_image", "generate_video"}
 
 
 def field_value(value, schema: dict):

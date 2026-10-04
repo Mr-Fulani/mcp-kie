@@ -139,6 +139,13 @@ unsupported/ambiguous parameters and complex branches require low-level input.
 Without an explicit model, all six friendly tools return a paginated metadata-only
 comparison without uploads, media fetches or ledger mutation. User choice is the
 default; cheapest selection among the first 20 candidates is explicit opt-in.
+Image comparisons also work without a source, using a labelled one-image placeholder
+for conditional pricing, never an executable approval. The read-only `kie_preflight`
+reports operation/model requirements, missing inputs and parameter errors before
+uploads or reservations. It does not open/verify local files or validate actual media
+URLs; the existing upload, URL, budget and immutable-execution guards still apply.
+Russian tool descriptions and approval summaries help explain actions; they do not
+control client-owned approval buttons or add another approval/security boundary.
 Quality descriptions are provider claims; no independent quality/speed scores exist.
 With an explicit model, all six friendly tools have a dry-run preview without a
 paid submission/reservation.

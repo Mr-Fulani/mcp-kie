@@ -26,15 +26,22 @@ service = KieService(settings, client)
 mcp = FastMCP(
     "Secure KIE media",
     instructions=(
-        "Local stdio media tools. Discover live models/schema/pricing first. "
-        "kie_create_task defaults to dry_run; prepare reserves budget; execute requires "
-        "the approval_id and unchanged request. Unknown pricing is blocked without "
-        "an owner-configured exact-input quote. Without model, friendly tools return "
-        "a comparison: show options and let the user choose. auto_select=true is only "
-        "for explicitly delegated cheapest selection among the first 20 candidates. "
-        "With model, friendly tools prepare one task, or "
-        "preview an explicit model with dry_run=true (image preview may upload); "
-        "execute, wait and download separately. Never bypass these guards with shell/API skills."
+        "Общайтесь с пользователем по-русски. Перед разрешением на вызов объясняйте "
+        "по-русски действие, передачу файлов и возможные расходы; не предлагайте "
+        "подтверждать непонятный текст. Для сравнения исходное фото не нужно. "
+        "После выбора модели вызовите kie_preflight до загрузки/preview/prepare. "
+        "Показывайте message_ru, требования, недостающие поля и предварительность цены. "
+        "Перед платным выполнением покажите confirmation_summary_ru и параметры. "
+        "Медиа-инструменты работают через локальный stdio. Сначала получите живые "
+        "модели, схемы и цены. kie_create_task по умолчанию делает dry_run; prepare "
+        "резервирует бюджет, execute требует approval_id и неизменённый запрос. "
+        "Неизвестная цена блокирует запуск без точной котировки, настроенной владельцем. "
+        "Без model удобные команды возвращают сравнение: покажите варианты и дождитесь "
+        "выбора. auto_select=true допустим только при явном поручении выбрать самый "
+        "дешёвый вариант среди первых 20 кандидатов. С model команда готовит одну "
+        "задачу или preview при dry_run=true; preview по фото может загрузить исходник. "
+        "Выполнение, ожидание и скачивание — отдельные шаги. Не обходите защиту "
+        "через shell, прямые API или другие медиа-навыки."
     ),
     json_response=True,
 )
@@ -60,11 +67,41 @@ async def safe_call(coro: Any) -> dict[str, Any]:
                 cleaned[key] = output
         return cleaned
     except GuardError as exc:
-        return {"error": redact(str(exc), settings.api_key), "blocked": True}
+        messages = {
+            "This operation requires an input image": (
+                "Для обработки нужен исходник: укажите image_path или image_url. "
+                "Сравнить модели можно без фото через kie_compare_models."
+            ),
+            "Supply one image source": "Укажите один исходник: image_path или image_url.",
+            "Input does not satisfy the live model schema": (
+                "Данные не соответствуют схеме модели. Вызовите kie_preflight: "
+                "он покажет обязательные поля и допустимые параметры."
+            ),
+            "Unknown friendly operation": "Неизвестная операция; проверьте описание инструмента.",
+        }
+        return {
+            "error": redact(str(exc), settings.api_key),
+            "blocked": True,
+            "message_ru": messages.get(
+                str(exc),
+                (
+                    "Операция заблокирована защитой Secure KIE MCP. "
+                    "Объясните пользователю причину по-русски до следующих действий."
+                ),
+            ),
+        }
     except KieAPIError as exc:
-        return redact(exc.as_dict(), settings.api_key)
+        return {
+            **redact(exc.as_dict(), settings.api_key),
+            "message_ru": (
+                "KIE вернул ошибку. Объясните её по-русски; платный запрос не повторяйте."
+            ),
+        }
     except Exception:
-        return {"error": "Operation failed; sensitive details withheld."}
+        return {
+            "error": "Operation failed; sensitive details withheld.",
+            "message_ru": "Операция не выполнена; чувствительные детали скрыты.",
+        }
 
 
 @mcp.resource("kie://docs/overview")
@@ -93,7 +130,7 @@ def docs_entry(slug: str) -> str:
 
 @mcp.tool()
 async def kie_search_docs(query: str, limit: int = 10) -> dict[str, Any]:
-    """Search the live official Markdown index, with an explicitly labelled offline fallback."""
+    """Поиск в живом официальном индексе документации; офлайн-резерв явно помечается."""
     try:
         raw = await fetch_bytes(
             "https://docs.kie.ai/llms.txt", 2_000_000, allowed_hosts={"docs.kie.ai"}
@@ -118,7 +155,7 @@ async def kie_search_docs(query: str, limit: int = 10) -> dict[str, Any]:
 
 @mcp.tool()
 async def kie_get_documentation(slug_or_url: str, max_characters: int = 60_000) -> dict:
-    """Fetch current official Markdown by bundled slug or HTTPS docs.kie.ai URL."""
+    """Прочитать актуальную документацию по slug или HTTPS-ссылке docs.kie.ai."""
 
     async def get():
         entry = get_catalog_entry(slug_or_url)
@@ -132,25 +169,30 @@ async def kie_get_documentation(slug_or_url: str, max_characters: int = 60_000) 
 
 @mcp.tool()
 async def kie_list_models(query: str = "", task_type: str | None = None) -> dict:
-    """Discover live KIE models; the model list is never hardcoded."""
+    """Получить живой список моделей KIE; query — поиск, task_type — тип задачи."""
     return await safe_call(service.search_models(query, task_type))
 
 
 @mcp.tool()
 async def kie_get_model_schema(model: str) -> dict:
-    """Get a live unified-media contract with local references resolved."""
+    """Получить актуальную схему модели: обязательные поля, параметры и ограничения."""
     return await safe_call(service.contract(model))
 
 
 @mcp.tool()
 async def kie_estimate_cost(model: str, input: dict[str, Any]) -> dict:
-    """Validate live schema and return operation-specific price/source/confidence."""
+    """Проверить данные по живой схеме и оценить цену запроса; unknown означает неизвестную цену."""
     return await safe_call(service.estimate(model, input))
 
 
 @mcp.tool()
 async def kie_prepare_task(ctx: Context, model: str, input: dict[str, Any], dry_run: bool = False):
-    """Reserve shared budget and return immutable approval; dry-run never reserves or submits."""
+    """Подготовить неизменённый запрос и зарезервировать бюджет.
+
+    Сначала kie_preflight и просмотр модели, параметров, цены по-русски.
+    dry_run=true не резервирует деньги и не отправляет платную задачу.
+    Покажите confirmation_summary_ru перед выполнением запроса.
+    """
     identity(ctx)
     return await safe_call(service.prepare(model, input, dry_run=dry_run))
 
@@ -163,13 +205,14 @@ async def kie_create_task(
     dry_run: bool = True,
     approval_id: str | None = None,
 ):
-    """Compatibility entry: preview by default; real submission requires a prepared approval."""
+    """Просмотр запроса по умолчанию; платный запуск требует подготовленного approval_id."""
     identity(ctx)
     if dry_run:
         return await safe_call(service.prepare(model, input, dry_run=True))
     if approval_id is None:
         return {
             "error": "Prepare first; approval_id is required for paid execution",
+            "message_ru": "Сначала подготовьте запрос: платный запуск требует approval_id.",
             "blocked": True,
         }
     return await safe_call(service.execute(approval_id, model, input))
@@ -177,56 +220,63 @@ async def kie_create_task(
 
 @mcp.tool()
 async def kie_execute_task(ctx: Context, approval_id: str, model: str, input: dict[str, Any]):
-    """Execute one immutable prepared request. Ambiguous submissions are never retried."""
+    """Выполнить один подготовленный платный запрос с теми же model/input.
+
+    Перед разрешением объясните по-русски модель, параметры и стоимость из prepare.
+    При таймауте или неизвестном результате отправки не повторяйте запрос.
+    """
     identity(ctx)
     return await safe_call(service.execute(approval_id, model, input))
 
 
 @mcp.tool()
 async def kie_get_task(task_id: str):
-    """Get asynchronous task state/results and reconcile recorded usage when terminal."""
+    """Получить статус и результаты задачи, сверить расходы после её завершения."""
     return await safe_call(service.get_task(task_id))
 
 
 @mcp.tool()
 async def kie_wait_for_task(task_id: str, timeout_seconds: int = 900):
-    """Poll with 2/3/5/8/10/15-second backoff and the owner's timeout ceiling."""
+    """Дождаться задачи с интервалами 2/3/5/8/10/15 секунд в пределах таймаута владельца."""
     return await safe_call(service.wait(task_id, max(1, timeout_seconds)))
 
 
 @mcp.tool()
 async def kie_get_credits():
-    """Read the media-key account balance."""
+    """Прочитать баланс KIE без генерации и списания денег."""
     return await safe_call(client.get_credits())
 
 
 @mcp.tool()
 async def kie_upload_local_file(file_path: str):
-    """Validate sandbox, size and media bytes, then upload a bounded snapshot."""
+    """Проверить разрешённую папку, размер и содержимое файла, затем загрузить его в KIE."""
     return await safe_call(client.upload_local_file(file_path, "mcp/files", None))
 
 
 @mcp.tool()
 async def kie_upload_base64(base64_data: str):
-    """Validate decoded size and media bytes before temporary upload."""
+    """Проверить размер и содержимое base64, затем временно загрузить медиа в KIE."""
     return await safe_call(client.upload_base64(base64_data, "mcp/base64", None))
 
 
 @mcp.tool()
 async def kie_upload_from_url(file_url: str):
-    """Fetch with pinned-DNS/redirect/byte guards, validate media and upload the bytes."""
+    """Скачать исходник с проверками DNS, перенаправлений и размера, затем загрузить в KIE."""
     return await safe_call(client.upload_from_url(file_url, "mcp/url", None))
 
 
 @mcp.tool()
 async def kie_get_download_url(url: str):
-    """Resolve a temporary download link for an allowlisted KIE storage URL."""
+    """Получить временную ссылку для разрешённого хранилища KIE."""
     return await safe_call(client.get_download_url(url))
 
 
 @mcp.tool()
 async def kie_download_result(task_id: str, result_index: int = 0, result_label: str | None = None):
-    """Save into a readable date/type/model/task folder; result_label is short text, not a path."""
+    """Сохранить результат в папку дата/тип/модель/задача.
+
+    result_label — короткая метка, не путь.
+    """
     return await safe_call(service.download(task_id, result_index, result_label))
 
 
@@ -243,12 +293,15 @@ async def kie_compare_models(
     limit: int = 5,
     include_metrics: bool = False,
 ):
-    """Compare live models/costs/capabilities for user choice; no uploads or paid reservations.
+    """Сравнить живые модели, параметры и цены; фото для сравнения не требуется.
 
-    operation is generate_image, edit_image, generate_video, remove_background,
-    upscale_image or product_image_create. parameters supplies friendly duration,
-    resolution, aspect_ratio, output_format, scale or target_resolution. Show options
-    to the user; paginate with next_cursor. Quality prose is a provider claim, not a score.
+    operation: generate_image, edit_image, generate_video, remove_background,
+    upscale_image или product_image_create. parameters: duration, resolution,
+    aspect_ratio, output_format, scale, target_resolution. Покажите варианты по-русски
+    и дождитесь выбора; next_cursor даёт следующую страницу. Сравнение не загружает
+    файлы и не резервирует деньги. Без исходника цена предварительная для одного
+    входного фото. Качество — описание провайдера, не независимая оценка.
+    После выбора вызовите kie_preflight до точного preview, который может загрузить фото.
     """
     return await safe_call(
         service.compare_models(
@@ -267,6 +320,38 @@ async def kie_compare_models(
 
 
 @mcp.tool()
+async def kie_preflight(
+    operation: str,
+    model: str | None = None,
+    prompt: str = "",
+    image_path: str | None = None,
+    image_url: str | None = None,
+    parameters: dict | None = None,
+    model_input: dict | None = None,
+):
+    """Заранее узнать требования и недостающие данные без загрузок и резервирования денег.
+
+    operation как в kie_compare_models; model — выбранная пользователем модель.
+    Покажите required_fields, fields, missing_inputs, invalid_fields и message_ru.
+    Форматы и размеры из описаний провайдера не переводятся автоматически: объясните
+    их по-русски. Исходный файл не открывается и не проверяется. Цена для фото
+    предварительная и предполагает один исходник; это не разрешение на выполнение.
+    Перед последующим image preview объясните передачу файла в KIE.
+    """
+    return await safe_call(
+        service.preflight(
+            operation,
+            model,
+            prompt,
+            image_path,
+            image_url,
+            parameters,
+            model_input,
+        )
+    )
+
+
+@mcp.tool()
 async def generate_image(
     ctx: Context,
     prompt: str,
@@ -278,9 +363,9 @@ async def generate_image(
     model_input: dict | None = None,
     auto_select: bool = False,
 ):
-    """Show choices without model; with model prepare/preview one image.
+    """Без model сравнить варианты; с model подготовить одно изображение или dry_run preview.
 
-    auto_select=true explicitly opts into cheapest selection.
+    auto_select=true разрешён только при явном поручении выбрать самый дешёвый вариант.
     """
     identity(ctx)
     params = {
@@ -319,7 +404,10 @@ async def edit_image(
     model_input: dict | None = None,
     auto_select: bool = False,
 ):
-    """Show choices without model; with model prepare/preview an edit (may upload)."""
+    """Без model сравнить варианты без фото; с model нужен исходник.
+
+    Сначала kie_preflight; preview может загрузить фото.
+    """
     identity(ctx)
     params = {
         k: v
@@ -359,7 +447,10 @@ async def generate_video(
     model_input: dict | None = None,
     auto_select: bool = False,
 ):
-    """Show choices without model; with model prepare/preview video (image preview may upload)."""
+    """Без model сравнить варианты видео; с model сначала kie_preflight.
+
+    Preview по фото может загрузить исходник.
+    """
     identity(ctx)
     params = {
         k: v
@@ -395,7 +486,10 @@ async def remove_background(
     model_input: dict | None = None,
     auto_select: bool = False,
 ):
-    """Show choices without model; with model prepare/preview background removal (may upload)."""
+    """Без model сравнить варианты без фото; с model нужен исходник для удаления фона.
+
+    Preview может загрузить фото.
+    """
     identity(ctx)
     return await safe_call(
         service.friendly(
@@ -422,7 +516,10 @@ async def upscale_image(
     model_input: dict | None = None,
     auto_select: bool = False,
 ):
-    """Show choices without model; with model prepare/preview one upscale (may upload)."""
+    """Без model сравнить варианты без фото; с model нужен исходник для увеличения.
+
+    Preview может загрузить фото.
+    """
     identity(ctx)
     params = {
         k: v
@@ -446,7 +543,7 @@ async def upscale_image(
 @mcp.tool()
 async def product_image_create(
     ctx: Context,
-    image_path: str,
+    image_path: str | None = None,
     style: str = "ecommerce",
     background: str = "white",
     aspect_ratio: str = "3:4",
@@ -458,7 +555,12 @@ async def product_image_create(
     model_input: dict | None = None,
     auto_select: bool = False,
 ):
-    """Show choices without model; with model prepare/preview a product edit (may upload)."""
+    """Фото товара: без model сравнить варианты, исходное фото пока не нужно.
+
+    С выбранным model исходное image_path обязательно. Сначала kie_preflight:
+    покажите требования, параметры и цену по-русски. dry_run=true может загрузить
+    фото в KIE, но не отправляет платную задачу; предупредите до вызова.
+    """
     identity(ctx)
     prompt = (
         f"Create a professional {style} product photo of {product_name or 'the product'}. "

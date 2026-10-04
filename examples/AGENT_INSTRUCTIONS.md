@@ -4,6 +4,16 @@ Use the installed Secure KIE MCP tools for all media generation, editing, upload
 polling and downloads. Do not bypass them with direct APIs, curl, SDKs, shell
 network calls or another media skill. This does not govern independent chat login.
 
+For this user, explain requirements and every permission request in Russian before
+the prompt appears: what happens, whether files leave the computer, and possible
+costs. Tool identifiers may stay unchanged. Client-owned buttons may remain English.
+Initial kie_compare_models needs no photo. Label provisional prices and assumptions.
+After model choice, call kie_preflight before uploads, exact preview or preparation.
+Explain required_fields, missing_inputs and field limits, translating provider format
+and size descriptions. Preflight does not verify the file; exact preview may upload
+it. Show confirmation_summary_ru and parameters before paid execution, respecting
+existing authorization without asking twice.
+
 Without a specified model, show compatible live choices and their requested/default
 parameters, price/source/confidence and limitations. Use kie_compare_models search
 and next_cursor when more candidates are needed. Wait for the user's model choice

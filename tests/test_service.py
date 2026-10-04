@@ -108,6 +108,9 @@ async def test_dry_run_never_reserves_or_submits(tmp_path):
         preview = await service.prepare(MODEL, {"prompt": "private"}, dry_run=True)
     assert preview["estimated_cost_usd"] == 0.1
     assert preview["confidence"] == "estimated"
+    assert "Расчётная стоимость запроса: $0.1" in preview["confirmation_summary_ru"]
+    assert "может списать деньги" in preview["confirmation_summary_ru"]
+    assert "private" not in preview["confirmation_summary_ru"]
     assert not (tmp_path / "usage.db").exists()
     assert all("createTask" not in str(r.url) for r in api.calls)
 

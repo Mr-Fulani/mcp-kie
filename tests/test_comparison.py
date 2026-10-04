@@ -7,6 +7,75 @@ from test_friendly import URL, contract, make_service, video_fields
 from kie_mcp.ledger import GuardError
 
 
+@pytest.mark.parametrize(
+    "operation", ["product_image_create", "edit_image", "remove_background", "upscale_image"]
+)
+async def test_image_comparison_without_source_is_provisional_and_cannot_execute(
+    tmp_path,
+    operation,
+):
+    api = ComparisonAPI()
+    async with httpx.AsyncClient(transport=httpx.MockTransport(api)) as http:
+        service = make_service(tmp_path, http)
+        result = await service.friendly(operation, "Studio product photo")
+        assert result["models"][1]["compatible"]
+        assert result["models"][1]["estimated_cost_usd"] == 0.05
+        assert result["models"][1]["price_is_provisional"]
+        assert result["models"][1]["price_assumptions"] == {"input_images": 1}
+        assert result["requirements"]["missing_inputs"] == ["image_source"]
+        assert not result["requirements"]["image_required_for_comparison"]
+        assert result["requirements"]["image_required_for_execution"]
+        assert result["next_step"] == "kie_preflight_with_selected_model"
+        with pytest.raises(GuardError, match="requires an input image"):
+            await service.friendly(operation, model="fixture/m1")
+    assert not (tmp_path / "usage.db").exists()
+    assert not result["media_uploaded"] and not result["reservation_created"]
+    assert all(r.method == "GET" for r in api.calls)
+
+
+async def test_preflight_reports_missing_data_and_does_not_touch_source(tmp_path):
+    api = ComparisonAPI()
+    async with httpx.AsyncClient(transport=httpx.MockTransport(api)) as http:
+        service = make_service(tmp_path, http)
+        generic = await service.preflight("product_image_create")
+        missing = await service.preflight("product_image_create", "fixture/m1", "Studio photo")
+        provided = await service.preflight(
+            "product_image_create",
+            "fixture/m1",
+            "Studio photo",
+            image_path="/not-allowed/does-not-exist.png",
+        )
+    assert generic["missing_inputs"] == ["image_source", "model"]
+    assert missing["status"] == "needs_input"
+    assert missing["missing_inputs"] == ["image_source"]
+    assert missing["model_requirements"]["required_fields"] == ["image_url"]
+    assert missing["estimated_cost_usd"] == 0.05
+    assert provided["status"] == "ready_for_preview"
+    assert provided["price_is_provisional"]
+    assert provided["upload_may_be_required"] and not provided["source_verified"]
+    assert not provided["execution_ready"]
+    assert not provided["media_uploaded"] and not provided["reservation_created"]
+    assert not (tmp_path / "usage.db").exists()
+    assert len(api.calls) == 4 and all(r.method == "GET" for r in api.calls)
+
+
+async def test_preflight_invalid_parameters_report_field_names_without_private_values(tmp_path):
+    api = ComparisonAPI()
+    private_value = "private-not-an-allowed-resolution"
+    async with httpx.AsyncClient(transport=httpx.MockTransport(api)) as http:
+        result = await make_service(tmp_path, http).preflight(
+            "generate_video",
+            "fixture/m3",
+            "private prompt",
+            image_url=URL,
+            parameters={"resolution": private_value},
+        )
+    assert result["status"] == "needs_parameters"
+    assert result["invalid_fields"] == ["resolution"]
+    assert private_value not in str(result) and "private prompt" not in str(result)
+    assert len(api.calls) == 1 and not (tmp_path / "usage.db").exists()
+
+
 class ComparisonAPI:
     def __init__(self):
         self.calls = []
