@@ -1,0 +1,127 @@
+{
+  "date": "2026-10-03",
+  "stage": "Stage D owner-authorized storage-host review",
+  "status": "PASS",
+  "owner_authorization": {
+    "message": "да",
+    "scope": "Review tempfile.aiquickdraw.com; if verified, add only that exact host without changing HTTPS/DNS guards and download the existing completed task",
+    "new_generation_authorized": false
+  },
+  "authenticated_task_response": {
+    "code": 200,
+    "msg": "success",
+    "data": {
+      "taskId": "private_id_2c5ea4dacca0",
+      "model": "z-image",
+      "state": "success",
+      "param": "{\"input\":\"{\\\"aspect_ratio\\\":\\\"1:1\\\",\\\"prompt\\\":\\\"A single small green leaf centered on a plain white background, soft natural light, no text.\\\"}\",\"model\":\"z-image\"}",
+      "resultJson": "{\"resultUrls\":[\"https://MEDIA_URL_REDACTED.invalid/\"]}",
+      "failCode": null,
+      "failMsg": null,
+      "costTime": 13,
+      "completeTime": 1791031062092,
+      "createTime": 1791031049064,
+      "creditsConsumed": 0.8,
+      "operationType": "z-image",
+      "response": {
+        "resultUrls": [
+          "https://MEDIA_URL_REDACTED.invalid/"
+        ]
+      },
+      "successFlag": 1,
+      "paramJson": "{\"input\":\"{\\\"aspect_ratio\\\":\\\"1:1\\\",\\\"prompt\\\":\\\"A single small green leaf centered on a plain white background, soft natural light, no text.\\\"}\",\"model\":\"z-image\"}",
+      "paramParsed": {
+        "input": "{\"aspect_ratio\":\"1:1\",\"prompt\":\"A single small green leaf centered on a plain white background, soft natural light, no text.\"}",
+        "model": "z-image"
+      },
+      "resultParsed": {
+        "resultUrls": [
+          "https://MEDIA_URL_REDACTED.invalid/"
+        ]
+      }
+    }
+  },
+  "official_docs_index_search": {
+    "source": "live_docs_index",
+    "results": [
+      {
+        "title": "Getting Started with KIE API (Important)",
+        "url": "https://docs.kie.ai/1973359m0.md"
+      },
+      {
+        "title": "Get 4K Video Callbacks",
+        "url": "https://docs.kie.ai/veo3-api/get-veo-3-4k-video-callbacks.md"
+      },
+      {
+        "title": "获取 4K 视频回调",
+        "url": "https://docs.kie.ai/cn/veo3-api/get-veo-3-4k-video-callbacks.md"
+      },
+      {
+        "title": "Google - Nano Banana 2 Lite",
+        "url": "https://docs.kie.ai/market/google/nano-banana-2-lite.md"
+      }
+    ]
+  },
+  "review_host": "tempfile.aiquickdraw.com",
+  "expected_task_id": "private_id_2c5ea4dacca0",
+  "media_download_performed": false,
+  "network_review": {
+    "public_addresses": [
+      "104.26.14.32",
+      "104.26.15.32",
+      "172.67.74.148"
+    ],
+    "all_resolved_addresses_public": true,
+    "connected_numeric_address": "104.26.14.32",
+    "peer_address": "104.26.14.32",
+    "port": 443,
+    "tls_hostname_verified": "tempfile.aiquickdraw.com",
+    "tls_chain_verified": true,
+    "tls_version": "TLSv1.3",
+    "cipher": [
+      "TLS_AES_256_GCM_SHA384",
+      "TLSv1.3",
+      256
+    ],
+    "certificate_subject": [
+      [
+        [
+          "commonName",
+          "tempfile.aiquickdraw.com"
+        ]
+      ]
+    ],
+    "certificate_issuer": [
+      [
+        [
+          "countryName",
+          "US"
+        ]
+      ],
+      [
+        [
+          "organizationName",
+          "Google Trust Services"
+        ]
+      ],
+      [
+        [
+          "commonName",
+          "WE1"
+        ]
+      ]
+    ],
+    "certificate_subject_alt_names": [
+      [
+        "DNS",
+        "tempfile.aiquickdraw.com"
+      ]
+    ],
+    "certificate_not_before": "Aug 15 15:01:41 2026 GMT",
+    "certificate_not_after": "Nov 13 16:01:34 2026 GMT",
+    "http_request_sent": false,
+    "api_key_sent": false,
+    "media_download_performed": false
+  },
+  "completed_at_utc": "2026-10-03T13:00:49.930813+00:00"
+}

@@ -1,0 +1,66 @@
+{
+  "stage": "E",
+  "check": "native-codex-tool-errors",
+  "calls": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "upload_ssh",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\n  \"error\": \"Operation failed; sensitive details withheld.\"\n}"
+            }
+          ],
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "upload_traversal",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\n  \"error\": \"Operation failed; sensitive details withheld.\"\n}"
+            }
+          ],
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "ssrf_loopback",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\n  \"error\": \"Private or special network addresses are blocked\",\n  \"blocked\": true\n}"
+            }
+          ],
+          "isError": false
+        }
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "name": "ssrf_metadata",
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "{\n  \"error\": \"Private or special network addresses are blocked\",\n  \"blocked\": true\n}"
+            }
+          ],
+          "isError": false
+        }
+      }
+    }
+  ]
+}

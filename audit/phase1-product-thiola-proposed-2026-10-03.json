@@ -1,0 +1,49 @@
+{
+  "status": "AWAITING_OWNER_QUOTE_AND_LOCAL_CONVERSION_AUTHORIZATION",
+  "source_file": "/LOCAL_OWNER/Projects/kie-workspace/uploads/images.jpg",
+  "model": "google/nano-banana-edit",
+  "request_payload": {
+    "model": "google/nano-banana-edit",
+    "input": {
+      "prompt": "[PRIVATE_PROMPT_REDACTED]",
+      "image_urls": [
+        "https://MEDIA_URL_REDACTED.invalid/"
+      ],
+      "aspect_ratio": "3:4",
+      "output_format": "png",
+      "image_size": "3:4"
+    }
+  },
+  "request_digest": "5b2bc3af6021f78a18a05b274faed7f2fa59608d4c39d94abaf445b089543b3c",
+  "schema_digest": "b91fb4d6b3dfc75c81150b08252466f3e357a6c11e93290e28dd6d534fa143cf",
+  "pricing_description": "Nano Banana API costs 4 credits per image (~$0.02).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.018 per image.",
+  "proposed_owner_quote": {
+    "approved_by_owner": false,
+    "max_cost_usd": 0.02,
+    "estimated_credits": 4,
+    "ttl_seconds_after_installation": 1800,
+    "pricing_source": "live_kie_metadata:/api/v1/models/google/nano-banana-edit/price"
+  },
+  "proposed_configuration_change": {
+    "path": "/LOCAL_OWNER/.config/kie-mcp/config.toml",
+    "key": "environment.KIE_OWNER_QUOTE_PATH",
+    "new_value": "/LOCAL_OWNER/.config/kie-mcp/owner-quote-thiola-studio.json",
+    "private_backup": true,
+    "other_settings_preserved": true
+  },
+  "proposed_conversion": {
+    "tool": "/opt/homebrew/bin/cwebp",
+    "network": false,
+    "mode": "lossless",
+    "input": "secure-MCP-downloaded PNG for this task only",
+    "output": "new WebP inside the same configured results task directory",
+    "original_preserved": true,
+    "requires_exception_to_mcp_only_media_rule": true
+  },
+  "dry_run": {
+    "confidence": "unknown",
+    "reservation_created": false,
+    "dry_run": true
+  },
+  "generation_submitted": false
+}

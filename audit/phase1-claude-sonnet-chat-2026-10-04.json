@@ -1,0 +1,123 @@
+{
+  "status": "BLOCKED",
+  "scope": "Owner-authorized retry during reported weak internet; one minimal chat request, no MCP",
+  "events": [
+    {
+      "elapsed_seconds": 2.854,
+      "event": {
+        "type": "system",
+        "subtype": "init",
+        "cwd": "[REDACTED]",
+        "session_id": "47d0edce-1870-4657-a401-c810a08f2789",
+        "tools": [],
+        "mcp_servers": [],
+        "model": "claude-sonnet-5-5",
+        "permissionMode": "dontAsk",
+        "slash_commands": [],
+        "apiKeySource": "[REDACTED]",
+        "claude_code_version": "2.1.288",
+        "output_style": "default",
+        "agents": [
+          "claude",
+          "Explore",
+          "general-purpose",
+          "Plan",
+          "statusline-setup"
+        ],
+        "skills": [],
+        "plugins": [
+          {
+            "name": "cc-plugin-agents-md",
+            "path": "builtin",
+            "source": "cc-plugin-agents-md@builtin"
+          },
+          {
+            "name": "cc-plugin-telemetry",
+            "path": "builtin",
+            "source": "cc-plugin-telemetry@builtin"
+          },
+          {
+            "name": "cc-plugin-plugin-authoring",
+            "path": "builtin",
+            "source": "cc-plugin-plugin-authoring@builtin"
+          }
+        ],
+        "capabilities": [
+          "interrupt_receipt_v1",
+          "interrupt_cancel_queued_v1",
+          "interrupt_send_now_v1",
+          "msg_lifecycle_v1",
+          "sdk_mcp_tools_list_changed",
+          "sdk_mcp_manifests",
+          "mcp_read_resource_v1",
+          "mcp_tool_ui_meta_v1",
+          "ui_surface_v1"
+        ],
+        "analytics_disabled": false,
+        "product_feedback_disabled": false,
+        "uuid": "a19970af-88b5-4ea5-933d-4101c78313e8",
+        "memory_paths": {
+          "auto": "[REDACTED]"
+        },
+        "messaging_socket_path": "[REDACTED]",
+        "fast_mode_state": "off",
+        "fast_mode_disabled_reason": "sdk_opt_in_required",
+        "per_turn_effort_active": true,
+        "view_mode": "default"
+      }
+    },
+    {
+      "elapsed_seconds": 2.877,
+      "event": {
+        "type": "system",
+        "subtype": "status",
+        "status": "requesting",
+        "session_id": "47d0edce-1870-4657-a401-c810a08f2789",
+        "uuid": "22c6ed3d-5781-4335-8cf2-40921a87cde0"
+      }
+    },
+    {
+      "elapsed_seconds": 6.6,
+      "event": {
+        "type": "system",
+        "subtype": "api_retry",
+        "attempt": 1,
+        "max_retries": 10,
+        "retry_delay_ms": 577,
+        "error_status": 503,
+        "error": "server_error",
+        "session_id": "47d0edce-1870-4657-a401-c810a08f2789",
+        "uuid": "b394d196-536c-42b8-a4bb-e9537a90b3dd"
+      }
+    }
+  ],
+  "mcp_enabled": false,
+  "media_generations": 0,
+  "configuration_changes": 0,
+  "config_hashes_before": {
+    "/LOCAL_OWNER/.claude/settings.json": "7c66b60d9424821ec9899f0b865838215be88f303189cb41482af659702b671b",
+    "/LOCAL_OWNER/.config/kie-mcp/config.toml": "804df62115aa122556b88297f50da856c28ca91ab3e5b7827b18b03e11b0370c",
+    "/LOCAL_OWNER/.zshrc": "881c3d80b13e7b2c44fd792b08901b1207a4bb489cbe32c3223e3a9e1afa667f"
+  },
+  "launch": {
+    "alias": "claude-kie-sonnet55",
+    "model": "existing Sonnet alias selection",
+    "mcp_servers": {},
+    "tools": [],
+    "timeout_seconds": 90
+  },
+  "stopped_after_reported_api_error": true,
+  "return_code": 143,
+  "timed_out": false,
+  "elapsed_seconds": 7.139,
+  "stdout_bytes": 1645,
+  "stderr_bytes": 502,
+  "configured_secret_matches": 0,
+  "stderr": "[LOCAL_DIAGNOSTIC_OUTPUT_REDACTED]",
+  "config_hashes_after": {
+    "/LOCAL_OWNER/.claude/settings.json": "7c66b60d9424821ec9899f0b865838215be88f303189cb41482af659702b671b",
+    "/LOCAL_OWNER/.config/kie-mcp/config.toml": "804df62115aa122556b88297f50da856c28ca91ab3e5b7827b18b03e11b0370c",
+    "/LOCAL_OWNER/.zshrc": "881c3d80b13e7b2c44fd792b08901b1207a4bb489cbe32c3223e3a9e1afa667f"
+  },
+  "settings_preserved": true
+}

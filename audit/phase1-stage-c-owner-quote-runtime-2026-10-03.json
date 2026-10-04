@@ -1,0 +1,295 @@
+{
+  "date": "2026-10-03",
+  "stage": "Phase 1 Stage C owner-approved follow-up",
+  "status": "PASS",
+  "owner_authorization": {
+    "source": "Explicit owner instruction in the Codex conversation",
+    "model": "z-image",
+    "credits_per_generation": 0.8,
+    "price_usd_per_generation": 0.004,
+    "pricing_source": "https://kie.ai/pricing",
+    "paid_generation_authorized": false
+  },
+  "request_payload": {
+    "model": "z-image",
+    "input": {
+      "prompt": "[PRIVATE_PROMPT_REDACTED]",
+      "aspect_ratio": "1:1"
+    }
+  },
+  "request_digest": "80c20d439ee1efaa8e9f227f335d449d82c2ccb4625ac70e83298c304b19200b",
+  "schema_digest": "51cd6464ec76efb93c596cda871555059ce2fbbe23857757df24e2c30305b3b6",
+  "ledger_before": {
+    "path": "/LOCAL_OWNER/.local/share/kie-mcp/usage.db",
+    "exists": false,
+    "wal_exists": false,
+    "shm_exists": false
+  },
+  "calls": [
+    {
+      "tool": "kie_estimate_cost",
+      "arguments": {
+        "model": "z-image",
+        "input": {
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "aspect_ratio": "1:1"
+        }
+      },
+      "is_error": false,
+      "result": {
+        "model": "z-image",
+        "estimated_cost_usd": 0.004,
+        "estimated_credits": 0.8,
+        "pricing_source": "owner_verified_quote:https://kie.ai/pricing",
+        "confidence": "estimated",
+        "owner_approved": true,
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "enum": [
+                "z-image"
+              ],
+              "default": "z-image",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `z-image` for this endpoint",
+              "examples": [
+                "z-image"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "prompt": {
+                  "description": "A text description of the image you want to generate (Max length: 1000 characters)",
+                  "type": "string",
+                  "maxLength": 1000,
+                  "examples": [
+                    "Generate a photorealistic image of a cafe terrace in the Marais district of Paris on a Wednesday morning in March 2025. It is a crisp, cool spring morning with clear skies. Locals are drinking coffee. In sharp focus should be a young woman with a pixie cut wearing a scarf, stirring a cappuccino and looking thoughtfully to the side; the waiter and street traffic behind her are blurred. The photo should have the candid, natural morning light feel of an iPhone image."
+                  ]
+                },
+                "aspect_ratio": {
+                  "description": "Aspect ratio for the generated image. Select 'auto' to match the first input image ratio (requires input image).",
+                  "type": "string",
+                  "enum": [
+                    "1:1",
+                    "4:3",
+                    "3:4",
+                    "16:9",
+                    "9:16"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ]
+                },
+                "nsfw_checker": {
+                  "type": "boolean",
+                  "description": "Defaults to false. You can set it to false based on your needs. If set to false, our content filtering will be disabled, and all results will be returned directly by the model itself.\nNote: There is no guarantee that everything can be filtered out; if you are not satisfied with the results, you will need to make your own arrangements."
+                }
+              },
+              "required": [
+                "prompt",
+                "aspect_ratio"
+              ]
+            }
+          }
+        },
+        "schema_digest": "51cd6464ec76efb93c596cda871555059ce2fbbe23857757df24e2c30305b3b6",
+        "validated_input": {
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "aspect_ratio": "1:1"
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "z-image",
+          "input": {
+            "prompt": "[PRIVATE_PROMPT_REDACTED]",
+            "aspect_ratio": "1:1"
+          }
+        },
+        "request_digest": "80c20d439ee1efaa8e9f227f335d449d82c2ccb4625ac70e83298c304b19200b"
+      }
+    },
+    {
+      "tool": "kie_create_task",
+      "arguments": {
+        "model": "z-image",
+        "input": {
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "aspect_ratio": "1:1"
+        },
+        "dry_run": true
+      },
+      "is_error": false,
+      "result": {
+        "model": "z-image",
+        "estimated_cost_usd": 0.004,
+        "estimated_credits": 0.8,
+        "pricing_source": "owner_verified_quote:https://kie.ai/pricing",
+        "confidence": "estimated",
+        "owner_approved": true,
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "enum": [
+                "z-image"
+              ],
+              "default": "z-image",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `z-image` for this endpoint",
+              "examples": [
+                "z-image"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "prompt": {
+                  "description": "A text description of the image you want to generate (Max length: 1000 characters)",
+                  "type": "string",
+                  "maxLength": 1000,
+                  "examples": [
+                    "Generate a photorealistic image of a cafe terrace in the Marais district of Paris on a Wednesday morning in March 2025. It is a crisp, cool spring morning with clear skies. Locals are drinking coffee. In sharp focus should be a young woman with a pixie cut wearing a scarf, stirring a cappuccino and looking thoughtfully to the side; the waiter and street traffic behind her are blurred. The photo should have the candid, natural morning light feel of an iPhone image."
+                  ]
+                },
+                "aspect_ratio": {
+                  "description": "Aspect ratio for the generated image. Select 'auto' to match the first input image ratio (requires input image).",
+                  "type": "string",
+                  "enum": [
+                    "1:1",
+                    "4:3",
+                    "3:4",
+                    "16:9",
+                    "9:16"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ]
+                },
+                "nsfw_checker": {
+                  "type": "boolean",
+                  "description": "Defaults to false. You can set it to false based on your needs. If set to false, our content filtering will be disabled, and all results will be returned directly by the model itself.\nNote: There is no guarantee that everything can be filtered out; if you are not satisfied with the results, you will need to make your own arrangements."
+                }
+              },
+              "required": [
+                "prompt",
+                "aspect_ratio"
+              ]
+            }
+          }
+        },
+        "schema_digest": "51cd6464ec76efb93c596cda871555059ce2fbbe23857757df24e2c30305b3b6",
+        "validated_input": {
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "aspect_ratio": "1:1"
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "z-image",
+          "input": {
+            "prompt": "[PRIVATE_PROMPT_REDACTED]",
+            "aspect_ratio": "1:1"
+          }
+        },
+        "request_digest": "80c20d439ee1efaa8e9f227f335d449d82c2ccb4625ac70e83298c304b19200b",
+        "dry_run": true,
+        "reservation_created": false
+      }
+    }
+  ],
+  "installation": {
+    "quote_path": "/LOCAL_OWNER/.config/kie-mcp/owner-quote-z-image.json",
+    "quote": {
+      "approved_by_owner": true,
+      "request_digest": "80c20d439ee1efaa8e9f227f335d449d82c2ccb4625ac70e83298c304b19200b",
+      "expires_at": 1791031856,
+      "max_cost_usd": 0.004,
+      "estimated_credits": 0.8,
+      "pricing_source": "https://kie.ai/pricing"
+    },
+    "quote_created_at_utc": "2026-10-03T12:20:56+00:00",
+    "quote_expires_at_utc": "2026-10-03T12:50:56+00:00",
+    "quote_mode": "0600",
+    "backup_path": "/LOCAL_OWNER/.config/kie-mcp/config.toml.owner-quote-backup-private_id_6a00ed805004",
+    "backup_mode": "0600",
+    "config_path": "/LOCAL_OWNER/.config/kie-mcp/config.toml",
+    "config_sha256_before": "a7ffc8062f53166e77ca51087c562045ac7596a428e88d605278cec7dda476f4",
+    "config_sha256_after": "631c4c53b1dda2c3ca0c0b153e59720d224c287eac8f2bd30756e70cab5cd8c4",
+    "config_mode": "0600",
+    "only_owner_quote_path_added": true,
+    "other_settings_preserved": true
+  },
+  "runtime": {
+    "transport": "stdio",
+    "launcher": "/LOCAL_OWNER/mcp-kie/.venv/bin/kie-mcp-launch",
+    "fresh_process": true,
+    "client_name": "phase1-stage-c-owner-quote-acceptance",
+    "server_info": {
+      "name": "Secure KIE media",
+      "title": null,
+      "version": "1.30.0",
+      "websiteUrl": null,
+      "icons": null
+    },
+    "available_tools": [
+      "kie_search_docs",
+      "kie_get_documentation",
+      "kie_list_models",
+      "kie_get_model_schema",
+      "kie_estimate_cost",
+      "kie_prepare_task",
+      "kie_create_task",
+      "kie_execute_task",
+      "kie_get_task",
+      "kie_wait_for_task",
+      "kie_get_credits",
+      "kie_upload_local_file",
+      "kie_upload_base64",
+      "kie_upload_from_url",
+      "kie_get_download_url",
+      "kie_download_result",
+      "generate_image",
+      "edit_image",
+      "generate_video",
+      "remove_background",
+      "upscale_image",
+      "product_image_create"
+    ]
+  },
+  "ledger_after": {
+    "path": "/LOCAL_OWNER/.local/share/kie-mcp/usage.db",
+    "exists": false,
+    "wal_exists": false,
+    "shm_exists": false
+  },
+  "completed_at_utc": "2026-10-03T12:21:02.520386+00:00",
+  "budget_reserved": false,
+  "paid_task_submitted": false
+}

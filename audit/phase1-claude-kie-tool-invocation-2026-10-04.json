@@ -1,0 +1,30 @@
+{
+  "status": "BLOCKED",
+  "scope": "Owner-authorized Claude retry using the existing KIE shell alias",
+  "clients": [
+    {
+      "client": "claude-kie-fable5",
+      "status": "IN_PROGRESS",
+      "arguments": [
+        "-ic",
+        "claude-kie-fable5 -p 'This is a bounded MCP acceptance check. Do not delegate, read files, run shell, write files, upload, generate media, reserve budget, prepare or execute tasks. Use only the installed kie-media MCP server. Call kie_get_credits once with no arguments, then call kie_search_docs once with query \"z-image\" and limit 2. Report the observed numeric balance and documentation source. Use the actual tools; do not infer results. If unavailable or denied, report that and stop.' --output-format stream-json --verbose --no-session-persistence --tools '' --disable-slash-commands --permission-mode dontAsk --max-budget-usd 0.20 --allowedTools mcp__kie-media__kie_get_credits,mcp__kie-media__kie_search_docs --disallowedTools mcp__kie-media__edit_image,mcp__kie-media__generate_image,mcp__kie-media__generate_video,mcp__kie-media__kie_create_task,mcp__kie-media__kie_download_result,mcp__kie-media__kie_estimate_cost,mcp__kie-media__kie_execute_task,mcp__kie-media__kie_get_documentation,mcp__kie-media__kie_get_download_url,mcp__kie-media__kie_get_model_schema,mcp__kie-media__kie_get_task,mcp__kie-media__kie_list_models,mcp__kie-media__kie_prepare_task,mcp__kie-media__kie_upload_base64,mcp__kie-media__kie_upload_from_url,mcp__kie-media__kie_upload_local_file,mcp__kie-media__kie_wait_for_task,mcp__kie-media__product_image_create,mcp__kie-media__remove_background,mcp__kie-media__upscale_image"
+      ],
+      "return_code": 143,
+      "timed_out": true,
+      "stdout_bytes": 0,
+      "stderr_bytes": 0,
+      "configured_secret_matches": 0,
+      "tool_uses": [],
+      "tool_results": [],
+      "final_events": [],
+      "stderr": "",
+      "non_json_stdout": "",
+      "init": []
+    }
+  ],
+  "paid_media_generations": 0,
+  "uploads": 0,
+  "owner_config_edits": 0,
+  "error": "Native session timed out: claude-kie-fable5",
+  "failure_type": "RuntimeError"
+}

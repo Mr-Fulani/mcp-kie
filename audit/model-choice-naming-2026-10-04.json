@@ -1,0 +1,695 @@
+{
+  "transport": "secure_project_MCP_stdio",
+  "paid_submissions": 0,
+  "checks": [
+    {
+      "tool": "generate_image",
+      "arguments": {
+        "prompt": "[PRIVATE_PROMPT_REDACTED]"
+      },
+      "result": {
+        "operation": "generate_image",
+        "selection_required": true,
+        "models": [
+          {
+            "model": "google/imagen4",
+            "title": "Google Imagen 4-Text to Image",
+            "provider": "Google",
+            "compatible": true,
+            "quality": {
+              "score": null,
+              "source": "provider_catalog",
+              "description": "Google Imagen 4, developed by Google DeepMind and released at Google I/O 2025, is an advanced text-to-image generation model. It converts textual prompts into photorealistic, high-quality images with exceptional detail, clarity, and artistic versatility, making it perfect for both creative and commercial use."
+            },
+            "speed": {
+              "expected_seconds": null,
+              "source": "not_verified"
+            },
+            "capabilities": {
+              "aspect_ratio": {
+                "field": "aspect_ratio",
+                "type": "string",
+                "enum": [
+                  "1:1",
+                  "16:9",
+                  "9:16",
+                  "3:4",
+                  "4:3",
+                  "auto"
+                ],
+                "default": "1:1",
+                "description": "The aspect ratio of the generated image"
+              }
+            },
+            "parameter_mapping": {},
+            "image_field": null,
+            "estimated_cost_usd": null,
+            "estimated_credits": null,
+            "confidence": "unknown",
+            "pricing_source": "live_kie_metadata:/api/v1/models/google/imagen4/price",
+            "pricing_description": "Imagen 4 costs 8 credits per image ($0.04).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.036 per image.",
+            "pricing_conditions": null,
+            "effective_parameters": {
+              "aspect_ratio": "1:1"
+            },
+            "within_task_limit": null,
+            "pricing_requires_owner_quote": true
+          },
+          {
+            "model": "google/imagen4-ultra",
+            "title": "Google Imagen 4 Ultra-Text to Image",
+            "provider": "Google",
+            "compatible": true,
+            "quality": {
+              "score": null,
+              "source": "provider_catalog",
+              "description": "Google Imagen 4 Ultra is the latest breakthrough in text-to-image generation, offering unmatched precision, speed, and photorealistic quality. Developed by Google DeepMind, this model transforms detailed text prompts into high-resolution, lifelike images, making it ideal for marketing, design, and creative applications."
+            },
+            "speed": {
+              "expected_seconds": null,
+              "source": "not_verified"
+            },
+            "capabilities": {
+              "aspect_ratio": {
+                "field": "aspect_ratio",
+                "type": "string",
+                "enum": [
+                  "1:1",
+                  "16:9",
+                  "9:16",
+                  "3:4",
+                  "4:3",
+                  "auto"
+                ],
+                "default": "1:1",
+                "description": "The aspect ratio of the generated image"
+              }
+            },
+            "parameter_mapping": {},
+            "image_field": null,
+            "estimated_cost_usd": null,
+            "estimated_credits": null,
+            "confidence": "unknown",
+            "pricing_source": "live_kie_metadata:/api/v1/models/google/imagen4-ultra/price",
+            "pricing_description": "Imagen 4 Ultra costs 12 credits per image ($0.06).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.055 per image.",
+            "pricing_conditions": null,
+            "effective_parameters": {
+              "aspect_ratio": "1:1"
+            },
+            "within_task_limit": null,
+            "pricing_requires_owner_quote": true
+          },
+          {
+            "model": "google/imagen4-fast",
+            "title": "Imagen 4 Fast-Text to Image",
+            "provider": "Google",
+            "compatible": true,
+            "quality": {
+              "score": null,
+              "source": "provider_catalog",
+              "description": null
+            },
+            "speed": {
+              "expected_seconds": null,
+              "source": "not_verified"
+            },
+            "capabilities": {
+              "aspect_ratio": {
+                "field": "aspect_ratio",
+                "type": "string",
+                "enum": [
+                  "1:1",
+                  "16:9",
+                  "9:16",
+                  "3:4",
+                  "4:3",
+                  "auto"
+                ],
+                "default": "16:9",
+                "description": "The aspect ratio of the generated image"
+              }
+            },
+            "parameter_mapping": {},
+            "image_field": null,
+            "estimated_cost_usd": null,
+            "estimated_credits": null,
+            "confidence": "unknown",
+            "pricing_source": "live_kie_metadata:/api/v1/models/google/imagen4-fast/price",
+            "pricing_description": "Imagen 4 Fast costs 4 credits per image (≈ $0.020).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ≈ $0.018 per image.",
+            "pricing_conditions": null,
+            "effective_parameters": {
+              "aspect_ratio": "16:9"
+            },
+            "within_task_limit": null,
+            "pricing_requires_owner_quote": true
+          },
+          {
+            "model": "google/nano-banana",
+            "title": "Nano Banana-Gemini 2.5 Flash Image(Text to Image)",
+            "provider": "Google",
+            "compatible": true,
+            "quality": {
+              "score": null,
+              "source": "provider_catalog",
+              "description": null
+            },
+            "speed": {
+              "expected_seconds": null,
+              "source": "not_verified"
+            },
+            "capabilities": {
+              "aspect_ratio": {
+                "field": "aspect_ratio",
+                "type": "string",
+                "enum": [
+                  "1:1",
+                  "9:16",
+                  "16:9",
+                  "3:4",
+                  "4:3",
+                  "3:2",
+                  "2:3",
+                  "5:4",
+                  "4:5",
+                  "21:9",
+                  "auto"
+                ],
+                "default": "1:1",
+                "description": "Radio description"
+              },
+              "output_format": {
+                "field": "output_format",
+                "type": "string",
+                "enum": [
+                  "png",
+                  "jpeg"
+                ],
+                "default": "png",
+                "description": "Output format for the images"
+              }
+            },
+            "parameter_mapping": {},
+            "image_field": null,
+            "estimated_cost_usd": 0.02,
+            "estimated_credits": 4.0,
+            "confidence": "estimated",
+            "pricing_source": "live_kie_metadata:/api/v1/models/google/nano-banana/price",
+            "pricing_description": "Nano Banana API costs 4 credits per image (~$0.02).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.018 per image.",
+            "pricing_conditions": {
+              "output_count": 1
+            },
+            "effective_parameters": {
+              "aspect_ratio": "1:1",
+              "output_format": "png"
+            },
+            "within_task_limit": true,
+            "pricing_requires_owner_quote": false
+          },
+          {
+            "model": "qwen/text-to-image",
+            "title": "Qwen - Text to Image",
+            "provider": "Qwen",
+            "compatible": true,
+            "quality": {
+              "score": null,
+              "source": "provider_catalog",
+              "description": null
+            },
+            "speed": {
+              "expected_seconds": null,
+              "source": "not_verified"
+            },
+            "capabilities": {
+              "output_format": {
+                "field": "output_format",
+                "type": "string",
+                "enum": [
+                  "png",
+                  "jpeg"
+                ],
+                "default": "png",
+                "description": "The format of the generated image"
+              }
+            },
+            "parameter_mapping": {},
+            "image_field": null,
+            "estimated_cost_usd": null,
+            "estimated_credits": null,
+            "confidence": "unknown",
+            "pricing_source": "live_kie_metadata:/api/v1/models/qwen/text-to-image/price",
+            "pricing_description": "Qwen Image is priced at 4 credits per megapixel (≈ $0.02).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.018 per megapixel.",
+            "pricing_conditions": null,
+            "effective_parameters": {
+              "output_format": "png"
+            },
+            "within_task_limit": null,
+            "pricing_requires_owner_quote": true
+          }
+        ],
+        "catalog_count": 34,
+        "cursor": 0,
+        "requested_parameters": {},
+        "next_cursor": 5,
+        "reservation_created": false,
+        "media_uploaded": false,
+        "next_step": "call_friendly_tool_with_selected_model",
+        "note": "Prices apply to the requested/default parameters. Unknown is not free. Quality descriptions are provider claims, not measured scores. Input URLs are not fetched; this comparison is not an executable approval."
+      }
+    },
+    {
+      "tool": "kie_compare_models",
+      "arguments": {
+        "operation": "generate_video",
+        "prompt": "[PRIVATE_PROMPT_REDACTED]",
+        "parameters": {
+          "duration": 4,
+          "resolution": "480p"
+        },
+        "query": "seedance",
+        "limit": 5
+      },
+      "result": {
+        "operation": "generate_video",
+        "selection_required": true,
+        "models": [
+          {
+            "model": "bytedance/v1-pro-text-to-video",
+            "title": "Seedance 1.0 Pro-Text to Video",
+            "provider": "ByteDance",
+            "compatible": false,
+            "quality": {
+              "score": null,
+              "source": "provider_catalog",
+              "description": "Seedance 1.0 Pro, developed by Bytedance, is a powerful tool that transforms text and images into high-quality videos. With resolutions up to 1080p and multi-shot capabilities, it enables creators to produce cinematic, narrative-driven content with smooth transitions and exceptional visual clarity."
+            },
+            "speed": {
+              "expected_seconds": null,
+              "source": "not_verified"
+            },
+            "capabilities": {
+              "aspect_ratio": {
+                "field": "aspect_ratio",
+                "type": "string",
+                "enum": [
+                  "21:9",
+                  "16:9",
+                  "4:3",
+                  "1:1",
+                  "3:4",
+                  "9:16"
+                ],
+                "default": "16:9",
+                "description": "The aspect ratio of the generated video"
+              },
+              "duration": {
+                "field": "duration",
+                "type": "string",
+                "enum": [
+                  "5",
+                  "10"
+                ],
+                "default": "5",
+                "description": "Duration of the video in seconds"
+              },
+              "resolution": {
+                "field": "resolution",
+                "type": "string",
+                "enum": [
+                  "480p",
+                  "720p",
+                  "1080p"
+                ],
+                "default": "720p",
+                "description": "Video resolution - 480p for faster generation, 720p for balance, 1080p for higher quality"
+              },
+              "target_resolution": {
+                "field": "resolution",
+                "type": "string",
+                "enum": [
+                  "480p",
+                  "720p",
+                  "1080p"
+                ],
+                "default": "720p",
+                "description": "Video resolution - 480p for faster generation, 720p for balance, 1080p for higher quality"
+              }
+            },
+            "reason": "Input does not satisfy the live model schema"
+          },
+          {
+            "model": "bytedance/v1-lite-text-to-video",
+            "title": "Seedance 1.0 Lite Text to Video",
+            "provider": "ByteDance",
+            "compatible": false,
+            "quality": {
+              "score": null,
+              "source": "provider_catalog",
+              "description": "From Words to Wonders: Seedance 1.0 Lite API Brings Your Ideas to Life in Video Form."
+            },
+            "speed": {
+              "expected_seconds": null,
+              "source": "not_verified"
+            },
+            "capabilities": {
+              "aspect_ratio": {
+                "field": "aspect_ratio",
+                "type": "string",
+                "enum": [
+                  "16:9",
+                  "4:3",
+                  "1:1",
+                  "3:4",
+                  "9:16",
+                  "9:21"
+                ],
+                "default": "16:9",
+                "description": "The aspect ratio of the generated video"
+              },
+              "duration": {
+                "field": "duration",
+                "type": "string",
+                "enum": [
+                  "5",
+                  "10"
+                ],
+                "default": "5",
+                "description": "Duration of the video in seconds"
+              },
+              "resolution": {
+                "field": "resolution",
+                "type": "string",
+                "enum": [
+                  "480p",
+                  "720p",
+                  "1080p"
+                ],
+                "default": "720p",
+                "description": "Video resolution - 480p for faster generation, 720p for higher quality"
+              },
+              "target_resolution": {
+                "field": "resolution",
+                "type": "string",
+                "enum": [
+                  "480p",
+                  "720p",
+                  "1080p"
+                ],
+                "default": "720p",
+                "description": "Video resolution - 480p for faster generation, 720p for higher quality"
+              }
+            },
+            "reason": "Input does not satisfy the live model schema"
+          },
+          {
+            "model": "bytedance/seedance-2",
+            "title": "Seedance 2.0",
+            "provider": "ByteDance",
+            "compatible": true,
+            "quality": {
+              "score": null,
+              "source": "provider_catalog",
+              "description": ""
+            },
+            "speed": {
+              "expected_seconds": null,
+              "source": "not_verified"
+            },
+            "capabilities": {
+              "aspect_ratio": {
+                "field": "aspect_ratio",
+                "type": "string",
+                "enum": [
+                  "1:1",
+                  "4:3",
+                  "3:4",
+                  "16:9",
+                  "9:16",
+                  "21:9",
+                  "adaptive"
+                ],
+                "default": "16:9",
+                "description": "Video aspect ratio configuration. Required field."
+              },
+              "duration": {
+                "field": "duration",
+                "type": "integer",
+                "default": 5,
+                "description": "Video duration in 4-15 seconds or -1."
+              },
+              "resolution": {
+                "field": "resolution",
+                "type": "string",
+                "enum": [
+                  "480p",
+                  "720p",
+                  "1080p",
+                  "4k"
+                ],
+                "default": "720p",
+                "description": "Video resolution - 480p for faster generation, 720p for balance, 1080p for High-quality video, 4K Ultra-High Definition, delivering perfect visual details."
+              },
+              "target_resolution": {
+                "field": "resolution",
+                "type": "string",
+                "enum": [
+                  "480p",
+                  "720p",
+                  "1080p",
+                  "4k"
+                ],
+                "default": "720p",
+                "description": "Video resolution - 480p for faster generation, 720p for balance, 1080p for High-quality video, 4K Ultra-High Definition, delivering perfect visual details."
+              },
+              "generate_audio": {
+                "field": "generate_audio",
+                "type": "boolean",
+                "default": true,
+                "description": "Whether to generate audio for the video.\n\n- **true**: Generate with audio\n- **false**: Generate without audio"
+              }
+            },
+            "parameter_mapping": {
+              "duration": "duration",
+              "resolution": "resolution"
+            },
+            "image_field": null,
+            "estimated_cost_usd": null,
+            "estimated_credits": null,
+            "confidence": "unknown",
+            "pricing_source": "live_kie_metadata:/api/v1/models/bytedance/seedance-2/price",
+            "pricing_description": "480P: 11.5 credits/s ($0.0575/s, with video) | 19 credits/s ($0.095/s, no video)\n720P: 25 credits/s ($0.125/s, with video) | 41 credits/s ($0.205/s, no video)\n1080P : 62 credits/s ($0.31/s, with video) | 102 credits/s ($0.51/s, no video).\n4K:  128 credits/s ($0.64/s, with video) | 208 credits/s ($1.04/s, no video)\n\n🔸Note🔸: “With video input” has a lower unit price due to a different calculation method: No video = Price × Output;  With video = Price × (Input + Output)\n\nHigh-tier top-ups include a +10% bonus, making effective pricing approximately 10% lower than listed. Prices are currently in beta and may be adjusted in the future",
+            "pricing_conditions": null,
+            "effective_parameters": {
+              "aspect_ratio": "16:9",
+              "duration": 4,
+              "resolution": "480p",
+              "target_resolution": "480p",
+              "generate_audio": true
+            },
+            "within_task_limit": null,
+            "pricing_requires_owner_quote": true
+          },
+          {
+            "model": "bytedance/seedance-2-fast",
+            "title": "Seedance 2.0 Fast",
+            "provider": "ByteDance",
+            "compatible": true,
+            "quality": {
+              "score": null,
+              "source": "provider_catalog",
+              "description": null
+            },
+            "speed": {
+              "expected_seconds": null,
+              "source": "not_verified"
+            },
+            "capabilities": {
+              "aspect_ratio": {
+                "field": "aspect_ratio",
+                "type": "string",
+                "enum": [
+                  "1:1",
+                  "4:3",
+                  "3:4",
+                  "16:9",
+                  "9:16",
+                  "21:9",
+                  "adaptive"
+                ],
+                "default": "16:9",
+                "description": "Video aspect ratio configuration. Required field."
+              },
+              "duration": {
+                "field": "duration",
+                "type": "integer",
+                "default": 5,
+                "description": "Video duration in 4-15 seconds or -1."
+              },
+              "resolution": {
+                "field": "resolution",
+                "type": "string",
+                "enum": [
+                  "480p",
+                  "720p"
+                ],
+                "default": "720p",
+                "description": "Video resolution - 480p for faster generation, 720p for balance"
+              },
+              "target_resolution": {
+                "field": "resolution",
+                "type": "string",
+                "enum": [
+                  "480p",
+                  "720p"
+                ],
+                "default": "720p",
+                "description": "Video resolution - 480p for faster generation, 720p for balance"
+              },
+              "generate_audio": {
+                "field": "generate_audio",
+                "type": "boolean",
+                "default": true,
+                "description": "Whether to generate audio for the video.\n\n- **true**: Generate with audio \n- **false**: Generate without audio"
+              }
+            },
+            "parameter_mapping": {
+              "duration": "duration",
+              "resolution": "resolution"
+            },
+            "image_field": null,
+            "estimated_cost_usd": null,
+            "estimated_credits": null,
+            "confidence": "unknown",
+            "pricing_source": "live_kie_metadata:/api/v1/models/bytedance/seedance-2-fast/price",
+            "pricing_description": "480P: 6.8 credits/s ($0.034/s, with video) | 11.7 credits/s ($0.059/s, no video)\n720P: 15 credits/s ($0.075/s, with video) | 24.8 credits/s ($0.124/s, no video)\n\n🔸Note🔸: “With video input” has a lower unit price due to a different calculation method: No video = Price × Output;  With video = Price × (Input + Output)\n\nHigh-tier top-ups include a +10% bonus, making effective pricing approximately 10% lower than listed. Prices are currently in beta and may be adjusted in the future\n\n🎉 Limited-time discount: Seedance 2.0 Fast is now available at a reduced price until October 7, 06:00 (UTC).",
+            "pricing_conditions": null,
+            "effective_parameters": {
+              "aspect_ratio": "16:9",
+              "duration": 4,
+              "resolution": "480p",
+              "target_resolution": "480p",
+              "generate_audio": true
+            },
+            "within_task_limit": null,
+            "pricing_requires_owner_quote": true
+          },
+          {
+            "model": "bytedance/seedance-2-mini",
+            "title": "Seedance 2.0 Mini",
+            "provider": "ByteDance",
+            "compatible": true,
+            "quality": {
+              "score": null,
+              "source": "provider_catalog",
+              "description": ""
+            },
+            "speed": {
+              "expected_seconds": null,
+              "source": "not_verified"
+            },
+            "capabilities": {
+              "aspect_ratio": {
+                "field": "aspect_ratio",
+                "type": "string",
+                "enum": [
+                  "1:1",
+                  "4:3",
+                  "3:4",
+                  "16:9",
+                  "9:16",
+                  "21:9",
+                  "adaptive"
+                ],
+                "default": "16:9",
+                "description": "Video aspect ratio configuration. Required field."
+              },
+              "duration": {
+                "field": "duration",
+                "type": "integer",
+                "default": 5,
+                "description": "Video duration in 4-15 seconds or -1."
+              },
+              "resolution": {
+                "field": "resolution",
+                "type": "string",
+                "enum": [
+                  "480p",
+                  "720p"
+                ],
+                "default": "720p",
+                "description": "Video resolution - 480p for faster generation, 720p for balance"
+              },
+              "target_resolution": {
+                "field": "resolution",
+                "type": "string",
+                "enum": [
+                  "480p",
+                  "720p"
+                ],
+                "default": "720p",
+                "description": "Video resolution - 480p for faster generation, 720p for balance"
+              },
+              "generate_audio": {
+                "field": "generate_audio",
+                "type": "boolean",
+                "default": true,
+                "description": "Whether to generate audio for the video.\n\n- **true**: Generate with audio \n- **false**: Generate without audio"
+              }
+            },
+            "parameter_mapping": {
+              "duration": "duration",
+              "resolution": "resolution"
+            },
+            "image_field": null,
+            "estimated_cost_usd": null,
+            "estimated_credits": null,
+            "confidence": "unknown",
+            "pricing_source": "live_kie_metadata:/api/v1/models/bytedance/seedance-2-mini/price",
+            "pricing_description": "480p — 2.4 credits/s ($0.012/s, with video) | 3.8 credits/s ($0.019/s, no video)\n720p — 5.0 credits/s ($0.025/s, with video) | 8.2 credits/s ($0.041/s, no video)\n\n🔸Note🔸: “With video input” has a lower unit price due to a different calculation method: No video = Price × Output;  With video = Price × (Input + Output)\n\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~90% of the above price\n\n🎉 Limited-time discount: Seedance 2.0 Mini is now available at a reduced price until October 7, 06:00 (UTC).",
+            "pricing_conditions": null,
+            "effective_parameters": {
+              "aspect_ratio": "16:9",
+              "duration": 4,
+              "resolution": "480p",
+              "target_resolution": "480p",
+              "generate_audio": true
+            },
+            "within_task_limit": null,
+            "pricing_requires_owner_quote": true
+          }
+        ],
+        "catalog_count": 6,
+        "cursor": 0,
+        "requested_parameters": {
+          "duration": 4,
+          "resolution": "480p"
+        },
+        "next_cursor": 5,
+        "reservation_created": false,
+        "media_uploaded": false,
+        "next_step": "call_friendly_tool_with_selected_model",
+        "note": "Prices apply to the requested/default parameters. Unknown is not free. Quality descriptions are provider claims, not measured scores. Input URLs are not fetched; this comparison is not an executable approval."
+      }
+    },
+    {
+      "tool": "kie_download_result",
+      "arguments": {
+        "task_id": "private_id_c33bb8c1223c",
+        "result_label": "mini-video-test"
+      },
+      "result": {
+        "task_id": "private_id_c33bb8c1223c",
+        "output_path": "/LOCAL_OWNER/Projects/kie-workspace/results/2026-10-04__mini-video-test__video__bytedance-seedance-2-mini__caafeb668a580430b3cafdad08042702/private_id_e08aa3c2717c.mp4",
+        "result_url": "https://MEDIA_URL_REDACTED.invalid/",
+        "output_folder": "/LOCAL_OWNER/Projects/kie-workspace/results/2026-10-04__mini-video-test__video__bytedance-seedance-2-mini__caafeb668a580430b3cafdad08042702"
+      }
+    }
+  ],
+  "old_directory_before": {
+    "private_id_cf00a6a75367.mp4": 896117
+  },
+  "tools_count": 23,
+  "old_directory_after": {
+    "private_id_cf00a6a75367.mp4": 896117
+  },
+  "passed": true
+}

@@ -1,0 +1,31 @@
+{
+  "checks": [
+    {
+      "client": "doctor",
+      "exit_code": 0,
+      "ok": true,
+      "secret_checked": true
+    },
+    {
+      "client": "codex",
+      "exit_code": 0,
+      "registered": true
+    },
+    {
+      "client": "claude",
+      "exit_code": 0,
+      "connected": true
+    },
+    {
+      "client": "grok",
+      "exit_code": 0,
+      "healthy_count": 1,
+      "failing_count": 0,
+      "tool_discovery": [
+        "23 tools discovered"
+      ]
+    }
+  ],
+  "secret_values_printed": false,
+  "paid_submissions": 0
+}

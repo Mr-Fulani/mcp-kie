@@ -1,0 +1,127 @@
+{
+  "status": "PASS_NATIVE_CLI_CONNECTIVITY",
+  "registrations": [
+    {
+      "client": "claude",
+      "config_path": "/LOCAL_OWNER/.claude.json",
+      "entry": {
+        "type": "stdio",
+        "command": "/LOCAL_OWNER/mcp-kie/.venv/bin/kie-mcp-launch",
+        "args": []
+      },
+      "backup_path": "/LOCAL_OWNER/.claude.json.kie-backup-private_id_df1dcd8b2118",
+      "config_mode": "0600",
+      "backup_mode": "0600",
+      "other_settings_preserved": true,
+      "idempotent": true,
+      "before_sha256": "f43908e4ec895f2e5d3debf707d20b2240db22b862da9aac05516911297f7323",
+      "after_sha256": "21359ba59bd0712cdef8decbd9f1c522b755382fb00dfe05c4a4741b110367f0"
+    },
+    {
+      "client": "grok",
+      "config_path": "/LOCAL_OWNER/.grok/config.toml",
+      "entry": {
+        "command": "/LOCAL_OWNER/mcp-kie/.venv/bin/kie-mcp-launch",
+        "args": [],
+        "enabled": true
+      },
+      "backup_path": "/LOCAL_OWNER/.grok/config.toml.kie-backup-private_id_c2ab756a7abc",
+      "config_mode": "0600",
+      "backup_mode": "0600",
+      "other_settings_preserved": true,
+      "idempotent": true,
+      "before_sha256": "f3571498d768e60480ab3580f6b9483f10b79d4d3bd4c29847ab76707019974a",
+      "after_sha256": "79219fe5829e4f1670202dc4574fb45f2abb9f42c505971af8c11affe99a7f75"
+    }
+  ],
+  "checks": [
+    {
+      "client": "claude",
+      "command": [
+        "/LOCAL_OWNER/.local/bin/claude",
+        "mcp",
+        "get",
+        "kie-media"
+      ],
+      "return_code": 0,
+      "stdout": "[LOCAL_DIAGNOSTIC_OUTPUT_REDACTED]",
+      "stderr": "",
+      "secret_matches": 0
+    },
+    {
+      "client": "grok",
+      "command": [
+        "/LOCAL_OWNER/.grok/bin/grok",
+        "mcp",
+        "doctor",
+        "kie-media",
+        "--json"
+      ],
+      "return_code": 0,
+      "stdout": "[LOCAL_DIAGNOSTIC_OUTPUT_REDACTED]",
+      "stderr": "",
+      "secret_matches": 0,
+      "parsed": {
+        "sources": [
+          {
+            "path": "~/.grok/config.toml",
+            "status": {
+              "status": "found",
+              "server_count": 1
+            }
+          },
+          {
+            "path": "~/.claude.json",
+            "status": {
+              "status": "found",
+              "server_count": 0
+            }
+          },
+          {
+            "path": ".mcp.json",
+            "status": {
+              "status": "not_found"
+            }
+          }
+        ],
+        "servers": [
+          {
+            "name": "kie-media",
+            "transport": "stdio",
+            "target": "/LOCAL_OWNER/mcp-kie/.venv/bin/kie-mcp-launch",
+            "source": "config",
+            "checks": [
+              {
+                "label": "command found",
+                "passed": true,
+                "detail": "/LOCAL_OWNER/mcp-kie/.venv/bin/kie-mcp-launch"
+              },
+              {
+                "label": "server started",
+                "passed": true,
+                "detail": "0.0s"
+              },
+              {
+                "label": "handshake OK",
+                "passed": true,
+                "detail": "protocol 2025-11-25"
+              },
+              {
+                "label": "22 tools discovered",
+                "passed": true,
+                "detail": ""
+              }
+            ],
+            "healthy": true
+          }
+        ],
+        "healthy_count": 1,
+        "failing_count": 0
+      }
+    }
+  ],
+  "model_turns": 0,
+  "media_submissions": 0,
+  "owner_config_preserved": true,
+  "limitation": "Native CLI connectivity checks; model-driven tool invocation has not been performed."
+}

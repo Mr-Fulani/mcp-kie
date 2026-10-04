@@ -1,0 +1,1446 @@
+{
+  "transport": "secure_project_MCP_stdio",
+  "estimated_total_usd": 0.2035,
+  "paid_submissions": 7,
+  "checks": [
+    {
+      "tool": "generate_video",
+      "arguments": {
+        "model": "bytedance/seedance-2-mini",
+        "prompt": "[PRIVATE_PROMPT_REDACTED]",
+        "duration": 4,
+        "resolution": "480p",
+        "aspect_ratio": "16:9",
+        "model_input": {
+          "generate_audio": false
+        },
+        "dry_run": false
+      },
+      "prepared": {
+        "model": "bytedance/seedance-2-mini",
+        "estimated_cost_usd": 0.076,
+        "estimated_credits": 15.2,
+        "pricing_source": "live_kie_metadata:/api/v1/models/bytedance/seedance-2-mini/price",
+        "confidence": "estimated",
+        "pricing_description": "480p — 2.4 credits/s ($0.012/s, with video) | 3.8 credits/s ($0.019/s, no video)\n720p — 5.0 credits/s ($0.025/s, with video) | 8.2 credits/s ($0.041/s, no video)\n\n🔸Note🔸: “With video input” has a lower unit price due to a different calculation method: No video = Price × Output;  With video = Price × (Input + Output)\n\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~90% of the above price\n\n🎉 Limited-time discount: Seedance 2.0 Mini is now available at a reduced price until October 7, 06:00 (UTC).",
+        "pricing_rule": "reviewed_live_tariff_v1",
+        "pricing_conditions": {
+          "duration_seconds": 4,
+          "resolution": "480p",
+          "output_count": 1,
+          "video_input": false,
+          "generate_audio": false,
+          "tariff_valid_until": "2026-10-07T06:00:00+00:00"
+        },
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model",
+            "input"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `bytedance/seedance-2-mini` for this endpoint",
+              "enum": [
+                "bytedance/seedance-2-mini"
+              ],
+              "default": "bytedance/seedance-2-mini",
+              "examples": [
+                "bytedance/seedance-2-mini"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "prompt": {
+                  "type": "string",
+                  "description": "The text prompt used to generate the video. Required field. (Min length: 3, Max length: 20000 characters)",
+                  "minLength": 3,
+                  "maxLength": 20000,
+                  "examples": [
+                    "A serene beach at sunset with waves gently crashing on the shore, palm trees swaying in the breeze, and seagulls flying across the orange sky"
+                  ]
+                },
+                "first_frame_url": {
+                  "type": "string",
+                  "description": "First frame image url or asset://{assetId} \n(for example: asset://asset-20260404242101-76djj)"
+                },
+                "last_frame_url": {
+                  "type": "string",
+                  "description": "End frame image url or asset://{assetId} \n(for example: asset://asset-20260404242101-76djj)"
+                },
+                "reference_image_urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "description": "Enter a list of image URLs or asset://{assetId} (for example: asset://asset-20260404242101-76djj).\nSingle image requirements:\nFormat: jpeg, png, webp, bmp, tiff, gif.\nAspect ratio (width/height): (0.4, 2.5)\nWidth and height (px): (300, 6000)\nSize: Single image less than 30 MB.\nMaximum number of files: The sum of the number of frames at the beginning and end must not exceed 9..",
+                  "maxItems": 9,
+                  "examples": [
+                    [
+                      "https://file.aiquickdraw.com/custom-page/akr/section-images/example1.png"
+                    ]
+                  ]
+                },
+                "reference_video_urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "description": "Enter a list of video URLs or asset://{assetId} (for example: asset://asset-20260404242101-76djj).\nSingle video requirements:\nVideo format: mp4, mov.\nResolution: 480p, 720p\nDuration: Single video duration [2, 15] s, maximum 3 reference videos, total duration of all videos not exceeding 15 seconds.\nDimensions:\nAspect ratio (width/height): [0.4, 2.5]\nWidth/height (px): [300, 6000]\nTotal pixels: [640×640=409600, 834×1112=927408], i.e., the product of width and height must meet the range requirement of [409600, 927408].\nSize: Single video not exceeding 50 MB.\nFrame rate (FPS): [24, 60]",
+                  "maxItems": 3
+                },
+                "reference_audio_urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "description": "Enter a list of audio URLs or asset://{assetId} (for example: asset://asset-20260404242101-76djj).\nSingle audio requirements:\nFormat: wav, mp3\nDuration: Single audio duration [2, 15] s, maximum 3 reference audios, total duration of all audios not exceeding 15 s.\nSize: Single audio file size not exceeding 15 MB.",
+                  "maxItems": 3
+                },
+                "generate_audio": {
+                  "description": "Whether to generate audio for the video.\n\n- **true**: Generate with audio \n- **false**: Generate without audio",
+                  "type": "boolean",
+                  "default": true,
+                  "examples": [
+                    false
+                  ]
+                },
+                "resolution": {
+                  "description": "Video resolution - 480p for faster generation, 720p for balance",
+                  "type": "string",
+                  "enum": [
+                    "480p",
+                    "720p"
+                  ],
+                  "default": "720p",
+                  "examples": [
+                    "720p"
+                  ]
+                },
+                "aspect_ratio": {
+                  "type": "string",
+                  "description": "Video aspect ratio configuration. Required field.",
+                  "enum": [
+                    "1:1",
+                    "4:3",
+                    "3:4",
+                    "16:9",
+                    "9:16",
+                    "21:9",
+                    "adaptive"
+                  ],
+                  "default": "16:9",
+                  "examples": [
+                    "16:9"
+                  ]
+                },
+                "duration": {
+                  "type": "integer",
+                  "description": "Video duration in 4-15 seconds or -1.",
+                  "default": 5,
+                  "examples": [
+                    5
+                  ]
+                },
+                "web_search": {
+                  "type": "boolean",
+                  "description": "Use online search. (Web search only can be used in the scene of t2v)"
+                },
+                "nsfw_checker": {
+                  "type": "boolean",
+                  "description": "Defaults to false. You can set it to false based on your needs. If set to false, our content filtering will be disabled, and all results will be returned directly by the model itself.\nNote: There is no guarantee that everything can be filtered out; if you are not satisfied with the results, you will need to make your own arrangements."
+                }
+              }
+            }
+          }
+        },
+        "schema_digest": "32a21422eca8e79d0f335b33a7b0046ac13eede2b7236e7ad6b50e916301e26c",
+        "validated_input": {
+          "generate_audio": false,
+          "duration": 4,
+          "aspect_ratio": "16:9",
+          "resolution": "480p",
+          "prompt": "[PRIVATE_PROMPT_REDACTED]"
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "bytedance/seedance-2-mini",
+          "input": {
+            "generate_audio": false,
+            "duration": 4,
+            "aspect_ratio": "16:9",
+            "resolution": "480p",
+            "prompt": "[PRIVATE_PROMPT_REDACTED]"
+          }
+        },
+        "request_digest": "941cb399311fc29a49ec3ee044085b84aeeb719a8b3400a305509c1bec9fb13a",
+        "status": "prepared",
+        "task_id": null,
+        "expires_at": 1791107600.0497348,
+        "approval_id": "private_id_de0d278988f7",
+        "duplicate": false,
+        "dry_run": false,
+        "reservation_created": true,
+        "operation": "generate_video",
+        "next_step": "kie_execute_task",
+        "execution_blocked": false,
+        "selected_model": "bytedance/seedance-2-mini",
+        "parameter_mapping": {
+          "duration": "duration",
+          "aspect_ratio": "aspect_ratio",
+          "resolution": "resolution"
+        },
+        "image_field": null,
+        "selection_scope": "explicit_model"
+      },
+      "submission_intent": true,
+      "executed": {
+        "status": "submitted",
+        "request_digest": "941cb399311fc29a49ec3ee044085b84aeeb719a8b3400a305509c1bec9fb13a",
+        "task_id": "private_id_c33bb8c1223c",
+        "expires_at": 1791107600.0497348,
+        "estimated_cost_usd": 0.076,
+        "estimated_credits": 15.2,
+        "pricing_source": "live_kie_metadata:/api/v1/models/bytedance/seedance-2-mini/price",
+        "approval_id": "private_id_de0d278988f7",
+        "send": true,
+        "duplicate": false
+      },
+      "task_id": "private_id_c33bb8c1223c",
+      "last_status": {
+        "code": 200,
+        "msg": "success",
+        "data": {
+          "taskId": "private_id_c33bb8c1223c",
+          "model": "bytedance/seedance-2-mini",
+          "state": "success",
+          "param": "{\"input\":\"{\\\"duration\\\":4,\\\"aspect_ratio\\\":\\\"16:9\\\",\\\"generate_audio\\\":false,\\\"resolution\\\":\\\"480p\\\",\\\"prompt\\\":\\\"A small paper boat gently floats on calm water. Slow camera push in. Soft morning light. No text.\\\"}\",\"model\":\"bytedance/seedance-2-mini\"}",
+          "resultJson": "{\"resultUrls\":[\"https://MEDIA_URL_REDACTED.invalid/\"]}",
+          "failCode": null,
+          "failMsg": null,
+          "costTime": 726,
+          "completeTime": 1791108031207,
+          "createTime": 1791107305472,
+          "creditsConsumed": 15.2,
+          "operationType": "bytedance/seedance-2-mini",
+          "response": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          },
+          "successFlag": 1,
+          "paramJson": "{\"input\":\"{\\\"duration\\\":4,\\\"aspect_ratio\\\":\\\"16:9\\\",\\\"generate_audio\\\":false,\\\"resolution\\\":\\\"480p\\\",\\\"prompt\\\":\\\"A small paper boat gently floats on calm water. Slow camera push in. Soft morning light. No text.\\\"}\",\"model\":\"bytedance/seedance-2-mini\"}",
+          "paramParsed": {
+            "input": "{\"duration\":4,\"aspect_ratio\":\"16:9\",\"generate_audio\":false,\"resolution\":\"480p\",\"prompt\":\"A small paper boat gently floats on calm water. Slow camera push in. Soft morning light. No text.\"}",
+            "model": "bytedance/seedance-2-mini"
+          },
+          "resultParsed": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          }
+        }
+      },
+      "downloaded": {
+        "task_id": "private_id_c33bb8c1223c",
+        "output_path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_c33bb8c1223c/private_id_cf00a6a75367.mp4",
+        "result_url": "https://MEDIA_URL_REDACTED.invalid/"
+      }
+    },
+    {
+      "tool": "generate_video",
+      "arguments": {
+        "model": "bytedance/seedance-2-mini",
+        "prompt": "[PRIVATE_PROMPT_REDACTED]",
+        "duration": 4,
+        "resolution": "480p",
+        "aspect_ratio": "16:9",
+        "model_input": {
+          "generate_audio": false
+        },
+        "dry_run": false,
+        "image_url": "https://MEDIA_URL_REDACTED.invalid/"
+      },
+      "prepared": {
+        "model": "bytedance/seedance-2-mini",
+        "estimated_cost_usd": 0.076,
+        "estimated_credits": 15.2,
+        "pricing_source": "live_kie_metadata:/api/v1/models/bytedance/seedance-2-mini/price",
+        "confidence": "estimated",
+        "pricing_description": "480p — 2.4 credits/s ($0.012/s, with video) | 3.8 credits/s ($0.019/s, no video)\n720p — 5.0 credits/s ($0.025/s, with video) | 8.2 credits/s ($0.041/s, no video)\n\n🔸Note🔸: “With video input” has a lower unit price due to a different calculation method: No video = Price × Output;  With video = Price × (Input + Output)\n\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~90% of the above price\n\n🎉 Limited-time discount: Seedance 2.0 Mini is now available at a reduced price until October 7, 06:00 (UTC).",
+        "pricing_rule": "reviewed_live_tariff_v1",
+        "pricing_conditions": {
+          "duration_seconds": 4,
+          "resolution": "480p",
+          "output_count": 1,
+          "video_input": false,
+          "generate_audio": false,
+          "tariff_valid_until": "2026-10-07T06:00:00+00:00"
+        },
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model",
+            "input"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `bytedance/seedance-2-mini` for this endpoint",
+              "enum": [
+                "bytedance/seedance-2-mini"
+              ],
+              "default": "bytedance/seedance-2-mini",
+              "examples": [
+                "bytedance/seedance-2-mini"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "prompt": {
+                  "type": "string",
+                  "description": "The text prompt used to generate the video. Required field. (Min length: 3, Max length: 20000 characters)",
+                  "minLength": 3,
+                  "maxLength": 20000,
+                  "examples": [
+                    "A serene beach at sunset with waves gently crashing on the shore, palm trees swaying in the breeze, and seagulls flying across the orange sky"
+                  ]
+                },
+                "first_frame_url": {
+                  "type": "string",
+                  "description": "First frame image url or asset://{assetId} \n(for example: asset://asset-20260404242101-76djj)"
+                },
+                "last_frame_url": {
+                  "type": "string",
+                  "description": "End frame image url or asset://{assetId} \n(for example: asset://asset-20260404242101-76djj)"
+                },
+                "reference_image_urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "description": "Enter a list of image URLs or asset://{assetId} (for example: asset://asset-20260404242101-76djj).\nSingle image requirements:\nFormat: jpeg, png, webp, bmp, tiff, gif.\nAspect ratio (width/height): (0.4, 2.5)\nWidth and height (px): (300, 6000)\nSize: Single image less than 30 MB.\nMaximum number of files: The sum of the number of frames at the beginning and end must not exceed 9..",
+                  "maxItems": 9,
+                  "examples": [
+                    [
+                      "https://file.aiquickdraw.com/custom-page/akr/section-images/example1.png"
+                    ]
+                  ]
+                },
+                "reference_video_urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "description": "Enter a list of video URLs or asset://{assetId} (for example: asset://asset-20260404242101-76djj).\nSingle video requirements:\nVideo format: mp4, mov.\nResolution: 480p, 720p\nDuration: Single video duration [2, 15] s, maximum 3 reference videos, total duration of all videos not exceeding 15 seconds.\nDimensions:\nAspect ratio (width/height): [0.4, 2.5]\nWidth/height (px): [300, 6000]\nTotal pixels: [640×640=409600, 834×1112=927408], i.e., the product of width and height must meet the range requirement of [409600, 927408].\nSize: Single video not exceeding 50 MB.\nFrame rate (FPS): [24, 60]",
+                  "maxItems": 3
+                },
+                "reference_audio_urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "description": "Enter a list of audio URLs or asset://{assetId} (for example: asset://asset-20260404242101-76djj).\nSingle audio requirements:\nFormat: wav, mp3\nDuration: Single audio duration [2, 15] s, maximum 3 reference audios, total duration of all audios not exceeding 15 s.\nSize: Single audio file size not exceeding 15 MB.",
+                  "maxItems": 3
+                },
+                "generate_audio": {
+                  "description": "Whether to generate audio for the video.\n\n- **true**: Generate with audio \n- **false**: Generate without audio",
+                  "type": "boolean",
+                  "default": true,
+                  "examples": [
+                    false
+                  ]
+                },
+                "resolution": {
+                  "description": "Video resolution - 480p for faster generation, 720p for balance",
+                  "type": "string",
+                  "enum": [
+                    "480p",
+                    "720p"
+                  ],
+                  "default": "720p",
+                  "examples": [
+                    "720p"
+                  ]
+                },
+                "aspect_ratio": {
+                  "type": "string",
+                  "description": "Video aspect ratio configuration. Required field.",
+                  "enum": [
+                    "1:1",
+                    "4:3",
+                    "3:4",
+                    "16:9",
+                    "9:16",
+                    "21:9",
+                    "adaptive"
+                  ],
+                  "default": "16:9",
+                  "examples": [
+                    "16:9"
+                  ]
+                },
+                "duration": {
+                  "type": "integer",
+                  "description": "Video duration in 4-15 seconds or -1.",
+                  "default": 5,
+                  "examples": [
+                    5
+                  ]
+                },
+                "web_search": {
+                  "type": "boolean",
+                  "description": "Use online search. (Web search only can be used in the scene of t2v)"
+                },
+                "nsfw_checker": {
+                  "type": "boolean",
+                  "description": "Defaults to false. You can set it to false based on your needs. If set to false, our content filtering will be disabled, and all results will be returned directly by the model itself.\nNote: There is no guarantee that everything can be filtered out; if you are not satisfied with the results, you will need to make your own arrangements."
+                }
+              }
+            }
+          }
+        },
+        "schema_digest": "32a21422eca8e79d0f335b33a7b0046ac13eede2b7236e7ad6b50e916301e26c",
+        "validated_input": {
+          "generate_audio": false,
+          "duration": 4,
+          "aspect_ratio": "16:9",
+          "resolution": "480p",
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "first_frame_url": "https://MEDIA_URL_REDACTED.invalid/"
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "bytedance/seedance-2-mini",
+          "input": {
+            "generate_audio": false,
+            "duration": 4,
+            "aspect_ratio": "16:9",
+            "resolution": "480p",
+            "prompt": "[PRIVATE_PROMPT_REDACTED]",
+            "first_frame_url": "https://MEDIA_URL_REDACTED.invalid/"
+          }
+        },
+        "request_digest": "bc9a11512d20a35ba8efd1bd9d5c7f1bb4c9db8fe96b1feb22c014d9b49101fd",
+        "status": "prepared",
+        "task_id": null,
+        "expires_at": 1791108356.6991518,
+        "approval_id": "private_id_0bc86611df20",
+        "duplicate": false,
+        "dry_run": false,
+        "reservation_created": true,
+        "operation": "generate_video",
+        "next_step": "kie_execute_task",
+        "execution_blocked": false,
+        "selected_model": "bytedance/seedance-2-mini",
+        "parameter_mapping": {
+          "duration": "duration",
+          "aspect_ratio": "aspect_ratio",
+          "resolution": "resolution"
+        },
+        "image_field": "first_frame_url",
+        "selection_scope": "explicit_model"
+      },
+      "submission_intent": true,
+      "executed": {
+        "status": "submitted",
+        "request_digest": "bc9a11512d20a35ba8efd1bd9d5c7f1bb4c9db8fe96b1feb22c014d9b49101fd",
+        "task_id": "private_id_93e723581509",
+        "expires_at": 1791108356.6991518,
+        "estimated_cost_usd": 0.076,
+        "estimated_credits": 15.2,
+        "pricing_source": "live_kie_metadata:/api/v1/models/bytedance/seedance-2-mini/price",
+        "approval_id": "private_id_0bc86611df20",
+        "send": true,
+        "duplicate": false
+      },
+      "task_id": "private_id_93e723581509",
+      "last_status": {
+        "code": 200,
+        "msg": "success",
+        "data": {
+          "taskId": "private_id_93e723581509",
+          "model": "bytedance/seedance-2-mini",
+          "state": "success",
+          "param": "{\"input\":\"{\\\"duration\\\":4,\\\"aspect_ratio\\\":\\\"16:9\\\",\\\"first_frame_url\\\":\\\"https://MEDIA_URL_REDACTED.invalid/\\\",\\\"generate_audio\\\":false,\\\"resolution\\\":\\\"480p\\\",\\\"prompt\\\":\\\"A subtle slow camera push in toward the product carton. Keep the carton rigid and preserve all printed labels. No additional text.\\\"}\",\"model\":\"bytedance/seedance-2-mini\"}",
+          "resultJson": "{\"resultUrls\":[\"https://MEDIA_URL_REDACTED.invalid/\"]}",
+          "failCode": null,
+          "failMsg": null,
+          "costTime": 333,
+          "completeTime": 1791108393550,
+          "createTime": 1791108059678,
+          "creditsConsumed": 15.2,
+          "operationType": "bytedance/seedance-2-mini",
+          "response": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          },
+          "successFlag": 1,
+          "paramJson": "{\"input\":\"{\\\"duration\\\":4,\\\"aspect_ratio\\\":\\\"16:9\\\",\\\"first_frame_url\\\":\\\"https://MEDIA_URL_REDACTED.invalid/\\\",\\\"generate_audio\\\":false,\\\"resolution\\\":\\\"480p\\\",\\\"prompt\\\":\\\"A subtle slow camera push in toward the product carton. Keep the carton rigid and preserve all printed labels. No additional text.\\\"}\",\"model\":\"bytedance/seedance-2-mini\"}",
+          "paramParsed": {
+            "input": "{\"duration\":4,\"aspect_ratio\":\"16:9\",\"first_frame_url\":\"https://MEDIA_URL_REDACTED.invalid/\",\"generate_audio\":false,\"resolution\":\"480p\",\"prompt\":\"A subtle slow camera push in toward the product carton. Keep the carton rigid and preserve all printed labels. No additional text.\"}",
+            "model": "bytedance/seedance-2-mini"
+          },
+          "resultParsed": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          }
+        }
+      },
+      "downloaded": {
+        "task_id": "private_id_93e723581509",
+        "output_path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_93e723581509/private_id_348ea562c3c8.mp4",
+        "result_url": "https://MEDIA_URL_REDACTED.invalid/"
+      }
+    },
+    {
+      "tool": "generate_image",
+      "arguments": {
+        "model": "z-image",
+        "prompt": "[PRIVATE_PROMPT_REDACTED]",
+        "aspect_ratio": "1:1",
+        "dry_run": false
+      },
+      "prepared": {
+        "model": "z-image",
+        "estimated_cost_usd": 0.004,
+        "estimated_credits": 0.8,
+        "pricing_source": "live_kie_metadata:/api/v1/models/z-image/price",
+        "confidence": "estimated",
+        "pricing_description": "flat 0.8 Kie credits per image (≈ $0.004) — simple, all-inclusive pricing.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ≈ $0.0036 per image.",
+        "pricing_rule": "reviewed_live_tariff_v1",
+        "pricing_conditions": {
+          "output_count": 1
+        },
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "enum": [
+                "z-image"
+              ],
+              "default": "z-image",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `z-image` for this endpoint",
+              "examples": [
+                "z-image"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "prompt": {
+                  "description": "A text description of the image you want to generate (Max length: 1000 characters)",
+                  "type": "string",
+                  "maxLength": 1000,
+                  "examples": [
+                    "Generate a photorealistic image of a cafe terrace in the Marais district of Paris on a Wednesday morning in March 2025. It is a crisp, cool spring morning with clear skies. Locals are drinking coffee. In sharp focus should be a young woman with a pixie cut wearing a scarf, stirring a cappuccino and looking thoughtfully to the side; the waiter and street traffic behind her are blurred. The photo should have the candid, natural morning light feel of an iPhone image."
+                  ]
+                },
+                "aspect_ratio": {
+                  "description": "Aspect ratio for the generated image. Select 'auto' to match the first input image ratio (requires input image).",
+                  "type": "string",
+                  "enum": [
+                    "1:1",
+                    "4:3",
+                    "3:4",
+                    "16:9",
+                    "9:16"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ]
+                },
+                "nsfw_checker": {
+                  "type": "boolean",
+                  "description": "Defaults to false. You can set it to false based on your needs. If set to false, our content filtering will be disabled, and all results will be returned directly by the model itself.\nNote: There is no guarantee that everything can be filtered out; if you are not satisfied with the results, you will need to make your own arrangements."
+                }
+              },
+              "required": [
+                "prompt",
+                "aspect_ratio"
+              ]
+            }
+          }
+        },
+        "schema_digest": "51cd6464ec76efb93c596cda871555059ce2fbbe23857757df24e2c30305b3b6",
+        "validated_input": {
+          "aspect_ratio": "1:1",
+          "prompt": "[PRIVATE_PROMPT_REDACTED]"
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "z-image",
+          "input": {
+            "aspect_ratio": "1:1",
+            "prompt": "[PRIVATE_PROMPT_REDACTED]"
+          }
+        },
+        "request_digest": "220cc3dc4e4a588d6d5c379515f4d549d042dcfa89196bd8af06f56eb6e858a1",
+        "status": "prepared",
+        "task_id": null,
+        "expires_at": 1791108712.4876359,
+        "approval_id": "private_id_e5b451c24b38",
+        "duplicate": false,
+        "dry_run": false,
+        "reservation_created": true,
+        "operation": "generate_image",
+        "next_step": "kie_execute_task",
+        "execution_blocked": false,
+        "selected_model": "z-image",
+        "parameter_mapping": {
+          "aspect_ratio": "aspect_ratio"
+        },
+        "image_field": null,
+        "selection_scope": "explicit_model"
+      },
+      "submission_intent": true,
+      "executed": {
+        "status": "submitted",
+        "request_digest": "220cc3dc4e4a588d6d5c379515f4d549d042dcfa89196bd8af06f56eb6e858a1",
+        "task_id": "private_id_1ebf86a29e2d",
+        "expires_at": 1791108712.4876359,
+        "estimated_cost_usd": 0.004,
+        "estimated_credits": 0.8,
+        "pricing_source": "live_kie_metadata:/api/v1/models/z-image/price",
+        "approval_id": "private_id_e5b451c24b38",
+        "send": true,
+        "duplicate": false
+      },
+      "task_id": "private_id_1ebf86a29e2d",
+      "last_status": {
+        "code": 200,
+        "msg": "success",
+        "data": {
+          "taskId": "private_id_1ebf86a29e2d",
+          "model": "z-image",
+          "state": "success",
+          "param": "{\"input\":\"{\\\"aspect_ratio\\\":\\\"1:1\\\",\\\"prompt\\\":\\\"A paper boat on calm water in morning light.\\\"}\",\"model\":\"z-image\"}",
+          "resultJson": "{\"resultUrls\":[\"https://MEDIA_URL_REDACTED.invalid/\"]}",
+          "failCode": null,
+          "failMsg": null,
+          "costTime": 5,
+          "completeTime": 1791108421992,
+          "createTime": 1791108416412,
+          "creditsConsumed": 0.8,
+          "operationType": "z-image",
+          "response": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          },
+          "successFlag": 1,
+          "paramJson": "{\"input\":\"{\\\"aspect_ratio\\\":\\\"1:1\\\",\\\"prompt\\\":\\\"A paper boat on calm water in morning light.\\\"}\",\"model\":\"z-image\"}",
+          "paramParsed": {
+            "input": "{\"aspect_ratio\":\"1:1\",\"prompt\":\"A paper boat on calm water in morning light.\"}",
+            "model": "z-image"
+          },
+          "resultParsed": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          }
+        }
+      },
+      "downloaded": {
+        "task_id": "private_id_1ebf86a29e2d",
+        "output_path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_1ebf86a29e2d/private_id_64aadf2545a6.png",
+        "result_url": "https://MEDIA_URL_REDACTED.invalid/"
+      }
+    },
+    {
+      "tool": "edit_image",
+      "arguments": {
+        "model": "google/nano-banana-edit",
+        "image_url": "https://MEDIA_URL_REDACTED.invalid/",
+        "prompt": "[PRIVATE_PROMPT_REDACTED]",
+        "aspect_ratio": "3:4",
+        "output_format": "png",
+        "dry_run": false
+      },
+      "prepared": {
+        "model": "google/nano-banana-edit",
+        "estimated_cost_usd": 0.02,
+        "estimated_credits": 4.0,
+        "pricing_source": "live_kie_metadata:/api/v1/models/google/nano-banana-edit/price",
+        "confidence": "estimated",
+        "pricing_description": "Nano Banana API costs 4 credits per image (~$0.02).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.018 per image.",
+        "pricing_rule": "reviewed_live_tariff_v1",
+        "pricing_conditions": {
+          "output_count": 1
+        },
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "enum": [
+                "google/nano-banana-edit"
+              ],
+              "default": "google/nano-banana-edit",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `google/nano-banana-edit` for this endpoint",
+              "examples": [
+                "google/nano-banana-edit"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "prompt": {
+                  "description": "The prompt for image editing (Max length: 5000 characters)",
+                  "type": "string",
+                  "maxLength": 5000,
+                  "examples": [
+                    "turn this photo into a character figure. Behind it, place a box with the character’s image printed on it, and a computer showing the Blender modeling process on its screen. In front of the box, add a round plastic base with the character figure standing on it. set the scene indoors if possible"
+                  ]
+                },
+                "image_urls": {
+                  "description": "List of URLs of input images for editing,up to 10 images. (File URL after upload, not file content; Accepted types: image/jpeg, image/png, image/webp; Max size: 10.0MB)",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "maxItems": 10,
+                  "examples": [
+                    [
+                      "https://file.aiquickdraw.com/custom-page/akr/section-images/1756223420389w8xa2jfe.png"
+                    ]
+                  ]
+                },
+                "output_format": {
+                  "description": "Output format for the images",
+                  "type": "string",
+                  "enum": [
+                    "png",
+                    "jpeg"
+                  ],
+                  "default": "png",
+                  "examples": [
+                    "png"
+                  ]
+                },
+                "aspect_ratio": {
+                  "description": "Radio description",
+                  "type": "string",
+                  "enum": [
+                    "1:1",
+                    "9:16",
+                    "16:9",
+                    "3:4",
+                    "4:3",
+                    "3:2",
+                    "2:3",
+                    "5:4",
+                    "4:5",
+                    "21:9",
+                    "auto"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ]
+                },
+                "image_size": {
+                  "type": "string",
+                  "description": "The aspect ratio of the generated image (this parameter has been replaced by aspect_ratio; please use the latest aspect_ratio parameter).",
+                  "enum": [
+                    "1:1",
+                    "9:16",
+                    "16:9",
+                    "3:4",
+                    "4:3",
+                    "3:2",
+                    "2:3",
+                    "5:4",
+                    "4:5",
+                    "21:9",
+                    "auto"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ],
+                  "deprecated": true
+                }
+              },
+              "required": [
+                "prompt",
+                "image_urls"
+              ]
+            }
+          }
+        },
+        "schema_digest": "b91fb4d6b3dfc75c81150b08252466f3e357a6c11e93290e28dd6d534fa143cf",
+        "validated_input": {
+          "aspect_ratio": "3:4",
+          "output_format": "png",
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "image_urls": [
+            "https://MEDIA_URL_REDACTED.invalid/"
+          ]
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "google/nano-banana-edit",
+          "input": {
+            "aspect_ratio": "3:4",
+            "output_format": "png",
+            "prompt": "[PRIVATE_PROMPT_REDACTED]",
+            "image_urls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          }
+        },
+        "request_digest": "65af64a0df0a0ceed8abb24fe32e446aa1d54476ad4981cf8ddbb4d1e3f07284",
+        "status": "prepared",
+        "task_id": null,
+        "expires_at": 1791108746.6013398,
+        "approval_id": "private_id_22b71dd6e7a9",
+        "duplicate": false,
+        "dry_run": false,
+        "reservation_created": true,
+        "operation": "edit_image",
+        "next_step": "kie_execute_task",
+        "execution_blocked": false,
+        "selected_model": "google/nano-banana-edit",
+        "parameter_mapping": {
+          "aspect_ratio": "aspect_ratio",
+          "output_format": "output_format"
+        },
+        "image_field": "image_urls",
+        "selection_scope": "explicit_model"
+      },
+      "submission_intent": true,
+      "executed": {
+        "status": "submitted",
+        "request_digest": "65af64a0df0a0ceed8abb24fe32e446aa1d54476ad4981cf8ddbb4d1e3f07284",
+        "task_id": "private_id_211ad9bf6ef1",
+        "expires_at": 1791108746.6013398,
+        "estimated_cost_usd": 0.02,
+        "estimated_credits": 4.0,
+        "pricing_source": "live_kie_metadata:/api/v1/models/google/nano-banana-edit/price",
+        "approval_id": "private_id_22b71dd6e7a9",
+        "send": true,
+        "duplicate": false
+      },
+      "task_id": "private_id_211ad9bf6ef1",
+      "last_status": {
+        "code": 200,
+        "msg": "success",
+        "data": {
+          "taskId": "private_id_211ad9bf6ef1",
+          "model": "google/nano-banana-edit",
+          "state": "success",
+          "param": "{\"input\":\"{\\\"output_format\\\":\\\"png\\\",\\\"image_size\\\":\\\"3:4\\\",\\\"image_urls\\\":[\\\"https://MEDIA_URL_REDACTED.invalid/\\\"],\\\"prompt\\\":\\\"Studio product photo on a white background. Preserve the product and labels.\\\"}\",\"model\":\"google/nano-banana-edit\"}",
+          "resultJson": "{\"resultUrls\":[\"https://MEDIA_URL_REDACTED.invalid/\"]}",
+          "failCode": null,
+          "failMsg": null,
+          "costTime": 29,
+          "completeTime": 1791108481773,
+          "createTime": 1791108452019,
+          "creditsConsumed": 4.0,
+          "operationType": "google/nano-banana-edit",
+          "response": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          },
+          "successFlag": 1,
+          "paramJson": "{\"input\":\"{\\\"output_format\\\":\\\"png\\\",\\\"image_size\\\":\\\"3:4\\\",\\\"image_urls\\\":[\\\"https://MEDIA_URL_REDACTED.invalid/\\\"],\\\"prompt\\\":\\\"Studio product photo on a white background. Preserve the product and labels.\\\"}\",\"model\":\"google/nano-banana-edit\"}",
+          "paramParsed": {
+            "input": "{\"output_format\":\"png\",\"image_size\":\"3:4\",\"image_urls\":[\"https://MEDIA_URL_REDACTED.invalid/\"],\"prompt\":\"Studio product photo on a white background. Preserve the product and labels.\"}",
+            "model": "google/nano-banana-edit"
+          },
+          "resultParsed": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          }
+        }
+      },
+      "downloaded": {
+        "task_id": "private_id_211ad9bf6ef1",
+        "output_path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_211ad9bf6ef1/private_id_d72ce98fd94b.jpg",
+        "result_url": "https://MEDIA_URL_REDACTED.invalid/"
+      }
+    },
+    {
+      "tool": "product_image_create",
+      "arguments": {
+        "model": "google/nano-banana-edit",
+        "image_path": "images.jpg",
+        "product_name": "THIOLA carton",
+        "output_format": "png",
+        "dry_run": false
+      },
+      "prepared": {
+        "model": "google/nano-banana-edit",
+        "estimated_cost_usd": 0.02,
+        "estimated_credits": 4.0,
+        "pricing_source": "live_kie_metadata:/api/v1/models/google/nano-banana-edit/price",
+        "confidence": "estimated",
+        "pricing_description": "Nano Banana API costs 4 credits per image (~$0.02).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.018 per image.",
+        "pricing_rule": "reviewed_live_tariff_v1",
+        "pricing_conditions": {
+          "output_count": 1
+        },
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "enum": [
+                "google/nano-banana-edit"
+              ],
+              "default": "google/nano-banana-edit",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `google/nano-banana-edit` for this endpoint",
+              "examples": [
+                "google/nano-banana-edit"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "prompt": {
+                  "description": "The prompt for image editing (Max length: 5000 characters)",
+                  "type": "string",
+                  "maxLength": 5000,
+                  "examples": [
+                    "turn this photo into a character figure. Behind it, place a box with the character’s image printed on it, and a computer showing the Blender modeling process on its screen. In front of the box, add a round plastic base with the character figure standing on it. set the scene indoors if possible"
+                  ]
+                },
+                "image_urls": {
+                  "description": "List of URLs of input images for editing,up to 10 images. (File URL after upload, not file content; Accepted types: image/jpeg, image/png, image/webp; Max size: 10.0MB)",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "maxItems": 10,
+                  "examples": [
+                    [
+                      "https://file.aiquickdraw.com/custom-page/akr/section-images/1756223420389w8xa2jfe.png"
+                    ]
+                  ]
+                },
+                "output_format": {
+                  "description": "Output format for the images",
+                  "type": "string",
+                  "enum": [
+                    "png",
+                    "jpeg"
+                  ],
+                  "default": "png",
+                  "examples": [
+                    "png"
+                  ]
+                },
+                "aspect_ratio": {
+                  "description": "Radio description",
+                  "type": "string",
+                  "enum": [
+                    "1:1",
+                    "9:16",
+                    "16:9",
+                    "3:4",
+                    "4:3",
+                    "3:2",
+                    "2:3",
+                    "5:4",
+                    "4:5",
+                    "21:9",
+                    "auto"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ]
+                },
+                "image_size": {
+                  "type": "string",
+                  "description": "The aspect ratio of the generated image (this parameter has been replaced by aspect_ratio; please use the latest aspect_ratio parameter).",
+                  "enum": [
+                    "1:1",
+                    "9:16",
+                    "16:9",
+                    "3:4",
+                    "4:3",
+                    "3:2",
+                    "2:3",
+                    "5:4",
+                    "4:5",
+                    "21:9",
+                    "auto"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ],
+                  "deprecated": true
+                }
+              },
+              "required": [
+                "prompt",
+                "image_urls"
+              ]
+            }
+          }
+        },
+        "schema_digest": "b91fb4d6b3dfc75c81150b08252466f3e357a6c11e93290e28dd6d534fa143cf",
+        "validated_input": {
+          "aspect_ratio": "3:4",
+          "output_format": "png",
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "image_urls": [
+            "https://MEDIA_URL_REDACTED.invalid/"
+          ]
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "google/nano-banana-edit",
+          "input": {
+            "aspect_ratio": "3:4",
+            "output_format": "png",
+            "prompt": "[PRIVATE_PROMPT_REDACTED]",
+            "image_urls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          }
+        },
+        "request_digest": "72fdf21c874554be3b4eff433187f6971f8d38da1fc450fb569f18e4fc4cda7b",
+        "status": "prepared",
+        "task_id": null,
+        "expires_at": 1791108803.945813,
+        "approval_id": "private_id_74339675b60f",
+        "duplicate": false,
+        "dry_run": false,
+        "reservation_created": true,
+        "operation": "product_image_create",
+        "next_step": "kie_execute_task",
+        "execution_blocked": false,
+        "selected_model": "google/nano-banana-edit",
+        "parameter_mapping": {
+          "aspect_ratio": "aspect_ratio",
+          "output_format": "output_format"
+        },
+        "image_field": "image_urls",
+        "selection_scope": "explicit_model"
+      },
+      "submission_intent": true,
+      "executed": {
+        "status": "submitted",
+        "request_digest": "72fdf21c874554be3b4eff433187f6971f8d38da1fc450fb569f18e4fc4cda7b",
+        "task_id": "private_id_0be342d47608",
+        "expires_at": 1791108803.945813,
+        "estimated_cost_usd": 0.02,
+        "estimated_credits": 4.0,
+        "pricing_source": "live_kie_metadata:/api/v1/models/google/nano-banana-edit/price",
+        "approval_id": "private_id_74339675b60f",
+        "send": true,
+        "duplicate": false
+      },
+      "task_id": "private_id_0be342d47608",
+      "last_status": {
+        "code": 200,
+        "msg": "success",
+        "data": {
+          "taskId": "private_id_0be342d47608",
+          "model": "google/nano-banana-edit",
+          "state": "success",
+          "param": "{\"input\":\"{\\\"output_format\\\":\\\"png\\\",\\\"image_size\\\":\\\"3:4\\\",\\\"image_urls\\\":[\\\"https://MEDIA_URL_REDACTED.invalid/\\\"],\\\"prompt\\\":\\\"Create a professional ecommerce product photo of THIOLA carton. Use a white background. Preserve the product exactly.\\\"}\",\"model\":\"google/nano-banana-edit\"}",
+          "resultJson": "{\"resultUrls\":[\"https://MEDIA_URL_REDACTED.invalid/\"]}",
+          "failCode": null,
+          "failMsg": null,
+          "costTime": 11,
+          "completeTime": 1791108520073,
+          "createTime": 1791108508910,
+          "creditsConsumed": 4.0,
+          "operationType": "google/nano-banana-edit",
+          "response": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          },
+          "successFlag": 1,
+          "paramJson": "{\"input\":\"{\\\"output_format\\\":\\\"png\\\",\\\"image_size\\\":\\\"3:4\\\",\\\"image_urls\\\":[\\\"https://MEDIA_URL_REDACTED.invalid/\\\"],\\\"prompt\\\":\\\"Create a professional ecommerce product photo of THIOLA carton. Use a white background. Preserve the product exactly.\\\"}\",\"model\":\"google/nano-banana-edit\"}",
+          "paramParsed": {
+            "input": "{\"output_format\":\"png\",\"image_size\":\"3:4\",\"image_urls\":[\"https://MEDIA_URL_REDACTED.invalid/\"],\"prompt\":\"Create a professional ecommerce product photo of THIOLA carton. Use a white background. Preserve the product exactly.\"}",
+            "model": "google/nano-banana-edit"
+          },
+          "resultParsed": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          }
+        }
+      },
+      "downloaded": {
+        "task_id": "private_id_0be342d47608",
+        "output_path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_0be342d47608/private_id_461da9ff81b0.png",
+        "result_url": "https://MEDIA_URL_REDACTED.invalid/"
+      }
+    },
+    {
+      "tool": "remove_background",
+      "arguments": {
+        "image_url": "https://MEDIA_URL_REDACTED.invalid/",
+        "dry_run": false,
+        "model": "recraft/remove-background"
+      },
+      "prepared": {
+        "model": "recraft/remove-background",
+        "estimated_cost_usd": 0.005,
+        "estimated_credits": 1.0,
+        "pricing_source": "live_kie_metadata:/api/v1/models/recraft/remove-background/price",
+        "confidence": "estimated",
+        "pricing_description": "Kie.ai Recraft Remove-Background: 1 credit ($0.005) per output image.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.0045 per output image.",
+        "pricing_rule": "reviewed_live_tariff_v1",
+        "pricing_conditions": {
+          "output_count": 1
+        },
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "enum": [
+                "recraft/remove-background"
+              ],
+              "default": "recraft/remove-background",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `recraft/remove-background` for this endpoint",
+              "examples": [
+                "recraft/remove-background"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "image": {
+                  "description": "Image to remove background from. Supported formats: PNG, JPG, WEBP. Max 5MB, max 16MP, max dimension 4096px, min dimension 256px. (File URL after upload, not file content; Accepted types: image/jpeg, image/png, image/webp; Max size: 5.0MB)",
+                  "type": "string",
+                  "examples": [
+                    "https://file.aiquickdraw.com/custom-page/akr/section-images/1757057285447k9qcbki1.webp"
+                  ]
+                }
+              },
+              "required": [
+                "image"
+              ]
+            }
+          }
+        },
+        "schema_digest": "6393bde85a9354cacc78bb5a4d15ecff92e981cab79588c89c3fde461f89442d",
+        "validated_input": {
+          "image": "https://MEDIA_URL_REDACTED.invalid/"
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "recraft/remove-background",
+          "input": {
+            "image": "https://MEDIA_URL_REDACTED.invalid/"
+          }
+        },
+        "request_digest": "3b8fab23e530b9709623ebffca6ae1eb9e70db46df9134b19ee02f724d5b58d8",
+        "status": "prepared",
+        "task_id": null,
+        "expires_at": 1791108837.68918,
+        "approval_id": "private_id_4a28b4e470f4",
+        "duplicate": false,
+        "dry_run": false,
+        "reservation_created": true,
+        "operation": "remove_background",
+        "next_step": "kie_execute_task",
+        "execution_blocked": false,
+        "selected_model": "recraft/remove-background",
+        "parameter_mapping": {},
+        "image_field": "image",
+        "selection_scope": "explicit_model"
+      },
+      "submission_intent": true,
+      "executed": {
+        "status": "submitted",
+        "request_digest": "3b8fab23e530b9709623ebffca6ae1eb9e70db46df9134b19ee02f724d5b58d8",
+        "task_id": "private_id_a66e11bb0e39",
+        "expires_at": 1791108837.68918,
+        "estimated_cost_usd": 0.005,
+        "estimated_credits": 1.0,
+        "pricing_source": "live_kie_metadata:/api/v1/models/recraft/remove-background/price",
+        "approval_id": "private_id_4a28b4e470f4",
+        "send": true,
+        "duplicate": false
+      },
+      "task_id": "private_id_a66e11bb0e39",
+      "last_status": {
+        "code": 200,
+        "msg": "success",
+        "data": {
+          "taskId": "private_id_a66e11bb0e39",
+          "model": "recraft/remove-background",
+          "state": "success",
+          "param": "{\"input\":\"{\\\"image\\\":\\\"https://MEDIA_URL_REDACTED.invalid/\\\"}\",\"model\":\"recraft/remove-background\"}",
+          "resultJson": "{\"resultUrls\":[\"https://MEDIA_URL_REDACTED.invalid/\"]}",
+          "failCode": null,
+          "failMsg": null,
+          "costTime": 2,
+          "completeTime": 1791108545808,
+          "createTime": 1791108542850,
+          "creditsConsumed": 1.0,
+          "operationType": "recraft/remove-background",
+          "response": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          },
+          "successFlag": 1,
+          "paramJson": "{\"input\":\"{\\\"image\\\":\\\"https://MEDIA_URL_REDACTED.invalid/\\\"}\",\"model\":\"recraft/remove-background\"}",
+          "paramParsed": {
+            "input": "{\"image\":\"https://MEDIA_URL_REDACTED.invalid/\"}",
+            "model": "recraft/remove-background"
+          },
+          "resultParsed": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          }
+        }
+      },
+      "downloaded": {
+        "task_id": "private_id_a66e11bb0e39",
+        "output_path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_a66e11bb0e39/private_id_395087f56e7f.png",
+        "result_url": "https://MEDIA_URL_REDACTED.invalid/"
+      }
+    },
+    {
+      "tool": "upscale_image",
+      "arguments": {
+        "image_url": "https://MEDIA_URL_REDACTED.invalid/",
+        "dry_run": false,
+        "model": "recraft/crisp-upscale"
+      },
+      "prepared": {
+        "model": "recraft/crisp-upscale",
+        "estimated_cost_usd": 0.0025,
+        "estimated_credits": 0.5,
+        "pricing_source": "live_kie_metadata:/api/v1/models/recraft/crisp-upscale/price",
+        "confidence": "estimated",
+        "pricing_description": "Recraft Crisp Upscale: 0.5 credits per upscale (~US $0.0025).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~US $0.0023 per upscale.",
+        "pricing_rule": "reviewed_live_tariff_v1",
+        "pricing_conditions": {
+          "output_count": 1
+        },
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "enum": [
+                "recraft/crisp-upscale"
+              ],
+              "default": "recraft/crisp-upscale",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `recraft/crisp-upscale` for this endpoint",
+              "examples": [
+                "recraft/crisp-upscale"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "image": {
+                  "description": "Image to upscale (File URL after upload, not file content; Accepted types: image/jpeg, image/png, image/webp; Max size: 10.0MB)",
+                  "type": "string",
+                  "examples": [
+                    "https://file.aiquickdraw.com/custom-page/akr/section-images/1757169577325ijj8vwvt.jpg"
+                  ]
+                }
+              },
+              "required": [
+                "image"
+              ]
+            }
+          }
+        },
+        "schema_digest": "19cdbe652a547b2dbeb9ae90c72edac2b5b9f343a317eb541c8b05b16f46c0cb",
+        "validated_input": {
+          "image": "https://MEDIA_URL_REDACTED.invalid/"
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "recraft/crisp-upscale",
+          "input": {
+            "image": "https://MEDIA_URL_REDACTED.invalid/"
+          }
+        },
+        "request_digest": "4848d7ac43d99b0037b5c9e7a0f6c5f4ef170b06b8fc0f0f6cbe9cbc6ce1c513",
+        "status": "prepared",
+        "task_id": null,
+        "expires_at": 1791108872.778029,
+        "approval_id": "private_id_34469194b083",
+        "duplicate": false,
+        "dry_run": false,
+        "reservation_created": true,
+        "operation": "upscale_image",
+        "next_step": "kie_execute_task",
+        "execution_blocked": false,
+        "selected_model": "recraft/crisp-upscale",
+        "parameter_mapping": {},
+        "image_field": "image",
+        "selection_scope": "explicit_model"
+      },
+      "submission_intent": true,
+      "executed": {
+        "status": "submitted",
+        "request_digest": "4848d7ac43d99b0037b5c9e7a0f6c5f4ef170b06b8fc0f0f6cbe9cbc6ce1c513",
+        "task_id": "private_id_80afaa408fd5",
+        "expires_at": 1791108872.778029,
+        "estimated_cost_usd": 0.0025,
+        "estimated_credits": 0.5,
+        "pricing_source": "live_kie_metadata:/api/v1/models/recraft/crisp-upscale/price",
+        "approval_id": "private_id_34469194b083",
+        "send": true,
+        "duplicate": false
+      },
+      "task_id": "private_id_80afaa408fd5",
+      "last_status": {
+        "code": 200,
+        "msg": "success",
+        "data": {
+          "taskId": "private_id_80afaa408fd5",
+          "model": "recraft/crisp-upscale",
+          "state": "success",
+          "param": "{\"input\":\"{\\\"image\\\":\\\"https://MEDIA_URL_REDACTED.invalid/\\\"}\",\"model\":\"recraft/crisp-upscale\"}",
+          "resultJson": "{\"resultUrls\":[\"https://MEDIA_URL_REDACTED.invalid/\"]}",
+          "failCode": null,
+          "failMsg": null,
+          "costTime": 2,
+          "completeTime": 1791108580962,
+          "createTime": 1791108577563,
+          "creditsConsumed": 0.5,
+          "operationType": "recraft/crisp-upscale",
+          "response": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          },
+          "successFlag": 1,
+          "paramJson": "{\"input\":\"{\\\"image\\\":\\\"https://MEDIA_URL_REDACTED.invalid/\\\"}\",\"model\":\"recraft/crisp-upscale\"}",
+          "paramParsed": {
+            "input": "{\"image\":\"https://MEDIA_URL_REDACTED.invalid/\"}",
+            "model": "recraft/crisp-upscale"
+          },
+          "resultParsed": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          }
+        }
+      },
+      "downloaded": {
+        "task_id": "private_id_80afaa408fd5",
+        "output_path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_80afaa408fd5/private_id_d1e5e296ee4b.jpg",
+        "result_url": "https://MEDIA_URL_REDACTED.invalid/"
+      }
+    }
+  ],
+  "status": "passed",
+  "balance_before": {
+    "code": 200,
+    "msg": "success",
+    "data": 548.01
+  },
+  "balance_after": {
+    "code": 200,
+    "msg": "success",
+    "data": 488.23
+  }
+}

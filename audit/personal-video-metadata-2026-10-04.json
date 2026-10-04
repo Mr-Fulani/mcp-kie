@@ -1,0 +1,25 @@
+{
+  "inspection": "local read-only ffprobe, no media transformation",
+  "files": [
+    {
+      "path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_c33bb8c1223c/private_id_cf00a6a75367.mp4",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 864,
+            "height": 496,
+            "duration": "4.041667"
+          }
+        ],
+        "format": {
+          "duration": "4.041667",
+          "size": "896117"
+        }
+      }
+    }
+  ]
+}

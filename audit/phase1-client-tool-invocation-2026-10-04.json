@@ -1,0 +1,204 @@
+{
+  "status": "BLOCKED",
+  "scope": "Native model-driven balance/docs calls only",
+  "clients": [
+    {
+      "client": "claude",
+      "status": "IN_PROGRESS",
+      "arguments": [
+        "-p",
+        "This is a bounded MCP acceptance check. Do not delegate, read files, run shell, write files, upload, generate media, reserve budget, prepare or execute tasks. Use only the installed kie-media MCP server. Call kie_get_credits once with no arguments, then call kie_search_docs once with query \"z-image\" and limit 2. Report the observed numeric balance and documentation source. Use the actual tools; do not infer results. If unavailable or denied, report that and stop.",
+        "--output-format",
+        "stream-json",
+        "--verbose",
+        "--no-session-persistence",
+        "--tools",
+        "",
+        "--disable-slash-commands",
+        "--permission-mode",
+        "dontAsk",
+        "--max-budget-usd",
+        "0.20",
+        "--allowedTools",
+        "mcp__kie-media__kie_get_credits,mcp__kie-media__kie_search_docs",
+        "--disallowedTools",
+        "mcp__kie-media__edit_image,mcp__kie-media__generate_image,mcp__kie-media__generate_video,mcp__kie-media__kie_create_task,mcp__kie-media__kie_download_result,mcp__kie-media__kie_estimate_cost,mcp__kie-media__kie_execute_task,mcp__kie-media__kie_get_documentation,mcp__kie-media__kie_get_download_url,mcp__kie-media__kie_get_model_schema,mcp__kie-media__kie_get_task,mcp__kie-media__kie_list_models,mcp__kie-media__kie_prepare_task,mcp__kie-media__kie_upload_base64,mcp__kie-media__kie_upload_from_url,mcp__kie-media__kie_upload_local_file,mcp__kie-media__kie_wait_for_task,mcp__kie-media__product_image_create,mcp__kie-media__remove_background,mcp__kie-media__upscale_image"
+      ],
+      "return_code": 1,
+      "timed_out": false,
+      "stdout_bytes": 4063,
+      "stderr_bytes": 0,
+      "configured_secret_matches": 0,
+      "tool_uses": [],
+      "tool_results": [],
+      "final_events": [
+        {
+          "duration_api_ms": 0,
+          "stop_reason": "stop_sequence",
+          "session_id": "93b7c1fe-ef3c-4151-a67c-4a602854ffd2",
+          "total_cost_usd": 0,
+          "usage": {
+            "output_tokens_details": "[REDACTED]",
+            "input_tokens": "[REDACTED]",
+            "cache_creation_input_tokens": "[REDACTED]",
+            "cache_read_input_tokens": "[REDACTED]",
+            "output_tokens": "[REDACTED]",
+            "server_tool_use": {
+              "web_search_requests": 0,
+              "web_fetch_requests": 0
+            },
+            "service_tier": "standard",
+            "cache_creation": {
+              "ephemeral_1h_input_tokens": "[REDACTED]",
+              "ephemeral_5m_input_tokens": "[REDACTED]"
+            },
+            "inference_geo": "",
+            "iterations": [],
+            "speed": "standard",
+            "fallback_credit": null
+          },
+          "modelUsage": {},
+          "permission_denials": [],
+          "terminal_reason": "api_error",
+          "fast_mode_state": "off",
+          "fast_mode_disabled_reason": "sdk_opt_in_required",
+          "subagent_stats": {
+            "spawned": 0,
+            "requested": {
+              "background": 0,
+              "foreground": 0,
+              "unset": 0
+            },
+            "started_in_background": 0,
+            "max_depth": 0,
+            "spawned_by_subagents": 0,
+            "completed": 0,
+            "failed": 0,
+            "killed": {
+              "parent": 0,
+              "user": 0,
+              "system": 0
+            },
+            "refused": {
+              "depth_limit": 0,
+              "concurrency_limit": 0,
+              "budget": 0
+            },
+            "by_type": {}
+          },
+          "is_error": true,
+          "num_turns": 1,
+          "subtype": "success",
+          "api_error_status": 401,
+          "result": "Failed to authenticate. API Error: 401 OAuth access token is invalid.",
+          "type": "result",
+          "duration_ms": 6127,
+          "uuid": "d1a14385-fede-441a-8781-f00b56f3623c",
+          "queued_turn_count": 0,
+          "result_index": 0
+        }
+      ],
+      "stderr": "",
+      "non_json_stdout": "",
+      "init": [
+        {
+          "type": "system",
+          "subtype": "init",
+          "cwd": "[REDACTED]",
+          "session_id": "93b7c1fe-ef3c-4151-a67c-4a602854ffd2",
+          "tools": [
+            "mcp__kie-media__kie_get_credits",
+            "mcp__kie-media__kie_search_docs"
+          ],
+          "mcp_servers": [
+            {
+              "name": "kie-media",
+              "status": "connected",
+              "source": "user"
+            }
+          ],
+          "model": "claude-fable-5",
+          "permissionMode": "dontAsk",
+          "slash_commands": [],
+          "apiKeySource": "[REDACTED]",
+          "claude_code_version": "2.1.288",
+          "output_style": "default",
+          "agents": [
+            "claude",
+            "Explore",
+            "general-purpose",
+            "Plan",
+            "statusline-setup"
+          ],
+          "skills": [],
+          "plugins": [
+            {
+              "name": "cc-plugin-agents-md",
+              "path": "builtin",
+              "source": "cc-plugin-agents-md@builtin"
+            },
+            {
+              "name": "cc-plugin-telemetry",
+              "path": "builtin",
+              "source": "cc-plugin-telemetry@builtin"
+            },
+            {
+              "name": "cc-plugin-plugin-authoring",
+              "path": "builtin",
+              "source": "cc-plugin-plugin-authoring@builtin"
+            }
+          ],
+          "capabilities": [
+            "interrupt_receipt_v1",
+            "interrupt_cancel_queued_v1",
+            "interrupt_send_now_v1",
+            "msg_lifecycle_v1",
+            "sdk_mcp_tools_list_changed",
+            "sdk_mcp_manifests",
+            "mcp_read_resource_v1",
+            "mcp_tool_ui_meta_v1",
+            "ui_surface_v1"
+          ],
+          "analytics_disabled": false,
+          "product_feedback_disabled": false,
+          "uuid": "afc4aa99-dfd3-484a-b9db-79636a7bab44",
+          "memory_paths": {
+            "auto": "[REDACTED]"
+          },
+          "messaging_socket_path": "[REDACTED]",
+          "fast_mode_state": "off",
+          "fast_mode_disabled_reason": "sdk_opt_in_required",
+          "per_turn_effort_active": false,
+          "view_mode": "default"
+        },
+        {
+          "type": "system",
+          "subtype": "api_retry",
+          "attempt": 1,
+          "max_retries": 10,
+          "retry_delay_ms": 524,
+          "error_status": 401,
+          "error": "authentication_failed",
+          "session_id": "93b7c1fe-ef3c-4151-a67c-4a602854ffd2",
+          "uuid": "bc65deb8-e1f9-42b9-bda1-07e659c54108"
+        },
+        {
+          "type": "system",
+          "subtype": "api_retry",
+          "attempt": 2,
+          "max_retries": 10,
+          "retry_delay_ms": 1071,
+          "error_status": 401,
+          "error": "authentication_failed",
+          "session_id": "93b7c1fe-ef3c-4151-a67c-4a602854ffd2",
+          "uuid": "fee81746-6006-4439-8941-674e50d1d59d"
+        }
+      ]
+    }
+  ],
+  "paid_media_generations": 0,
+  "uploads": 0,
+  "owner_config_edits": 0,
+  "error": "Native session failed: claude",
+  "failure_type": "RuntimeError"
+}

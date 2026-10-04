@@ -1,0 +1,16 @@
+# Owner-only ~/.config/kie-mcp/config.toml (0600). Key is NOT stored in this TOML.
+# Linux/WSL2 local runtime. Docker can instead use the fixed docker_secret mount.
+[environment]
+KIE_SECRET_SOURCE = "secret_file"
+KIE_SECRET_FILE = "~/.config/kie-mcp/media.key"
+KIE_ALLOWED_UPLOAD_ROOT = "~/kie-workspace/uploads"
+KIE_ALLOWED_DOWNLOAD_ROOT = "~/kie-workspace/results"
+KIE_USAGE_LEDGER_PATH = "~/.local/share/kie-mcp/usage.db"
+KIE_MAX_TASK_COST_USD = "1.00"
+KIE_MAX_SESSION_COST_USD = "5.00"
+KIE_MAX_DAILY_COST_USD = "10.00"
+KIE_MAX_TOTAL_COST_USD = "100.00"
+KIE_MAX_UPLOAD_MB = "50"
+KIE_MAX_DOWNLOAD_MB = "100"
+KIE_MAX_CONCURRENT_TASKS = "5"
+KIE_TASK_TIMEOUT_SEC = "900"

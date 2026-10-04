@@ -1,0 +1,19 @@
+{
+  "stage": "B",
+  "check": "minimal-codex-registration",
+  "status": "PASS",
+  "config_path": "/LOCAL_OWNER/.codex/config.toml",
+  "registration": {
+    "command": "/LOCAL_OWNER/mcp-kie/.venv/bin/kie-mcp-launch",
+    "args": []
+  },
+  "changed": true,
+  "written": true,
+  "backup_path": "/LOCAL_OWNER/.codex/config.toml.kie-backup-private_id_11856a6924c7",
+  "config_mode": "0600",
+  "backup_mode": "0600",
+  "unrelated_settings_preserved": true,
+  "config_before_sha256": "1881d2aed24d3285669e7b16b94ce9eb1b114e89f2f24ae59891ac1782a25085",
+  "config_after_sha256": "b1da09078d2e9c737f60492077f863f7c4241381d27937d2593f5cd50e54e4c3",
+  "claude_or_grok_configured": false
+}

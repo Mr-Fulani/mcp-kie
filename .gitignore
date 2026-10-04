@@ -1,0 +1,24 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+dist/
+build/
+*.egg-info/
+.env
+
+.env.*
+!.env.example
+.DS_Store
+uploads/
+results/
+*.log
+*.db
+*.db-shm
+*.db-wal
+# Local owner files are not distributable configuration.
+owner.local.toml
+media.key
+quote.local.json
+secrets/

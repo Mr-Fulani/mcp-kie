@@ -1,0 +1,409 @@
+{
+  "transport": "secure_project_MCP_stdio",
+  "paid_submissions": 0,
+  "checks": [
+    {
+      "tool": "generate_video",
+      "arguments": {
+        "model": "bytedance/seedance-2-mini",
+        "prompt": "[PRIVATE_PROMPT_REDACTED]",
+        "duration": 4,
+        "resolution": "480p",
+        "aspect_ratio": "16:9",
+        "model_input": {
+          "generate_audio": false
+        },
+        "dry_run": true
+      },
+      "result": {
+        "model": "bytedance/seedance-2-mini",
+        "estimated_cost_usd": 0.076,
+        "estimated_credits": 15.2,
+        "pricing_source": "live_kie_metadata:/api/v1/models/bytedance/seedance-2-mini/price",
+        "confidence": "estimated",
+        "pricing_description": "480p — 2.4 credits/s ($0.012/s, with video) | 3.8 credits/s ($0.019/s, no video)\n720p — 5.0 credits/s ($0.025/s, with video) | 8.2 credits/s ($0.041/s, no video)\n\n🔸Note🔸: “With video input” has a lower unit price due to a different calculation method: No video = Price × Output;  With video = Price × (Input + Output)\n\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~90% of the above price\n\n🎉 Limited-time discount: Seedance 2.0 Mini is now available at a reduced price until October 7, 06:00 (UTC).",
+        "pricing_rule": "reviewed_live_tariff_v1",
+        "pricing_conditions": {
+          "duration_seconds": 4,
+          "resolution": "480p",
+          "output_count": 1,
+          "video_input": false,
+          "generate_audio": false,
+          "tariff_valid_until": "2026-10-07T06:00:00+00:00"
+        },
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model",
+            "input"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `bytedance/seedance-2-mini` for this endpoint",
+              "enum": [
+                "bytedance/seedance-2-mini"
+              ],
+              "default": "bytedance/seedance-2-mini",
+              "examples": [
+                "bytedance/seedance-2-mini"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "prompt": {
+                  "type": "string",
+                  "description": "The text prompt used to generate the video. Required field. (Min length: 3, Max length: 20000 characters)",
+                  "minLength": 3,
+                  "maxLength": 20000,
+                  "examples": [
+                    "A serene beach at sunset with waves gently crashing on the shore, palm trees swaying in the breeze, and seagulls flying across the orange sky"
+                  ]
+                },
+                "first_frame_url": {
+                  "type": "string",
+                  "description": "First frame image url or asset://{assetId} \n(for example: asset://asset-20260404242101-76djj)"
+                },
+                "last_frame_url": {
+                  "type": "string",
+                  "description": "End frame image url or asset://{assetId} \n(for example: asset://asset-20260404242101-76djj)"
+                },
+                "reference_image_urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "description": "Enter a list of image URLs or asset://{assetId} (for example: asset://asset-20260404242101-76djj).\nSingle image requirements:\nFormat: jpeg, png, webp, bmp, tiff, gif.\nAspect ratio (width/height): (0.4, 2.5)\nWidth and height (px): (300, 6000)\nSize: Single image less than 30 MB.\nMaximum number of files: The sum of the number of frames at the beginning and end must not exceed 9..",
+                  "maxItems": 9,
+                  "examples": [
+                    [
+                      "https://file.aiquickdraw.com/custom-page/akr/section-images/example1.png"
+                    ]
+                  ]
+                },
+                "reference_video_urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "description": "Enter a list of video URLs or asset://{assetId} (for example: asset://asset-20260404242101-76djj).\nSingle video requirements:\nVideo format: mp4, mov.\nResolution: 480p, 720p\nDuration: Single video duration [2, 15] s, maximum 3 reference videos, total duration of all videos not exceeding 15 seconds.\nDimensions:\nAspect ratio (width/height): [0.4, 2.5]\nWidth/height (px): [300, 6000]\nTotal pixels: [640×640=409600, 834×1112=927408], i.e., the product of width and height must meet the range requirement of [409600, 927408].\nSize: Single video not exceeding 50 MB.\nFrame rate (FPS): [24, 60]",
+                  "maxItems": 3
+                },
+                "reference_audio_urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "description": "Enter a list of audio URLs or asset://{assetId} (for example: asset://asset-20260404242101-76djj).\nSingle audio requirements:\nFormat: wav, mp3\nDuration: Single audio duration [2, 15] s, maximum 3 reference audios, total duration of all audios not exceeding 15 s.\nSize: Single audio file size not exceeding 15 MB.",
+                  "maxItems": 3
+                },
+                "generate_audio": {
+                  "description": "Whether to generate audio for the video.\n\n- **true**: Generate with audio \n- **false**: Generate without audio",
+                  "type": "boolean",
+                  "default": true,
+                  "examples": [
+                    false
+                  ]
+                },
+                "resolution": {
+                  "description": "Video resolution - 480p for faster generation, 720p for balance",
+                  "type": "string",
+                  "enum": [
+                    "480p",
+                    "720p"
+                  ],
+                  "default": "720p",
+                  "examples": [
+                    "720p"
+                  ]
+                },
+                "aspect_ratio": {
+                  "type": "string",
+                  "description": "Video aspect ratio configuration. Required field.",
+                  "enum": [
+                    "1:1",
+                    "4:3",
+                    "3:4",
+                    "16:9",
+                    "9:16",
+                    "21:9",
+                    "adaptive"
+                  ],
+                  "default": "16:9",
+                  "examples": [
+                    "16:9"
+                  ]
+                },
+                "duration": {
+                  "type": "integer",
+                  "description": "Video duration in 4-15 seconds or -1.",
+                  "default": 5,
+                  "examples": [
+                    5
+                  ]
+                },
+                "web_search": {
+                  "type": "boolean",
+                  "description": "Use online search. (Web search only can be used in the scene of t2v)"
+                },
+                "nsfw_checker": {
+                  "type": "boolean",
+                  "description": "Defaults to false. You can set it to false based on your needs. If set to false, our content filtering will be disabled, and all results will be returned directly by the model itself.\nNote: There is no guarantee that everything can be filtered out; if you are not satisfied with the results, you will need to make your own arrangements."
+                }
+              }
+            }
+          }
+        },
+        "schema_digest": "32a21422eca8e79d0f335b33a7b0046ac13eede2b7236e7ad6b50e916301e26c",
+        "validated_input": {
+          "generate_audio": false,
+          "duration": 4,
+          "aspect_ratio": "16:9",
+          "resolution": "480p",
+          "prompt": "[PRIVATE_PROMPT_REDACTED]"
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "bytedance/seedance-2-mini",
+          "input": {
+            "generate_audio": false,
+            "duration": 4,
+            "aspect_ratio": "16:9",
+            "resolution": "480p",
+            "prompt": "[PRIVATE_PROMPT_REDACTED]"
+          }
+        },
+        "request_digest": "941cb399311fc29a49ec3ee044085b84aeeb719a8b3400a305509c1bec9fb13a",
+        "dry_run": true,
+        "reservation_created": false,
+        "operation": "generate_video",
+        "next_step": "kie_prepare_task",
+        "execution_blocked": false,
+        "selected_model": "bytedance/seedance-2-mini",
+        "parameter_mapping": {
+          "duration": "duration",
+          "aspect_ratio": "aspect_ratio",
+          "resolution": "resolution"
+        },
+        "image_field": null,
+        "selection_scope": "explicit_model"
+      }
+    },
+    {
+      "tool": "generate_video",
+      "arguments": {
+        "model": "bytedance/seedance-2-mini",
+        "prompt": "[PRIVATE_PROMPT_REDACTED]",
+        "duration": 4,
+        "resolution": "480p",
+        "aspect_ratio": "16:9",
+        "model_input": {
+          "generate_audio": false
+        },
+        "dry_run": true,
+        "image_url": "https://MEDIA_URL_REDACTED.invalid/"
+      },
+      "result": {
+        "model": "bytedance/seedance-2-mini",
+        "estimated_cost_usd": 0.076,
+        "estimated_credits": 15.2,
+        "pricing_source": "live_kie_metadata:/api/v1/models/bytedance/seedance-2-mini/price",
+        "confidence": "estimated",
+        "pricing_description": "480p — 2.4 credits/s ($0.012/s, with video) | 3.8 credits/s ($0.019/s, no video)\n720p — 5.0 credits/s ($0.025/s, with video) | 8.2 credits/s ($0.041/s, no video)\n\n🔸Note🔸: “With video input” has a lower unit price due to a different calculation method: No video = Price × Output;  With video = Price × (Input + Output)\n\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~90% of the above price\n\n🎉 Limited-time discount: Seedance 2.0 Mini is now available at a reduced price until October 7, 06:00 (UTC).",
+        "pricing_rule": "reviewed_live_tariff_v1",
+        "pricing_conditions": {
+          "duration_seconds": 4,
+          "resolution": "480p",
+          "output_count": 1,
+          "video_input": false,
+          "generate_audio": false,
+          "tariff_valid_until": "2026-10-07T06:00:00+00:00"
+        },
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model",
+            "input"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `bytedance/seedance-2-mini` for this endpoint",
+              "enum": [
+                "bytedance/seedance-2-mini"
+              ],
+              "default": "bytedance/seedance-2-mini",
+              "examples": [
+                "bytedance/seedance-2-mini"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "prompt": {
+                  "type": "string",
+                  "description": "The text prompt used to generate the video. Required field. (Min length: 3, Max length: 20000 characters)",
+                  "minLength": 3,
+                  "maxLength": 20000,
+                  "examples": [
+                    "A serene beach at sunset with waves gently crashing on the shore, palm trees swaying in the breeze, and seagulls flying across the orange sky"
+                  ]
+                },
+                "first_frame_url": {
+                  "type": "string",
+                  "description": "First frame image url or asset://{assetId} \n(for example: asset://asset-20260404242101-76djj)"
+                },
+                "last_frame_url": {
+                  "type": "string",
+                  "description": "End frame image url or asset://{assetId} \n(for example: asset://asset-20260404242101-76djj)"
+                },
+                "reference_image_urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "description": "Enter a list of image URLs or asset://{assetId} (for example: asset://asset-20260404242101-76djj).\nSingle image requirements:\nFormat: jpeg, png, webp, bmp, tiff, gif.\nAspect ratio (width/height): (0.4, 2.5)\nWidth and height (px): (300, 6000)\nSize: Single image less than 30 MB.\nMaximum number of files: The sum of the number of frames at the beginning and end must not exceed 9..",
+                  "maxItems": 9,
+                  "examples": [
+                    [
+                      "https://file.aiquickdraw.com/custom-page/akr/section-images/example1.png"
+                    ]
+                  ]
+                },
+                "reference_video_urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "description": "Enter a list of video URLs or asset://{assetId} (for example: asset://asset-20260404242101-76djj).\nSingle video requirements:\nVideo format: mp4, mov.\nResolution: 480p, 720p\nDuration: Single video duration [2, 15] s, maximum 3 reference videos, total duration of all videos not exceeding 15 seconds.\nDimensions:\nAspect ratio (width/height): [0.4, 2.5]\nWidth/height (px): [300, 6000]\nTotal pixels: [640×640=409600, 834×1112=927408], i.e., the product of width and height must meet the range requirement of [409600, 927408].\nSize: Single video not exceeding 50 MB.\nFrame rate (FPS): [24, 60]",
+                  "maxItems": 3
+                },
+                "reference_audio_urls": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "description": "Enter a list of audio URLs or asset://{assetId} (for example: asset://asset-20260404242101-76djj).\nSingle audio requirements:\nFormat: wav, mp3\nDuration: Single audio duration [2, 15] s, maximum 3 reference audios, total duration of all audios not exceeding 15 s.\nSize: Single audio file size not exceeding 15 MB.",
+                  "maxItems": 3
+                },
+                "generate_audio": {
+                  "description": "Whether to generate audio for the video.\n\n- **true**: Generate with audio \n- **false**: Generate without audio",
+                  "type": "boolean",
+                  "default": true,
+                  "examples": [
+                    false
+                  ]
+                },
+                "resolution": {
+                  "description": "Video resolution - 480p for faster generation, 720p for balance",
+                  "type": "string",
+                  "enum": [
+                    "480p",
+                    "720p"
+                  ],
+                  "default": "720p",
+                  "examples": [
+                    "720p"
+                  ]
+                },
+                "aspect_ratio": {
+                  "type": "string",
+                  "description": "Video aspect ratio configuration. Required field.",
+                  "enum": [
+                    "1:1",
+                    "4:3",
+                    "3:4",
+                    "16:9",
+                    "9:16",
+                    "21:9",
+                    "adaptive"
+                  ],
+                  "default": "16:9",
+                  "examples": [
+                    "16:9"
+                  ]
+                },
+                "duration": {
+                  "type": "integer",
+                  "description": "Video duration in 4-15 seconds or -1.",
+                  "default": 5,
+                  "examples": [
+                    5
+                  ]
+                },
+                "web_search": {
+                  "type": "boolean",
+                  "description": "Use online search. (Web search only can be used in the scene of t2v)"
+                },
+                "nsfw_checker": {
+                  "type": "boolean",
+                  "description": "Defaults to false. You can set it to false based on your needs. If set to false, our content filtering will be disabled, and all results will be returned directly by the model itself.\nNote: There is no guarantee that everything can be filtered out; if you are not satisfied with the results, you will need to make your own arrangements."
+                }
+              }
+            }
+          }
+        },
+        "schema_digest": "32a21422eca8e79d0f335b33a7b0046ac13eede2b7236e7ad6b50e916301e26c",
+        "validated_input": {
+          "generate_audio": false,
+          "duration": 4,
+          "aspect_ratio": "16:9",
+          "resolution": "480p",
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "first_frame_url": "https://MEDIA_URL_REDACTED.invalid/"
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "bytedance/seedance-2-mini",
+          "input": {
+            "generate_audio": false,
+            "duration": 4,
+            "aspect_ratio": "16:9",
+            "resolution": "480p",
+            "prompt": "[PRIVATE_PROMPT_REDACTED]",
+            "first_frame_url": "https://MEDIA_URL_REDACTED.invalid/"
+          }
+        },
+        "request_digest": "bc9a11512d20a35ba8efd1bd9d5c7f1bb4c9db8fe96b1feb22c014d9b49101fd",
+        "dry_run": true,
+        "reservation_created": false,
+        "operation": "generate_video",
+        "next_step": "kie_prepare_task",
+        "execution_blocked": false,
+        "selected_model": "bytedance/seedance-2-mini",
+        "parameter_mapping": {
+          "duration": "duration",
+          "aspect_ratio": "aspect_ratio",
+          "resolution": "resolution"
+        },
+        "image_field": "first_frame_url",
+        "selection_scope": "explicit_model"
+      }
+    }
+  ]
+}

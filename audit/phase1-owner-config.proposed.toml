@@ -1,0 +1,18 @@
+# Proposal only. Not installed or used by the runtime.
+# Target: /LOCAL_OWNER/.config/kie-mcp/config.toml, mode 0600.
+# The owner stores the separate media key in Keychain Access, never in this file.
+[environment]
+KIE_SECRET_SOURCE = "macos_keychain"
+KIE_KEYCHAIN_SERVICE = "kie-mcp-media"
+KIE_KEYCHAIN_ACCOUNT = "media"
+KIE_ALLOWED_UPLOAD_ROOT = "/LOCAL_OWNER/Projects/kie-workspace/uploads"
+KIE_ALLOWED_DOWNLOAD_ROOT = "/LOCAL_OWNER/Projects/kie-workspace/results"
+KIE_USAGE_LEDGER_PATH = "/LOCAL_OWNER/.local/share/kie-mcp/usage.db"
+KIE_MAX_TASK_COST_USD = "1.00"
+KIE_MAX_SESSION_COST_USD = "5.00"
+KIE_MAX_DAILY_COST_USD = "10.00"
+KIE_MAX_TOTAL_COST_USD = "100.00"
+KIE_MAX_UPLOAD_MB = "50"
+KIE_MAX_DOWNLOAD_MB = "100"
+KIE_MAX_CONCURRENT_TASKS = "5"
+KIE_TASK_TIMEOUT_SEC = "900"

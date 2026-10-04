@@ -1,0 +1,8 @@
+{
+  "provider_reported_task_credits": 40.7,
+  "account_balance_delta_credits": 59.78,
+  "unattributed_difference_credits": 19.08,
+  "estimated_task_total_usd": 0.2035,
+  "actual_total_usd": null,
+  "note": "Account balance is not exclusive task attribution. Provider billing history/owner reconciliation is needed; no generic credit/USD conversion or policy override."
+}

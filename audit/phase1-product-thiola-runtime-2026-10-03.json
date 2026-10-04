@@ -1,0 +1,657 @@
+{
+  "status": "PASS",
+  "visual_review": {
+    "passed": true,
+    "width": 864,
+    "height": 1184,
+    "observed": "Studio white background, soft contact shadow, carton upright; hand and household background removed. Main brand/dose/manufacturer labels preserved; enlarged inspection confirms upper line reads 100 überzogene Tabletten.",
+    "limitation": "Visual appearance review; not verification of tactile Braille encoding or pixel-for-pixel identity of the original packaging."
+  },
+  "owner_authorization": "User replied да to the exact generation, quote installation and local lossless WebP conversion proposal.",
+  "calls": [
+    {
+      "tool": "kie_estimate_cost",
+      "arguments": {
+        "model": "google/nano-banana-edit",
+        "input": {
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "image_urls": [
+            "https://MEDIA_URL_REDACTED.invalid/"
+          ],
+          "aspect_ratio": "3:4",
+          "output_format": "png",
+          "image_size": "3:4"
+        }
+      },
+      "result": {
+        "model": "google/nano-banana-edit",
+        "estimated_cost_usd": 0.02,
+        "estimated_credits": 4,
+        "pricing_source": "owner_verified_quote:live_kie_metadata:/api/v1/models/google/nano-banana-edit/price",
+        "confidence": "estimated",
+        "owner_approved": true,
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "enum": [
+                "google/nano-banana-edit"
+              ],
+              "default": "google/nano-banana-edit",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `google/nano-banana-edit` for this endpoint",
+              "examples": [
+                "google/nano-banana-edit"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "prompt": {
+                  "description": "The prompt for image editing (Max length: 5000 characters)",
+                  "type": "string",
+                  "maxLength": 5000,
+                  "examples": [
+                    "turn this photo into a character figure. Behind it, place a box with the character’s image printed on it, and a computer showing the Blender modeling process on its screen. In front of the box, add a round plastic base with the character figure standing on it. set the scene indoors if possible"
+                  ]
+                },
+                "image_urls": {
+                  "description": "List of URLs of input images for editing,up to 10 images. (File URL after upload, not file content; Accepted types: image/jpeg, image/png, image/webp; Max size: 10.0MB)",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "maxItems": 10,
+                  "examples": [
+                    [
+                      "https://file.aiquickdraw.com/custom-page/akr/section-images/1756223420389w8xa2jfe.png"
+                    ]
+                  ]
+                },
+                "output_format": {
+                  "description": "Output format for the images",
+                  "type": "string",
+                  "enum": [
+                    "png",
+                    "jpeg"
+                  ],
+                  "default": "png",
+                  "examples": [
+                    "png"
+                  ]
+                },
+                "aspect_ratio": {
+                  "description": "Radio description",
+                  "type": "string",
+                  "enum": [
+                    "1:1",
+                    "9:16",
+                    "16:9",
+                    "3:4",
+                    "4:3",
+                    "3:2",
+                    "2:3",
+                    "5:4",
+                    "4:5",
+                    "21:9",
+                    "auto"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ]
+                },
+                "image_size": {
+                  "type": "string",
+                  "description": "The aspect ratio of the generated image (this parameter has been replaced by aspect_ratio; please use the latest aspect_ratio parameter).",
+                  "enum": [
+                    "1:1",
+                    "9:16",
+                    "16:9",
+                    "3:4",
+                    "4:3",
+                    "3:2",
+                    "2:3",
+                    "5:4",
+                    "4:5",
+                    "21:9",
+                    "auto"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ],
+                  "deprecated": true
+                }
+              },
+              "required": [
+                "prompt",
+                "image_urls"
+              ]
+            }
+          }
+        },
+        "schema_digest": "b91fb4d6b3dfc75c81150b08252466f3e357a6c11e93290e28dd6d534fa143cf",
+        "validated_input": {
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "image_urls": [
+            "https://MEDIA_URL_REDACTED.invalid/"
+          ],
+          "aspect_ratio": "3:4",
+          "output_format": "png",
+          "image_size": "3:4"
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "google/nano-banana-edit",
+          "input": {
+            "prompt": "[PRIVATE_PROMPT_REDACTED]",
+            "image_urls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ],
+            "aspect_ratio": "3:4",
+            "output_format": "png",
+            "image_size": "3:4"
+          }
+        },
+        "request_digest": "5b2bc3af6021f78a18a05b274faed7f2fa59608d4c39d94abaf445b089543b3c"
+      },
+      "is_error": false
+    },
+    {
+      "tool": "kie_create_task",
+      "arguments": {
+        "model": "google/nano-banana-edit",
+        "input": {
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "image_urls": [
+            "https://MEDIA_URL_REDACTED.invalid/"
+          ],
+          "aspect_ratio": "3:4",
+          "output_format": "png",
+          "image_size": "3:4"
+        },
+        "dry_run": true
+      },
+      "result": {
+        "model": "google/nano-banana-edit",
+        "estimated_cost_usd": 0.02,
+        "estimated_credits": 4,
+        "pricing_source": "owner_verified_quote:live_kie_metadata:/api/v1/models/google/nano-banana-edit/price",
+        "confidence": "estimated",
+        "owner_approved": true,
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "enum": [
+                "google/nano-banana-edit"
+              ],
+              "default": "google/nano-banana-edit",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `google/nano-banana-edit` for this endpoint",
+              "examples": [
+                "google/nano-banana-edit"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "prompt": {
+                  "description": "The prompt for image editing (Max length: 5000 characters)",
+                  "type": "string",
+                  "maxLength": 5000,
+                  "examples": [
+                    "turn this photo into a character figure. Behind it, place a box with the character’s image printed on it, and a computer showing the Blender modeling process on its screen. In front of the box, add a round plastic base with the character figure standing on it. set the scene indoors if possible"
+                  ]
+                },
+                "image_urls": {
+                  "description": "List of URLs of input images for editing,up to 10 images. (File URL after upload, not file content; Accepted types: image/jpeg, image/png, image/webp; Max size: 10.0MB)",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "maxItems": 10,
+                  "examples": [
+                    [
+                      "https://file.aiquickdraw.com/custom-page/akr/section-images/1756223420389w8xa2jfe.png"
+                    ]
+                  ]
+                },
+                "output_format": {
+                  "description": "Output format for the images",
+                  "type": "string",
+                  "enum": [
+                    "png",
+                    "jpeg"
+                  ],
+                  "default": "png",
+                  "examples": [
+                    "png"
+                  ]
+                },
+                "aspect_ratio": {
+                  "description": "Radio description",
+                  "type": "string",
+                  "enum": [
+                    "1:1",
+                    "9:16",
+                    "16:9",
+                    "3:4",
+                    "4:3",
+                    "3:2",
+                    "2:3",
+                    "5:4",
+                    "4:5",
+                    "21:9",
+                    "auto"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ]
+                },
+                "image_size": {
+                  "type": "string",
+                  "description": "The aspect ratio of the generated image (this parameter has been replaced by aspect_ratio; please use the latest aspect_ratio parameter).",
+                  "enum": [
+                    "1:1",
+                    "9:16",
+                    "16:9",
+                    "3:4",
+                    "4:3",
+                    "3:2",
+                    "2:3",
+                    "5:4",
+                    "4:5",
+                    "21:9",
+                    "auto"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ],
+                  "deprecated": true
+                }
+              },
+              "required": [
+                "prompt",
+                "image_urls"
+              ]
+            }
+          }
+        },
+        "schema_digest": "b91fb4d6b3dfc75c81150b08252466f3e357a6c11e93290e28dd6d534fa143cf",
+        "validated_input": {
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "image_urls": [
+            "https://MEDIA_URL_REDACTED.invalid/"
+          ],
+          "aspect_ratio": "3:4",
+          "output_format": "png",
+          "image_size": "3:4"
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "google/nano-banana-edit",
+          "input": {
+            "prompt": "[PRIVATE_PROMPT_REDACTED]",
+            "image_urls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ],
+            "aspect_ratio": "3:4",
+            "output_format": "png",
+            "image_size": "3:4"
+          }
+        },
+        "request_digest": "5b2bc3af6021f78a18a05b274faed7f2fa59608d4c39d94abaf445b089543b3c",
+        "dry_run": true,
+        "reservation_created": false
+      },
+      "is_error": false
+    },
+    {
+      "tool": "kie_prepare_task",
+      "arguments": {
+        "model": "google/nano-banana-edit",
+        "input": {
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "image_urls": [
+            "https://MEDIA_URL_REDACTED.invalid/"
+          ],
+          "aspect_ratio": "3:4",
+          "output_format": "png",
+          "image_size": "3:4"
+        },
+        "dry_run": false
+      },
+      "result": {
+        "model": "google/nano-banana-edit",
+        "estimated_cost_usd": 0.02,
+        "estimated_credits": 4.0,
+        "pricing_source": "owner_verified_quote:live_kie_metadata:/api/v1/models/google/nano-banana-edit/price",
+        "confidence": "estimated",
+        "owner_approved": true,
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "enum": [
+                "google/nano-banana-edit"
+              ],
+              "default": "google/nano-banana-edit",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `google/nano-banana-edit` for this endpoint",
+              "examples": [
+                "google/nano-banana-edit"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "prompt": {
+                  "description": "The prompt for image editing (Max length: 5000 characters)",
+                  "type": "string",
+                  "maxLength": 5000,
+                  "examples": [
+                    "turn this photo into a character figure. Behind it, place a box with the character’s image printed on it, and a computer showing the Blender modeling process on its screen. In front of the box, add a round plastic base with the character figure standing on it. set the scene indoors if possible"
+                  ]
+                },
+                "image_urls": {
+                  "description": "List of URLs of input images for editing,up to 10 images. (File URL after upload, not file content; Accepted types: image/jpeg, image/png, image/webp; Max size: 10.0MB)",
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uri"
+                  },
+                  "maxItems": 10,
+                  "examples": [
+                    [
+                      "https://file.aiquickdraw.com/custom-page/akr/section-images/1756223420389w8xa2jfe.png"
+                    ]
+                  ]
+                },
+                "output_format": {
+                  "description": "Output format for the images",
+                  "type": "string",
+                  "enum": [
+                    "png",
+                    "jpeg"
+                  ],
+                  "default": "png",
+                  "examples": [
+                    "png"
+                  ]
+                },
+                "aspect_ratio": {
+                  "description": "Radio description",
+                  "type": "string",
+                  "enum": [
+                    "1:1",
+                    "9:16",
+                    "16:9",
+                    "3:4",
+                    "4:3",
+                    "3:2",
+                    "2:3",
+                    "5:4",
+                    "4:5",
+                    "21:9",
+                    "auto"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ]
+                },
+                "image_size": {
+                  "type": "string",
+                  "description": "The aspect ratio of the generated image (this parameter has been replaced by aspect_ratio; please use the latest aspect_ratio parameter).",
+                  "enum": [
+                    "1:1",
+                    "9:16",
+                    "16:9",
+                    "3:4",
+                    "4:3",
+                    "3:2",
+                    "2:3",
+                    "5:4",
+                    "4:5",
+                    "21:9",
+                    "auto"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ],
+                  "deprecated": true
+                }
+              },
+              "required": [
+                "prompt",
+                "image_urls"
+              ]
+            }
+          }
+        },
+        "schema_digest": "b91fb4d6b3dfc75c81150b08252466f3e357a6c11e93290e28dd6d534fa143cf",
+        "validated_input": {
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "image_urls": [
+            "https://MEDIA_URL_REDACTED.invalid/"
+          ],
+          "aspect_ratio": "3:4",
+          "output_format": "png",
+          "image_size": "3:4"
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "google/nano-banana-edit",
+          "input": {
+            "prompt": "[PRIVATE_PROMPT_REDACTED]",
+            "image_urls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ],
+            "aspect_ratio": "3:4",
+            "output_format": "png",
+            "image_size": "3:4"
+          }
+        },
+        "request_digest": "5b2bc3af6021f78a18a05b274faed7f2fa59608d4c39d94abaf445b089543b3c",
+        "status": "prepared",
+        "task_id": null,
+        "expires_at": 1791056224.539223,
+        "approval_id": "private_id_9b74e726619a",
+        "duplicate": false,
+        "dry_run": false,
+        "reservation_created": true
+      },
+      "is_error": false
+    },
+    {
+      "tool": "kie_execute_task",
+      "arguments": {
+        "model": "google/nano-banana-edit",
+        "input": {
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "image_urls": [
+            "https://MEDIA_URL_REDACTED.invalid/"
+          ],
+          "aspect_ratio": "3:4",
+          "output_format": "png",
+          "image_size": "3:4"
+        },
+        "approval_id": "private_id_9b74e726619a"
+      },
+      "result": {
+        "status": "submitted",
+        "request_digest": "5b2bc3af6021f78a18a05b274faed7f2fa59608d4c39d94abaf445b089543b3c",
+        "task_id": "private_id_02acf1578091",
+        "expires_at": 1791056224.539223,
+        "estimated_cost_usd": 0.02,
+        "estimated_credits": 4.0,
+        "pricing_source": "owner_verified_quote:live_kie_metadata:/api/v1/models/google/nano-banana-edit/price",
+        "approval_id": "private_id_9b74e726619a",
+        "send": true,
+        "duplicate": false
+      },
+      "is_error": false
+    },
+    {
+      "tool": "kie_wait_for_task",
+      "arguments": {
+        "task_id": "private_id_02acf1578091",
+        "timeout_seconds": 180
+      },
+      "result": {
+        "code": 200,
+        "msg": "success",
+        "data": {
+          "taskId": "private_id_02acf1578091",
+          "model": "google/nano-banana-edit",
+          "state": "success",
+          "param": "{\"input\":\"{\\\"output_format\\\":\\\"png\\\",\\\"image_size\\\":\\\"3:4\\\",\\\"image_urls\\\":[\\\"https://MEDIA_URL_REDACTED.invalid/\\\"],\\\"prompt\\\":\\\"Create a photorealistic professional studio product photograph of the exact THIOLA 100 mg medicine carton in the reference image. Show only the complete carton, upright and centered, on a seamless pure white background with soft diffused studio lighting and a subtle natural contact shadow. Remove the hand, feet, people and household background. Keep the same packaging proportions, white carton, magenta and blue graphics, DESITIN logo, embossed Braille, and every printed label unchanged. Preserve the visible words exactly: N3, 100 überzogene Tabletten, THIOLA, TIOPRONIN, 100 mg, überzogene Tabletten, DESITIN. Do not invent text, change dosage, add claims, add props or add a watermark. Crisp product details with a straight, clean composition and comfortable white margins.\\\"}\",\"model\":\"google/nano-banana-edit\"}",
+          "resultJson": "{\"resultUrls\":[\"https://MEDIA_URL_REDACTED.invalid/\"]}",
+          "failCode": null,
+          "failMsg": null,
+          "costTime": 113,
+          "completeTime": 1791056041333,
+          "createTime": 1791055927502,
+          "creditsConsumed": 4.0,
+          "operationType": "google/nano-banana-edit",
+          "response": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          },
+          "successFlag": 1,
+          "paramJson": "{\"input\":\"{\\\"output_format\\\":\\\"png\\\",\\\"image_size\\\":\\\"3:4\\\",\\\"image_urls\\\":[\\\"https://MEDIA_URL_REDACTED.invalid/\\\"],\\\"prompt\\\":\\\"Create a photorealistic professional studio product photograph of the exact THIOLA 100 mg medicine carton in the reference image. Show only the complete carton, upright and centered, on a seamless pure white background with soft diffused studio lighting and a subtle natural contact shadow. Remove the hand, feet, people and household background. Keep the same packaging proportions, white carton, magenta and blue graphics, DESITIN logo, embossed Braille, and every printed label unchanged. Preserve the visible words exactly: N3, 100 überzogene Tabletten, THIOLA, TIOPRONIN, 100 mg, überzogene Tabletten, DESITIN. Do not invent text, change dosage, add claims, add props or add a watermark. Crisp product details with a straight, clean composition and comfortable white margins.\\\"}\",\"model\":\"google/nano-banana-edit\"}",
+          "paramParsed": {
+            "input": "{\"output_format\":\"png\",\"image_size\":\"3:4\",\"image_urls\":[\"https://MEDIA_URL_REDACTED.invalid/\"],\"prompt\":\"Create a photorealistic professional studio product photograph of the exact THIOLA 100 mg medicine carton in the reference image. Show only the complete carton, upright and centered, on a seamless pure white background with soft diffused studio lighting and a subtle natural contact shadow. Remove the hand, feet, people and household background. Keep the same packaging proportions, white carton, magenta and blue graphics, DESITIN logo, embossed Braille, and every printed label unchanged. Preserve the visible words exactly: N3, 100 überzogene Tabletten, THIOLA, TIOPRONIN, 100 mg, überzogene Tabletten, DESITIN. Do not invent text, change dosage, add claims, add props or add a watermark. Crisp product details with a straight, clean composition and comfortable white margins.\"}",
+            "model": "google/nano-banana-edit"
+          },
+          "resultParsed": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          }
+        }
+      },
+      "is_error": false
+    },
+    {
+      "tool": "kie_download_result",
+      "arguments": {
+        "task_id": "private_id_02acf1578091",
+        "result_index": 0
+      },
+      "result": {
+        "task_id": "private_id_02acf1578091",
+        "output_path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_02acf1578091/private_id_9f767ff533ea.png",
+        "result_url": "https://MEDIA_URL_REDACTED.invalid/"
+      },
+      "is_error": false
+    }
+  ],
+  "paid_submission_attempted": true,
+  "request_payload": {
+    "model": "google/nano-banana-edit",
+    "input": {
+      "prompt": "[PRIVATE_PROMPT_REDACTED]",
+      "image_urls": [
+        "https://MEDIA_URL_REDACTED.invalid/"
+      ],
+      "aspect_ratio": "3:4",
+      "output_format": "png",
+      "image_size": "3:4"
+    }
+  },
+  "request_digest": "5b2bc3af6021f78a18a05b274faed7f2fa59608d4c39d94abaf445b089543b3c",
+  "source_sha256": "4631d2e391dbe103b3807086a20aeba7057b250ef5e4060f841136c8b9712939",
+  "installation": {
+    "config_path": "/LOCAL_OWNER/.config/kie-mcp/config.toml",
+    "quote_path": "/LOCAL_OWNER/.config/kie-mcp/owner-quote-thiola-studio.json",
+    "backup_path": "/LOCAL_OWNER/.config/kie-mcp/config.toml.thiola-backup-private_id_f9af6e24a9bb",
+    "quote": {
+      "approved_by_owner": true,
+      "request_digest": "5b2bc3af6021f78a18a05b274faed7f2fa59608d4c39d94abaf445b089543b3c",
+      "expires_at": 1791057716,
+      "max_cost_usd": 0.02,
+      "estimated_credits": 4,
+      "pricing_source": "live_kie_metadata:/api/v1/models/google/nano-banana-edit/price"
+    },
+    "other_owner_settings_preserved": true,
+    "before_sha256": "631c4c53b1dda2c3ca0c0b153e59720d224c287eac8f2bd30756e70cab5cd8c4",
+    "after_sha256": "804df62115aa122556b88297f50da856c28ca91ab3e5b7827b18b03e11b0370c"
+  },
+  "runtime": {
+    "transport": "stdio",
+    "server_info": {
+      "name": "Secure KIE media",
+      "version": "1.30.0"
+    },
+    "tools": 22
+  },
+  "approval_id": "private_id_9b74e726619a",
+  "task_id": "private_id_02acf1578091",
+  "actual_credits": 4.0,
+  "png_path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_02acf1578091/private_id_9f767ff533ea.png",
+  "secret_scan": {
+    "literal_matches": 0,
+    "stdout_bytes": 37024,
+    "stderr_bytes": 8505
+  },
+  "webp_path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_02acf1578091/private_id_6b3040be0f6b.webp",
+  "png_bytes": 724805,
+  "webp_bytes": 523604,
+  "webp_sha256": "3ffcbb82a26f5bc3898455cb55c9d490f65bbf1b89aa4a90db2128bcc322ceaa",
+  "lossless_pixels_verified": true,
+  "decoded_pixels_sha256": "57eea789e4cccf978da940e66d1b7764a528313460816f9456956624a176ea32",
+  "ledger": {
+    "id": "private_id_9b74e726619a",
+    "status": "success",
+    "provider_task_id": "private_id_02acf1578091",
+    "estimated_cost_usd": 20000,
+    "actual_cost_usd": null,
+    "actual_credits": 4.0,
+    "output_count": 1
+  }
+}

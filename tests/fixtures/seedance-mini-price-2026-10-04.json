@@ -1,0 +1,4 @@
+{
+  "model": "bytedance/seedance-2-mini",
+  "pricingDesc": "480p — 2.4 credits/s ($0.012/s, with video) | 3.8 credits/s ($0.019/s, no video)\n720p — 5.0 credits/s ($0.025/s, with video) | 8.2 credits/s ($0.041/s, no video)\n\n🔸Note🔸: “With video input” has a lower unit price due to a different calculation method: No video = Price × Output;  With video = Price × (Input + Output)\n\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~90% of the above price\n\n🎉 Limited-time discount: Seedance 2.0 Mini is now available at a reduced price until October 7, 06:00 (UTC)."
+}

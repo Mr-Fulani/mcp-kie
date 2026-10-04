@@ -1,0 +1,30 @@
+{
+  "inspection": "read-only Pillow pixel inspection; no media conversion or output asset",
+  "remove_background": {
+    "path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_a66e11bb0e39/private_id_395087f56e7f.png",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "transparent_pixel_count": 171399,
+    "same_rgb_pixels_as_original": true,
+    "fully_transparent_pixels": 96165,
+    "fully_opaque_pixels": 28293,
+    "visible_bbox": [
+      0,
+      89,
+      374,
+      465
+    ],
+    "sample_alpha": {
+      "10,10": 0,
+      "200,170": 254,
+      "180,200": 255,
+      "300,310": 254,
+      "100,300": 255,
+      "200,450": 0
+    }
+  },
+  "edit_image_requested_format": "png",
+  "edit_image_actual_format": "JPEG"
+}

@@ -1,0 +1,228 @@
+{
+  "inspection": "local read-only ffprobe, no media transformation",
+  "original_image_probe": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 387,
+        "height": 516
+      }
+    ]
+  },
+  "files": [
+    {
+      "tool": "generate_video",
+      "task_id": "private_id_c33bb8c1223c",
+      "path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_c33bb8c1223c/private_id_cf00a6a75367.mp4",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 864,
+            "height": 496,
+            "pix_fmt": "yuv420p",
+            "duration": "4.041667"
+          }
+        ],
+        "format": {
+          "duration": "4.041667",
+          "size": "896117"
+        }
+      },
+      "credits_consumed": 15.2,
+      "requested_input": {
+        "generate_audio": false,
+        "duration": 4,
+        "aspect_ratio": "16:9",
+        "resolution": "480p",
+        "prompt": "[PRIVATE_PROMPT_REDACTED]"
+      }
+    },
+    {
+      "tool": "generate_video",
+      "task_id": "private_id_93e723581509",
+      "path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_93e723581509/private_id_348ea562c3c8.mp4",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 864,
+            "height": 496,
+            "pix_fmt": "yuv420p",
+            "duration": "4.041667"
+          }
+        ],
+        "format": {
+          "duration": "4.041667",
+          "size": "1245772"
+        }
+      },
+      "credits_consumed": 15.2,
+      "requested_input": {
+        "generate_audio": false,
+        "duration": 4,
+        "aspect_ratio": "16:9",
+        "resolution": "480p",
+        "prompt": "[PRIVATE_PROMPT_REDACTED]",
+        "first_frame_url": "https://MEDIA_URL_REDACTED.invalid/"
+      }
+    },
+    {
+      "tool": "generate_image",
+      "task_id": "private_id_1ebf86a29e2d",
+      "path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_1ebf86a29e2d/private_id_64aadf2545a6.png",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "png",
+            "codec_type": "video",
+            "width": 1024,
+            "height": 1024,
+            "pix_fmt": "rgb24"
+          }
+        ],
+        "format": {
+          "size": "825495"
+        }
+      },
+      "credits_consumed": 0.8,
+      "requested_input": {
+        "aspect_ratio": "1:1",
+        "prompt": "[PRIVATE_PROMPT_REDACTED]"
+      }
+    },
+    {
+      "tool": "edit_image",
+      "task_id": "private_id_211ad9bf6ef1",
+      "path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_211ad9bf6ef1/private_id_d72ce98fd94b.jpg",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "mjpeg",
+            "codec_type": "video",
+            "width": 896,
+            "height": 1200,
+            "pix_fmt": "yuvj420p",
+            "duration": "0.040000"
+          }
+        ],
+        "format": {
+          "duration": "0.040000",
+          "size": "317844"
+        }
+      },
+      "credits_consumed": 4.0,
+      "requested_input": {
+        "aspect_ratio": "3:4",
+        "output_format": "png",
+        "prompt": "[PRIVATE_PROMPT_REDACTED]",
+        "image_urls": [
+          "https://MEDIA_URL_REDACTED.invalid/"
+        ]
+      }
+    },
+    {
+      "tool": "product_image_create",
+      "task_id": "private_id_0be342d47608",
+      "path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_0be342d47608/private_id_461da9ff81b0.png",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "png",
+            "codec_type": "video",
+            "width": 864,
+            "height": 1184,
+            "pix_fmt": "rgb24"
+          }
+        ],
+        "format": {
+          "size": "610624"
+        }
+      },
+      "credits_consumed": 4.0,
+      "requested_input": {
+        "aspect_ratio": "3:4",
+        "output_format": "png",
+        "prompt": "[PRIVATE_PROMPT_REDACTED]",
+        "image_urls": [
+          "https://MEDIA_URL_REDACTED.invalid/"
+        ]
+      }
+    },
+    {
+      "tool": "remove_background",
+      "task_id": "private_id_a66e11bb0e39",
+      "path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_a66e11bb0e39/private_id_395087f56e7f.png",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "png",
+            "codec_type": "video",
+            "width": 387,
+            "height": 516,
+            "pix_fmt": "rgba"
+          }
+        ],
+        "format": {
+          "size": "205914"
+        }
+      },
+      "credits_consumed": 1.0,
+      "requested_input": {
+        "image": "https://MEDIA_URL_REDACTED.invalid/"
+      }
+    },
+    {
+      "tool": "upscale_image",
+      "task_id": "private_id_80afaa408fd5",
+      "path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_80afaa408fd5/private_id_d1e5e296ee4b.jpg",
+      "probe": {
+        "programs": [],
+        "stream_groups": [],
+        "streams": [
+          {
+            "codec_name": "mjpeg",
+            "codec_type": "video",
+            "width": 774,
+            "height": 1032,
+            "pix_fmt": "yuvj444p",
+            "duration": "0.040000"
+          }
+        ],
+        "format": {
+          "duration": "0.040000",
+          "size": "140801"
+        }
+      },
+      "credits_consumed": 0.5,
+      "requested_input": {
+        "image": "https://MEDIA_URL_REDACTED.invalid/"
+      }
+    }
+  ],
+  "balance_before": {
+    "code": 200,
+    "msg": "success",
+    "data": 548.01
+  },
+  "balance_after": {
+    "code": 200,
+    "msg": "success",
+    "data": 488.23
+  }
+}

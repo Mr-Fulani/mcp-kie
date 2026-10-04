@@ -1,0 +1,47 @@
+{
+  "transport": "secure_project_MCP_stdio",
+  "estimated_total_usd": 0.051500000000000004,
+  "paid_submissions": 0,
+  "checks": [
+    {
+      "tool": "generate_image",
+      "arguments": {
+        "model": "z-image",
+        "prompt": "[PRIVATE_PROMPT_REDACTED]",
+        "aspect_ratio": "1:1",
+        "dry_run": false
+      },
+      "prepared": {
+        "error": "Your call frequency is too high. Please try again later.",
+        "status_code": 200,
+        "api_code": 429,
+        "details": {
+          "code": 429,
+          "msg": "Your call frequency is too high. Please try again later.",
+          "data": null
+        },
+        "retryable": true
+      }
+    }
+  ],
+  "status": "blocked",
+  "balance_before": {
+    "code": 200,
+    "msg": "success",
+    "data": 570.1
+  },
+  "blocker": {
+    "stage": "prepare",
+    "result": {
+      "error": "Your call frequency is too high. Please try again later.",
+      "status_code": 200,
+      "api_code": 429,
+      "details": {
+        "code": 429,
+        "msg": "Your call frequency is too high. Please try again later.",
+        "data": null
+      },
+      "retryable": true
+    }
+  }
+}

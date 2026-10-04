@@ -1,0 +1,86 @@
+{
+  "stage": "A",
+  "status": "PASS",
+  "step": "stage A complete; stages B-G not started",
+  "created_directories": [
+    "/LOCAL_OWNER/.config/kie-mcp",
+    "/LOCAL_OWNER/Projects",
+    "/LOCAL_OWNER/Projects/kie-workspace",
+    "/LOCAL_OWNER/Projects/kie-workspace/uploads",
+    "/LOCAL_OWNER/Projects/kie-workspace/results",
+    "/LOCAL_OWNER/.local/share/kie-mcp"
+  ],
+  "existing_directory_permissions_changed": false,
+  "network_requests": 0,
+  "kie_account_settings_changed": false,
+  "secret": {
+    "source": "macos_keychain",
+    "service": "kie-mcp-media",
+    "account": "media",
+    "load": "PASS",
+    "value_printed": false,
+    "chat_key_comparison": "different"
+  },
+  "config_created": true,
+  "config": {
+    "path": "/LOCAL_OWNER/.config/kie-mcp/config.toml",
+    "mode": "0o600",
+    "owner_matches": true,
+    "secret_fields": false
+  },
+  "directories": [
+    {
+      "path": "/LOCAL_OWNER/.config/kie-mcp",
+      "mode": "0o700",
+      "owner_matches": true,
+      "readable": true,
+      "writable": true,
+      "searchable": true
+    },
+    {
+      "path": "/LOCAL_OWNER/Projects/kie-workspace/uploads",
+      "mode": "0o700",
+      "owner_matches": true,
+      "readable": true,
+      "writable": true,
+      "searchable": true
+    },
+    {
+      "path": "/LOCAL_OWNER/Projects/kie-workspace/results",
+      "mode": "0o700",
+      "owner_matches": true,
+      "readable": true,
+      "writable": true,
+      "searchable": true
+    },
+    {
+      "path": "/LOCAL_OWNER/.local/share/kie-mcp",
+      "mode": "0o700",
+      "owner_matches": true,
+      "readable": true,
+      "writable": true,
+      "searchable": true
+    }
+  ],
+  "runtime": {
+    "primary_secret_variable": "KIE_MCP_API_KEY",
+    "chat_key_removed_from_child": true,
+    "chat_key_fallback": false,
+    "transport": "stdio",
+    "limits": {
+      "per_task_usd": 1.0,
+      "per_session_usd": 5.0,
+      "daily_usd": 10.0,
+      "total_usd": 100.0,
+      "concurrency": 5,
+      "upload_bytes": 52428800
+    },
+    "ledger_path": "/LOCAL_OWNER/.local/share/kie-mcp/usage.db",
+    "ledger_exists": false
+  },
+  "secret_scan": {
+    "tracked_or_unignored_project_files_checked": 48,
+    "literal_secret_matches": 0,
+    "owner_config_checked": true
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "stage": "B",
+  "check": "real-launcher-stdio-smoke",
+  "status": "PASS",
+  "server_info": {
+    "name": "Secure KIE media",
+    "version": "1.30.0"
+  },
+  "protocol_version": "2025-11-25",
+  "tool_count": 22,
+  "tool_names": [
+    "edit_image",
+    "generate_image",
+    "generate_video",
+    "kie_create_task",
+    "kie_download_result",
+    "kie_estimate_cost",
+    "kie_execute_task",
+    "kie_get_credits",
+    "kie_get_documentation",
+    "kie_get_download_url",
+    "kie_get_model_schema",
+    "kie_get_task",
+    "kie_list_models",
+    "kie_prepare_task",
+    "kie_search_docs",
+    "kie_upload_base64",
+    "kie_upload_from_url",
+    "kie_upload_local_file",
+    "kie_wait_for_task",
+    "product_image_create",
+    "remove_background",
+    "upscale_image"
+  ],
+  "tool_schemas_sha256": "cca2d0392a8c0e968b94286c77deb3eb955322965bf998e131b6266d07b48a9e",
+  "resource_uris": [
+    "kie://docs/overview",
+    "kie://docs/catalog"
+  ],
+  "overview_transport": "stdio",
+  "process_id": 15317,
+  "tcp_listeners": [],
+  "stdout_bytes_scanned": 10740,
+  "stderr_bytes_scanned": 486,
+  "secret_matches": 0,
+  "kie_live_tool_calls": [],
+  "billable_tasks": 0,
+  "ledger_existed_before": false,
+  "ledger_exists_after": false,
+  "codex_registration_applied": false,
+  "limitation": "Standalone protocol smoke; Codex startup verification still required."
+}

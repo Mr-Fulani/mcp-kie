@@ -1,0 +1,19 @@
+{
+  "scope": "public initial tree; historical local development not published",
+  "backup_preserved_privately": true,
+  "redacted_report_files": 35,
+  "redaction_counts": {
+    "media_links": 116,
+    "owner_paths": 114,
+    "private_prompt_fields": 84,
+    "diagnostic_fields": 10,
+    "identifiers": 163
+  },
+  "api_secret_scan": "known-token and assignment heuristics; findings reviewed as test fixtures/placeholders",
+  "provider_keys_used_or_printed": false,
+  "candidate_files_scanned": 117,
+  "pdf_streams_inspected": 32,
+  "unresolved_secret_findings": 0,
+  "local_history_blob_count": 174,
+  "local_history_findings_reviewed_as_fixtures": 14
+}

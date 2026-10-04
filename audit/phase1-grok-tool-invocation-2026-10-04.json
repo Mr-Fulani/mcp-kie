@@ -1,0 +1,314 @@
+{
+  "status": "PASS_WITH_RECOVERED_ARGUMENT_ERROR",
+  "evidence_review": {
+    "successful_mcp_tools": ["kie_get_credits", "kie_search_docs"],
+    "balance_code": 200,
+    "balance_credits": 837.73,
+    "docs_source": "live_docs_index",
+    "docs_result_count": 2,
+    "recovered_argument_error_count": 1,
+    "reported_chat_cost_usd": 0.118782,
+    "grok_config_matches_accepted_registration": true,
+    "media_config_matches_authorized_quote_installation": true,
+    "no_verification_rerun": true
+  },
+  "scope": "Owner-authorized Grok-only model-driven balance/docs calls",
+  "clients": [
+    {
+      "client": "grok",
+      "status": "PASS_WITH_RECOVERED_ARGUMENT_ERROR",
+      "arguments": [
+        "-p",
+        "This is a bounded MCP acceptance check. Do not delegate, read files, run shell, write files, upload, generate media, reserve budget, prepare or execute tasks. Use only the installed kie-media MCP server. Call kie_get_credits once with no arguments, then call kie_search_docs once with query \"z-image\" and limit 2. Report the observed numeric balance and documentation source. Use the actual tools; do not infer results. If unavailable or denied, report that and stop.",
+        "--output-format",
+        "streaming-messages-json",
+        "--tools",
+        "",
+        "--no-subagents",
+        "--disable-web-search",
+        "--max-turns",
+        "6",
+        "--permission-mode",
+        "dontAsk",
+        "--allow",
+        "MCPTool(kie-media__kie_get_credits)",
+        "--allow",
+        "MCPTool(kie-media__kie_search_docs)",
+        "--deny",
+        "MCPTool(kie-media__edit_image)",
+        "--deny",
+        "MCPTool(kie-media__generate_image)",
+        "--deny",
+        "MCPTool(kie-media__generate_video)",
+        "--deny",
+        "MCPTool(kie-media__kie_create_task)",
+        "--deny",
+        "MCPTool(kie-media__kie_download_result)",
+        "--deny",
+        "MCPTool(kie-media__kie_estimate_cost)",
+        "--deny",
+        "MCPTool(kie-media__kie_execute_task)",
+        "--deny",
+        "MCPTool(kie-media__kie_get_documentation)",
+        "--deny",
+        "MCPTool(kie-media__kie_get_download_url)",
+        "--deny",
+        "MCPTool(kie-media__kie_get_model_schema)",
+        "--deny",
+        "MCPTool(kie-media__kie_get_task)",
+        "--deny",
+        "MCPTool(kie-media__kie_list_models)",
+        "--deny",
+        "MCPTool(kie-media__kie_prepare_task)",
+        "--deny",
+        "MCPTool(kie-media__kie_upload_base64)",
+        "--deny",
+        "MCPTool(kie-media__kie_upload_from_url)",
+        "--deny",
+        "MCPTool(kie-media__kie_upload_local_file)",
+        "--deny",
+        "MCPTool(kie-media__kie_wait_for_task)",
+        "--deny",
+        "MCPTool(kie-media__product_image_create)",
+        "--deny",
+        "MCPTool(kie-media__remove_background)",
+        "--deny",
+        "MCPTool(kie-media__upscale_image)"
+      ],
+      "return_code": 0,
+      "timed_out": false,
+      "stdout_bytes": 11808,
+      "stderr_bytes": 0,
+      "configured_secret_matches": 0,
+      "tool_uses": [
+        {
+          "id": "call-3ebdfebd-893c-4167-81cc-2a7af3b37762-0",
+          "name": "search_tool",
+          "input": {
+            "query": "kie-media"
+          }
+        },
+        {
+          "id": "call-3d5b0145-a2e6-4435-933c-a2fb21219599-1",
+          "name": "use_tool",
+          "input": {
+            "tool_name": "kie-media__kie_get_credits"
+          }
+        },
+        {
+          "id": "call-976f96e3-9057-436d-93a8-e56a30970e4e-2",
+          "name": "use_tool",
+          "input": {
+            "tool_name": "kie-media__kie_get_credits",
+            "tool_input": {}
+          }
+        },
+        {
+          "id": "call-0d7ce5dd-a83c-4a1e-8e1b-3bf2beecc241-3",
+          "name": "use_tool",
+          "input": {
+            "tool_name": "kie-media__kie_search_docs",
+            "tool_input": {
+              "query": "z-image",
+              "limit": 2
+            }
+          }
+        }
+      ],
+      "tool_results": [
+        {
+          "id": "call-3ebdfebd-893c-4167-81cc-2a7af3b37762-0",
+          "is_error": false,
+          "content": "{\"type\":\"SearchTool\",\"result_count\":5,\"content\":\"{\\n  \\\"results\\\": [\\n    {\\n      \\\"server\\\": \\\"kie-media\\\",\\n      \\\"tools\\\": [\\n        {\\n          \\\"tool_name\\\": \\\"kie-media__kie_get_credits\\\",\\n          \\\"description\\\": \\\"Read the media-key account balance.\\\",\\n          \\\"score\\\": 0.15316250920295715,\\n          \\\"input_schema\\\": {\\n            \\\"properties\\\": {},\\n            \\\"title\\\": \\\"kie_get_creditsArguments\\\",\\n            \\\"type\\\": \\\"object\\\"\\n          }\\n        },\\n        {\\n          \\\"tool_name\\\": \\\"kie-media__kie_upload_base64\\\",\\n          \\\"description\\\": \\\"Validate decoded size and media bytes before temporary upload.\\\",\\n          \\\"score\\\": 0.14592647552490234,\\n          \\\"input_schema\\\": {\\n            \\\"properties\\\": {\\n              \\\"base64_data\\\": {\\n                \\\"title\\\": \\\"Base64 Data\\\",\\n                \\\"type\\\": \\\"string\\\"\\n              }\\n            },\\n            \\\"required\\\": [\\n              \\\"base64_data\\\"\\n            ],\\n            \\\"title\\\": \\\"kie_upload_base64Arguments\\\",\\n            \\\"type\\\": \\\"object\\\"\\n          }\\n        },\\n        {\\n          \\\"tool_name\\\": \\\"kie-media__kie_get_model_schema\\\",\\n          \\\"description\\\": \\\"Get a live unified-media contract with local references resolved.\\\",\\n          \\\"score\\\": 0.1445605456829071,\\n          \\\"input_schema\\\": {\\n            \\\"properties\\\": {\\n              \\\"model\\\": {\\n                \\\"title\\\": \\\"Model\\\",\\n                \\\"type\\\": \\\"string\\\"\\n              }\\n            },\\n            \\\"required\\\": [\\n              \\\"model\\\"\\n            ],\\n            \\\"title\\\": \\\"kie_get_model_schemaArguments\\\",\\n            \\\"type\\\": \\\"object\\\"\\n          }\\n        },\\n        {\\n          \\\"tool_name\\\": \\\"kie-media__kie_upload_local_file\\\",\\n          \\\"description\\\": \\\"Validate sandbox, size and media bytes, then upload a bounded snapshot.\\\",\\n          \\\"score\\\": 0.1432199627161026,\\n          \\\"input_schema\\\": {\\n            \\\"properties\\\": {\\n              \\\"file_path\\\": {\\n                \\\"title\\\": \\\"File Path\\\",\\n                \\\"type\\\": \\\"string\\\"\\n              }\\n            },\\n            \\\"required\\\": [\\n              \\\"file_path\\\"\\n            ],\\n            \\\"title\\\": \\\"kie_upload_local_fileArguments\\\",\\n            \\\"type\\\": \\\"object\\\"\\n          }\\n        },\\n        {\\n          \\\"tool_name\\\": \\\"kie-media__kie_upload_from_url\\\",\\n          \\\"description\\\": \\\"Fetch with pinned-DNS/redirect/byte guards, validate media and upload the bytes.\\\",\\n          \\\"score\\\": 0.14190399646759033,\\n          \\\"input_schema\\\": {\\n            \\\"properties\\\": {\\n              \\\"file_url\\\": {\\n                \\\"title\\\": \\\"File Url\\\",\\n                \\\"type\\\": \\\"string\\\"\\n              }\\n            },\\n            \\\"required\\\": [\\n              \\\"file_url\\\"\\n            ],\\n            \\\"title\\\": \\\"kie_upload_from_urlArguments\\\",\\n            \\\"type\\\": \\\"object\\\"\\n          }\\n        }\\n      ]\\n    }\\n  ],\\n  \\\"total_hidden_tools\\\": 22,\\n  \\\"status\\\": \\\"ready\\\",\\n  \\\"note\\\": null\\n}\"}"
+        },
+        {
+          "id": "call-3d5b0145-a2e6-4435-933c-a2fb21219599-1",
+          "is_error": true,
+          "content": "[{\"type\":\"content\",\"content\":{\"type\":\"text\",\"text\":\"Failed to parse arguments for tool `use_tool`: use exactly one of {tool_name,tool_input}, {tool_name,tool_input_file}, or {file} at line 1 column 42\\n\\nYour original arguments:\\n{\\\"tool_name\\\":\\\"kie-media__kie_get_credits\\\"}\"}}]"
+        },
+        {
+          "id": "call-976f96e3-9057-436d-93a8-e56a30970e4e-2",
+          "is_error": false,
+          "content": "{\"type\":\"MCP\",\"tool_name\":\"kie_get_credits\",\"server_name\":\"kie-media\",\"output\":{\"OkayOutput\":\"{\\n  \\\"code\\\": 200,\\n  \\\"msg\\\": \\\"success\\\",\\n  \\\"data\\\": 837.73\\n}\"}}"
+        },
+        {
+          "id": "call-0d7ce5dd-a83c-4a1e-8e1b-3bf2beecc241-3",
+          "is_error": false,
+          "content": "{\"type\":\"MCP\",\"tool_name\":\"kie_search_docs\",\"server_name\":\"kie-media\",\"output\":{\"OkayOutput\":\"{\\n  \\\"source\\\": \\\"live_docs_index\\\",\\n  \\\"results\\\": [\\n    {\\n      \\\"title\\\": \\\"Z-Image\\\",\\n      \\\"url\\\": \\\"https://docs.kie.ai/market/z-image/z-image.md\\\"\\n    },\\n    {\\n      \\\"title\\\": \\\"使用 z-image 生成内容\\\",\\n      \\\"url\\\": \\\"https://docs.kie.ai/cn/market/z-image/z-image.md\\\"\\n    }\\n  ]\\n}\"}}"
+        }
+      ],
+      "final_events": [
+        {
+          "type": "result",
+          "subtype": "success",
+          "is_error": false,
+          "duration_ms": 81840,
+          "duration_api_ms": 75655,
+          "num_turns": 5,
+          "result": "**Observed numeric balance: 837.73**  \n**Documentation source: live_docs_index** (2 results: https://docs.kie.ai/market/z-image/z-image.md and the Chinese mirror https://docs.kie.ai/cn/market/z-image/z-image.md)\n\nI followed the exact instructions in the acceptance check query. No other tools, skills, or actions were used.",
+          "stop_reason": "end_turn",
+          "total_cost_usd": 0.118782,
+          "usage": {
+            "input_tokens": "[REDACTED]",
+            "output_tokens": "[REDACTED]",
+            "cache_read_input_tokens": "[REDACTED]",
+            "cache_creation_input_tokens": "[REDACTED]",
+            "server_tool_use": {
+              "web_search_requests": 0
+            }
+          },
+          "modelUsage": {
+            "grok-4.7": {
+              "inputTokens": "[REDACTED]",
+              "outputTokens": "[REDACTED]",
+              "cacheReadInputTokens": "[REDACTED]",
+              "cacheCreationInputTokens": "[REDACTED]",
+              "webSearchRequests": 0,
+              "costUSD": 0.118782
+            }
+          },
+          "session_id": "01a103a8-b705-72f3-bc07-dc59074dc2aa",
+          "uuid": "2aac256a-3998-45e9-aa89-4c2c1b09c0f5"
+        }
+      ],
+      "stderr": "",
+      "non_json_stdout": "",
+      "init": [
+        {
+          "type": "system",
+          "subtype": "init",
+          "session_id": "01a103a8-b705-72f3-bc07-dc59074dc2aa",
+          "apiKeySource": "[REDACTED]",
+          "model": "kie-47",
+          "cwd": "[REDACTED]",
+          "permissionMode": "dontAsk",
+          "tools": [
+            "run_terminal_command",
+            "read_file",
+            "search_replace",
+            "list_dir",
+            "grep",
+            "kill_command_or_subagent",
+            "todo_write",
+            "get_command_or_subagent_output",
+            "spawn_subagent",
+            "scheduler_create",
+            "scheduler_delete",
+            "scheduler_list",
+            "monitor",
+            "search_tool",
+            "use_tool",
+            "workflow",
+            "enter_plan_mode",
+            "exit_plan_mode",
+            "ask_user_question",
+            "send_feedback",
+            "image_gen",
+            "image_edit",
+            "image_to_video",
+            "reference_to_video",
+            "write",
+            "kie-media__kie_search_docs",
+            "kie-media__kie_get_documentation",
+            "kie-media__kie_list_models",
+            "kie-media__kie_get_model_schema",
+            "kie-media__kie_estimate_cost",
+            "kie-media__kie_prepare_task",
+            "kie-media__kie_create_task",
+            "kie-media__kie_execute_task",
+            "kie-media__kie_get_task",
+            "kie-media__kie_wait_for_task",
+            "kie-media__kie_get_credits",
+            "kie-media__kie_upload_local_file",
+            "kie-media__kie_upload_base64",
+            "kie-media__kie_upload_from_url",
+            "kie-media__kie_get_download_url",
+            "kie-media__kie_download_result",
+            "kie-media__generate_image",
+            "kie-media__edit_image",
+            "kie-media__generate_video",
+            "kie-media__remove_background",
+            "kie-media__upscale_image",
+            "kie-media__product_image_create"
+          ],
+          "slash_commands": [
+            "compact",
+            "always-approve",
+            "context",
+            "session-info",
+            "feedback",
+            "deep-research",
+            "workflow",
+            "goal",
+            "loop",
+            "discovery-interview",
+            "find-skills",
+            "impeccable",
+            "kie-chat-agents",
+            "kie-models",
+            "build-with-ai",
+            "code-review",
+            "create-skill",
+            "create-workflow",
+            "design",
+            "execute-plan",
+            "game-assets",
+            "bundled:imagine",
+            "implement",
+            "learn",
+            "long-running-background-tasks",
+            "pr-babysit",
+            "resume-claude",
+            "resume-codex",
+            "resume-cursor",
+            "review",
+            "skill-design-principles",
+            "statusline",
+            "threejs-frame-conventions",
+            "learn-traces"
+          ],
+          "mcp_servers": [
+            {
+              "name": "kie-media",
+              "status": "pending"
+            }
+          ],
+          "skills": [
+            "discovery-interview",
+            "find-skills",
+            "impeccable",
+            "kie-chat-agents",
+            "kie-models",
+            "build-with-ai",
+            "code-review",
+            "create-skill",
+            "create-workflow",
+            "design",
+            "execute-plan",
+            "game-assets",
+            "bundled:imagine",
+            "implement",
+            "learn",
+            "long-running-background-tasks",
+            "pr-babysit",
+            "resume-claude",
+            "resume-codex",
+            "resume-cursor",
+            "review",
+            "skill-design-principles",
+            "statusline",
+            "threejs-frame-conventions"
+          ],
+          "uuid": "6498801a-ca18-42b4-9961-456fbf55840f"
+        }
+      ]
+    }
+  ],
+  "paid_media_generations": 0,
+  "uploads": 0,
+  "owner_config_edits": 0,
+  "original_validator_status": "BLOCKED",
+  "original_validator_error": "Tool invocation failed: grok",
+  "original_validator_failure_type": "RuntimeError",
+  "review_reason": "The original validator rejected any intermediate tool error. Evidence shows a missing tool_input argument rejected before MCP dispatch, followed by successful balance and live docs calls in the same session. Final native result exited zero without an error."
+}

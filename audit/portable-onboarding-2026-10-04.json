@@ -1,0 +1,70 @@
+{
+  "install": "uv sync --frozen --offline --no-dev in separate environment",
+  "python": "3.14.2",
+  "network_used": false,
+  "paid_submissions": 0,
+  "real_secrets_used": false,
+  "doctor": {
+    "ok": true,
+    "network_used": false,
+    "files_written": false,
+    "secret_checked": true,
+    "checks": [
+      {
+        "check": "platform",
+        "status": "pass",
+        "message": "POSIX filesystem guards available"
+      },
+      {
+        "check": "owner_config",
+        "status": "pass",
+        "message": "Private owner configuration loaded"
+      },
+      {
+        "check": "transport",
+        "status": "pass",
+        "message": "Only stdio is supported"
+      },
+      {
+        "check": "settings",
+        "status": "pass",
+        "message": "Numeric settings and absolute paths are valid"
+      },
+      {
+        "check": "secret_source",
+        "status": "pass",
+        "message": "Select a supported secret source"
+      },
+      {
+        "check": "upload_root",
+        "status": "pass",
+        "message": "Dedicated owned directory is available"
+      },
+      {
+        "check": "download_root",
+        "status": "pass",
+        "message": "Dedicated owned directory is available"
+      },
+      {
+        "check": "ledger_path",
+        "status": "pass",
+        "message": "Ledger location inspected without opening or creating the database"
+      },
+      {
+        "check": "media_secret",
+        "status": "pass",
+        "message": "Separate media secret can be loaded; value withheld"
+      },
+      {
+        "check": "provider_policy",
+        "status": "warn",
+        "message": "Verify KIE-side caps yourself; offline checks cannot verify key validity or provider policy"
+      }
+    ]
+  },
+  "tools_count": 23,
+  "launcher_from_unrelated_cwd": true,
+  "owner_files_unchanged": true,
+  "ledger_created": false,
+  "passed": true
+}

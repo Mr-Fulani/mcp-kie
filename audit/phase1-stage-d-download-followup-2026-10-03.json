@@ -1,0 +1,172 @@
+{
+  "date": "2026-10-03",
+  "stage": "Stage D existing-task secure download follow-up",
+  "status": "PASS",
+  "owner_authorization": {
+    "scope": "Review and exact-host storage allowlist fix, then download the existing completed task",
+    "new_generation_authorized": false
+  },
+  "task_id": "private_id_2c5ea4dacca0",
+  "request_digest": "80c20d439ee1efaa8e9f227f335d449d82c2ccb4625ac70e83298c304b19200b",
+  "config_sha256": "631c4c53b1dda2c3ca0c0b153e59720d224c287eac8f2bd30756e70cab5cd8c4",
+  "review_evidence": "phase1-stage-d-storage-host-review-2026-10-03.json",
+  "focused_tests": {
+    "passed": 68,
+    "duration_seconds": 2.2,
+    "files": [
+      "tests/test_network_storage.py",
+      "tests/test_security.py",
+      "tests/test_client.py",
+      "tests/test_service.py"
+    ],
+    "ruff": "PASS"
+  },
+  "new_generation_submitted": false,
+  "calls": [
+    {
+      "tool": "kie_get_task",
+      "arguments": {
+        "task_id": "private_id_2c5ea4dacca0"
+      },
+      "is_error": false,
+      "result": {
+        "code": 200,
+        "msg": "success",
+        "data": {
+          "taskId": "private_id_2c5ea4dacca0",
+          "model": "z-image",
+          "state": "success",
+          "param": "{\"input\":\"{\\\"aspect_ratio\\\":\\\"1:1\\\",\\\"prompt\\\":\\\"A single small green leaf centered on a plain white background, soft natural light, no text.\\\"}\",\"model\":\"z-image\"}",
+          "resultJson": "{\"resultUrls\":[\"https://MEDIA_URL_REDACTED.invalid/\"]}",
+          "failCode": "",
+          "failMsg": "",
+          "costTime": 13,
+          "completeTime": 1791031062000,
+          "createTime": 1791031049000,
+          "creditsConsumed": 0.8,
+          "operationType": "z-image",
+          "errorMessage": "",
+          "response": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          },
+          "successFlag": 1,
+          "paramJson": "{\"input\":\"{\\\"aspect_ratio\\\":\\\"1:1\\\",\\\"prompt\\\":\\\"A single small green leaf centered on a plain white background, soft natural light, no text.\\\"}\",\"model\":\"z-image\"}",
+          "paramParsed": {
+            "input": "{\"aspect_ratio\":\"1:1\",\"prompt\":\"A single small green leaf centered on a plain white background, soft natural light, no text.\"}",
+            "model": "z-image"
+          },
+          "resultParsed": {
+            "resultUrls": [
+              "https://MEDIA_URL_REDACTED.invalid/"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "tool": "kie_download_result",
+      "arguments": {
+        "task_id": "private_id_2c5ea4dacca0",
+        "result_index": 0
+      },
+      "is_error": false,
+      "result": {
+        "task_id": "private_id_2c5ea4dacca0",
+        "output_path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_2c5ea4dacca0/private_id_0d250540a5fd.png",
+        "result_url": "https://MEDIA_URL_REDACTED.invalid/"
+      }
+    },
+    {
+      "tool": "kie_get_credits",
+      "arguments": {},
+      "is_error": false,
+      "result": {
+        "code": 200,
+        "msg": "success",
+        "data": 31.83
+      }
+    }
+  ],
+  "ledger_before": {
+    "row": {
+      "id": "private_id_e6e6e774a399",
+      "status": "success",
+      "provider_task_id": "private_id_2c5ea4dacca0",
+      "fingerprint": "80c20d439ee1efaa8e9f227f335d449d82c2ccb4625ac70e83298c304b19200b",
+      "estimated_cost_usd": 4000,
+      "estimated_credits": 0.8,
+      "actual_cost_usd": null,
+      "actual_credits": 0.8,
+      "output_count": 1
+    },
+    "matching_request_rows": 1
+  },
+  "runtime": {
+    "transport": "stdio",
+    "launcher": "/LOCAL_OWNER/mcp-kie/.venv/bin/kie-mcp-launch",
+    "fresh_process": true,
+    "server_info": {
+      "name": "Secure KIE media",
+      "title": null,
+      "version": "1.30.0",
+      "websiteUrl": null,
+      "icons": null
+    },
+    "available_tool_count": 22
+  },
+  "output": {
+    "path": "/LOCAL_OWNER/Projects/kie-workspace/results/private_id_2c5ea4dacca0/private_id_0d250540a5fd.png",
+    "bytes": 1019303,
+    "mode": "0600",
+    "sha256": "05deff1dd882a0b1b78745ce99fec6fe0f58a3647b59db7916270f7a39040d6b",
+    "inside_configured_task_root": true
+  },
+  "balance": {
+    "before_generation_credits": 120.59,
+    "after_download_credits": 31.83,
+    "observed_decrease_credits": 88.76,
+    "matches_owner_tariff": false,
+    "scope": "Account-wide KIE credit balance shared by multiple API keys",
+    "confirmed_task_credits": 0.8,
+    "task_matches_owner_tariff": true,
+    "unattributed_account_difference_credits": 87.96,
+    "difference_qualification": "Arithmetic remainder after subtracting this task's confirmed charge; other account transactions were not individually audited",
+    "attribution_status": "OWNER_CONFIRMED_SHARED_ACCOUNT: another agent uses the same account balance through another key; the aggregate balance change is not a measure of this task's cost",
+    "owner_clarification": {
+      "date": "2026-10-03",
+      "message": "да, этим балансом пользуется и другой агент но уже через другой ключ видимо ты видишь общий расход токенов",
+      "confirmed_shared_balance": true
+    },
+    "official_balance_documentation": {
+      "url": "https://docs.kie.ai/common-api/get-account-credits.md",
+      "retrieved_via": "secure MCP documentation tool",
+      "description": "Get the current credit balance available in your account.",
+      "interpretation": "The endpoint reports account credits, not per-key spend or chat token usage"
+    }
+  },
+  "ledger_after": {
+    "row": {
+      "id": "private_id_e6e6e774a399",
+      "status": "success",
+      "provider_task_id": "private_id_2c5ea4dacca0",
+      "fingerprint": "80c20d439ee1efaa8e9f227f335d449d82c2ccb4625ac70e83298c304b19200b",
+      "estimated_cost_usd": 4000,
+      "estimated_credits": 0.8,
+      "actual_cost_usd": null,
+      "actual_credits": 0.8,
+      "output_count": 1
+    },
+    "matching_request_rows": 1
+  },
+  "completed_at_utc": "2026-10-03T13:15:46.479526+00:00",
+  "image_verification": {
+    "format": "PNG",
+    "width": 1024,
+    "height": 1024,
+    "all_chunk_crcs_valid": true,
+    "complete_iend_present": true,
+    "visual_result": "PASS: one green leaf centered on a white background, no text, square image"
+  }
+}

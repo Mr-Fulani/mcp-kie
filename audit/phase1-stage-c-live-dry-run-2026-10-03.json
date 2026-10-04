@@ -1,0 +1,781 @@
+{
+  "date": "2026-10-03",
+  "completed_at_utc": "2026-10-03T10:29:29Z",
+  "stage": "Phase 1 Stage C",
+  "status": "PARTIAL",
+  "status_detail": "Live authentication, documentation, schema and dry-run succeeded. Verified cost remains unknown; paid Stage D is blocked.",
+  "baseline_commit": "e3ce4e6fab8c766d634d798dd3ca617960f9bfcc",
+  "transport": "installed kie-media stdio MCP",
+  "available_tool_count": 22,
+  "calls": [
+    {
+      "tool": "kie_get_credits",
+      "arguments": {},
+      "result": {
+        "code": 200,
+        "msg": "success",
+        "data": 506.53
+      }
+    },
+    {
+      "tool": "kie_search_docs",
+      "arguments": {
+        "query": "text to image",
+        "limit": 8
+      },
+      "result": {
+        "source": "live_docs_index",
+        "results": [
+          {
+            "title": "4o Image Generation Callbacks",
+            "url": "https://docs.kie.ai/4o-image-api/generate-4-o-image-callbacks.md"
+          },
+          {
+            "title": "Image Generation or Editing Callbacks",
+            "url": "https://docs.kie.ai/flux-kontext-api/generate-or-edit-image-callbacks.md"
+          },
+          {
+            "title": "Convert to WAV Callbacks",
+            "url": "https://docs.kie.ai/suno-api/convert-to-wav-callbacks.md"
+          },
+          {
+            "title": "4o 图片生成回调",
+            "url": "https://docs.kie.ai/cn/4o-image-api/generate-4-o-image-callbacks.md"
+          },
+          {
+            "title": "图像生成或编辑回调",
+            "url": "https://docs.kie.ai/cn/flux-kontext-api/generate-or-edit-image-callbacks.md"
+          },
+          {
+            "title": "转换为WAV格式回调",
+            "url": "https://docs.kie.ai/cn/suno-api/convert-to-wav-callbacks.md"
+          },
+          {
+            "title": "Seedream4.0 - Text to Image",
+            "url": "https://docs.kie.ai/market/seedream/seedream-v4-text-to-image.md"
+          },
+          {
+            "title": "Seedream4.0 - Edit",
+            "url": "https://docs.kie.ai/market/seedream/seedream-v4-edit.md"
+          }
+        ]
+      }
+    },
+    {
+      "tool": "kie_list_models",
+      "arguments": {
+        "task_type": "Text to Image"
+      },
+      "result": {
+        "total": 34,
+        "models": [
+          {
+            "model": "google/imagen4",
+            "slug": "google/imagen4",
+            "title": "Google Imagen 4-Text to Image",
+            "provider": "Google",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": "Google Imagen 4, developed by Google DeepMind and released at Google I/O 2025, is an advanced text-to-image generation model. It converts textual prompts into photorealistic, high-quality images with exceptional detail, clarity, and artistic versatility, making it perfect for both creative and commercial use.",
+            "pricingDesc": "Imagen 4 costs 8 credits per image ($0.04).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.036 per image."
+          },
+          {
+            "model": "google/imagen4-ultra",
+            "slug": "google/imagen4-ultra",
+            "title": "Google Imagen 4 Ultra-Text to Image",
+            "provider": "Google",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": "Google Imagen 4 Ultra is the latest breakthrough in text-to-image generation, offering unmatched precision, speed, and photorealistic quality. Developed by Google DeepMind, this model transforms detailed text prompts into high-resolution, lifelike images, making it ideal for marketing, design, and creative applications.",
+            "pricingDesc": "Imagen 4 Ultra costs 12 credits per image ($0.06).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.055 per image."
+          },
+          {
+            "model": "google/imagen4-fast",
+            "slug": "google/imagen4-fast",
+            "title": "Imagen 4 Fast-Text to Image",
+            "provider": "Google",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": null,
+            "pricingDesc": "Imagen 4 Fast costs 4 credits per image (≈ $0.020).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ≈ $0.018 per image."
+          },
+          {
+            "model": "google/nano-banana",
+            "slug": "google/nano-banana",
+            "title": "Nano Banana-Gemini 2.5 Flash Image(Text to Image)",
+            "provider": "Google",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": null,
+            "pricingDesc": "Nano Banana API costs 4 credits per image (~$0.02).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.018 per image."
+          },
+          {
+            "model": "qwen/text-to-image",
+            "slug": "qwen/text-to-image",
+            "title": "Qwen - Text to Image",
+            "provider": "Qwen",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": null,
+            "pricingDesc": "Qwen Image is priced at 4 credits per megapixel (≈ $0.02).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.018 per megapixel."
+          },
+          {
+            "model": "bytedance/seedream",
+            "slug": "bytedance/seedream",
+            "title": "Seedream V3",
+            "provider": "ByteDance",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": "Seedream 3.0 API is ByteDance’s latest text-to-image API, built for native 2K resolution, faster generation, and precise bilingual text rendering. Compared to Seedream 2.0, the Seedream v3 API delivers higher fidelity, cinematic aesthetics, and designer-level typography.",
+            "pricingDesc": "Seedream V3 costs 3.5 credits per image ($0.0175).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.0158 per image."
+          },
+          {
+            "model": "recraft/crisp-upscale",
+            "slug": "recraft/crisp-upscale",
+            "title": "Recraft Crisp Upscale",
+            "provider": "Elevenlabs",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": null,
+            "pricingDesc": "Recraft Crisp Upscale: 0.5 credits per upscale (~US $0.0025).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~US $0.0023 per upscale."
+          },
+          {
+            "model": "bytedance/seedream-v4-text-to-image",
+            "slug": "bytedance/seedream-v4-text-to-image",
+            "title": "Seedream 4.0 Text to Image",
+            "provider": "ByteDance",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": null,
+            "pricingDesc": "Seedream V4: 5 credits per image (~$0.025). The price is independent of image resolution and is solely determined by the final number of images returned. The number of images depends on the quantity specified in the prompt and the maximum value set by max_images, both of which jointly determine the final count.\nHigh-tier top-ups include +10% bonus credits. Effective pricing is approximately 10% lower than the above rates."
+          },
+          {
+            "model": "4o-image-api",
+            "slug": "4o-image-api",
+            "title": "4o Image",
+            "provider": "OpenAI",
+            "taskType": [
+              "Text to Image",
+              "Image to Image"
+            ],
+            "description": null,
+            "pricingDesc": "4O Image API on KIE: just 6 credits per image (~$0.03) — flat, all-inclusive pricing with no hidden parameters.High-tier top-ups (+10% bonus) bring effective pricing down to ~$0.027 per image."
+          },
+          {
+            "model": "flux1-kontext",
+            "slug": "flux1-kontext",
+            "title": "Flux Kontext",
+            "provider": "Black Forest Labs",
+            "taskType": [
+              "Text to Image",
+              "Image to Image"
+            ],
+            "description": null,
+            "pricingDesc": "Black Forest Labs FLUX.1 Kontext on Kie.ai offers text-to-image generation with two tiers — Pro mode at 5 credits per image (≈ $0.025) and Max mode at 10 credits per image (≈ $0.05). \nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.0225 per image in Pro mode and ~$0.045 per image in Max mode."
+          },
+          {
+            "model": "grok-imagine/text-to-image",
+            "slug": "grok-imagine/text-to-image",
+            "title": "Grok Imagine Text To Image",
+            "provider": "Grok",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": null,
+            "pricingDesc": "Standard: 4 credits ($0.02) per generation; Quality: 5 credits ($0.025) per generation.\nEach generation outputs 2 images by default.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.018 per generation in Standard mode and ~$0.022 per generation in Quality mode."
+          },
+          {
+            "model": "nano-banana-pro",
+            "slug": "nano-banana-pro",
+            "title": "Nano Banana Pro",
+            "provider": "Google",
+            "taskType": [
+              "Text to Image",
+              "Image to Image"
+            ],
+            "description": null,
+            "pricingDesc": "18 credits (~$0.09) for 1K/2K and 24 credits (~$0.12) for 4K—flat rate up to 50 % below official pricing.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.082 for 1K/2K and ~$0.11 for 4K."
+          },
+          {
+            "model": "flux-2/pro-text-to-image",
+            "slug": "flux-2/pro-text-to-image",
+            "title": "Flux 2 Pro Text To Image",
+            "provider": "Black Forest Labs",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": null,
+            "pricingDesc": "5 credits (~$0.025) for 1K or 7 credits (~$0.035) for 2K—upload up to 8 reference images at no extra cost; you already save 40 %+ versus official pricing on a single image, and the advantage only grows with more uploads.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.0225 for 1K and ~$0.0315 for 2K."
+          },
+          {
+            "model": "flux-2/flex-text-to-image",
+            "slug": "flux-2/flex-text-to-image",
+            "title": "Flux 2 Flex Text To Image",
+            "provider": "Black Forest Labs",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": null,
+            "pricingDesc": "14 credits (~$0.07) for 1K or 24 credits (~$0.12) for 2K—upload up to 8 reference images at no extra cost; you already save 40 %+ versus official pricing on a single image, and the advantage only grows with more uploads.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to~$0.063 for 1K  and ~$0.108 for 2K."
+          },
+          {
+            "model": "seedream/4.5-text-to-image",
+            "slug": "seedream/4.5-text-to-image",
+            "title": "Seedream 4.5 Text to Image",
+            "provider": "ByteDance",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": null,
+            "pricingDesc": "6.5 credits per image (≈ $0.032), a smooth 19 % below the official price.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ≈ $0.030 per image."
+          },
+          {
+            "model": "z-image",
+            "slug": "z-image",
+            "title": "Z Image Turbo Text to Image",
+            "provider": "Qwen",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": null,
+            "pricingDesc": "flat 0.8 Kie credits per image (≈ $0.004) — simple, all-inclusive pricing.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ≈ $0.0036 per image."
+          },
+          {
+            "model": "gpt-image/1.5-text-to-image",
+            "slug": "gpt-image/1.5-text-to-image",
+            "title": "GPT-Image 1.5 Text to Image",
+            "provider": "OpenAI",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": null,
+            "pricingDesc": "text-to-image or image-to-image: medium quality 4 credits ($0.02) per image, high quality 22 credits ($0.11) per image — ~35–45% cheaper than fal pricing.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.018 per image (medium quality) and ~$0.10 per image (high quality)."
+          },
+          {
+            "model": "ai-music-api/cover-generate",
+            "slug": "ai-music-api/cover-generate",
+            "title": "Ai Music API Generate Music Cover",
+            "provider": "Suno",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": null,
+            "pricingDesc": "Cover Generate is free."
+          },
+          {
+            "model": "seedream/5-lite-text-to-image",
+            "slug": "seedream/5-lite-text-to-image",
+            "title": "Seedream 5 Lite Text to Image",
+            "provider": "ByteDance",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": null,
+            "pricingDesc": "5.5 credits per image (≈ US $0.0275), up to 3 K resolution text-to-image/edit, ~21 % cheaper than official & Fal.ai rates.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ≈ US $0.025 per image."
+          },
+          {
+            "model": "nano-banana-2",
+            "slug": "nano-banana-2",
+            "title": "Nano Banana 2",
+            "provider": "Google",
+            "taskType": [
+              "Text to Image",
+              "Image to Image"
+            ],
+            "description": null,
+            "pricingDesc": "Nano Banana 2 — now just 8 credits ($0.04) for 1 K, 12 credits ($0.06) for 2 K, and 18 credits ($0.09) for 4 K, roughly 40 % below the official price.\n High-tier top-ups (+10% bonus) bring effective pricing down to ~$0.036 for 1 K, ~$0.054 for 2 K, and ~$0.081 for 4 K."
+          },
+          {
+            "model": "qwen2/text-to-image",
+            "slug": "qwen2/text-to-image",
+            "title": "Qwen2 - Text To Image",
+            "provider": "Qwen",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": null,
+            "pricingDesc": "Price ≈ $0.03 per image, depending on the image aspect ratio. For detailed comparisons, please refer to the README.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ≈ $0.027 per image."
+          },
+          {
+            "model": "wan/2-7-image",
+            "slug": "wan/2-7-image",
+            "title": "Wan 2.7 Image",
+            "provider": "Wan",
+            "taskType": [
+              "Text to Image",
+              "Image to Image"
+            ],
+            "description": null,
+            "pricingDesc": "WAN-2.7 Image Pro costs 12 credits per image (≈ $0.06), while WAN-2.7 Image costs 4.8 credits per image (≈ $0.024). \nHigh-tier top-ups include +10% bonus credits. Effective pricing is approximately 10% lower than the above rates."
+          },
+          {
+            "model": "wan/2-7-image-pro",
+            "slug": "wan/2-7-image-pro",
+            "title": "Wan 2.7 Image Pro",
+            "provider": "Wan",
+            "taskType": [
+              "Text to Image",
+              "Image to Image"
+            ],
+            "description": null,
+            "pricingDesc": "WAN-2.7 Image Pro costs 12 credits per image (≈ $0.06), while WAN-2.7 Image costs 4.8 credits per image (≈ $0.024). \nHigh-tier top-ups include +10% bonus credits. Effective pricing is approximately 10% lower than the above rates."
+          },
+          {
+            "model": "gpt-image-2-text-to-image",
+            "slug": "gpt-image-2-text-to-image",
+            "title": "Gpt Image 2 Text To Image",
+            "provider": "OpenAI",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": null,
+            "pricingDesc": "GPT-2 Image — now just 6 credits ($0.03) for 1 K, 10 credits ($0.05) for 2 K, and 16 credits ($0.08) for 4 K.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~10% off the above rates."
+          },
+          {
+            "model": "nano-banana-2-lite",
+            "slug": "nano-banana-2-lite",
+            "title": "Nano Banana 2 Lite",
+            "provider": "Google",
+            "taskType": [
+              "Text to Image",
+              "Image to Image"
+            ],
+            "description": "",
+            "pricingDesc": "Nano Banana 2 Lite — now just 4 credits ($0.02) for 1K, about 59.5% of the Google official price, saving roughly 40.5%.\nHigh-tier top-ups (+10% bonus) bring the effective pricing down to ~$0.018 for 1K."
+          },
+          {
+            "model": "seedream/5-pro-text-to-image",
+            "slug": "seedream/5-pro-text-to-image",
+            "title": "Seedream 5 Pro Text to Image",
+            "provider": "ByteDance",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": "",
+            "pricingDesc": "1K: 7 credits per image ($0.035), 2K: 14 credits per image ($0.07). Input images cost 0.5 credits each ($0.0025), with the first input image free — approximately 20% cheaper than official rates.\n\nHigh-tier top-ups include +10% bonus credits, making the effective cost about 10% lower than the listed pricing."
+          },
+          {
+            "model": "qwen3/pro-text-to-image",
+            "slug": "qwen3/pro-text-to-image",
+            "title": "Qwen3 Pro - Text to Image",
+            "provider": "Qwen",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": "",
+            "pricingDesc": "Qwen Image 3.0 Pro text to image costs 6.4 credits per image (≈ $0.032) for 1K and 12 credits per image (≈ $0.06) for 2K.  \n\nHigh-tier top-ups bring the effective price down to approximately 90% of the prices listed above."
+          },
+          {
+            "model": "qwen3/text-to-image",
+            "slug": "qwen3/text-to-image",
+            "title": "Qwen3 - text to Image",
+            "provider": "Qwen",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": "",
+            "pricingDesc": "Qwen image 3.0 text-to-Image costs 4.8 credits per image (≈ $0.024) for 1K/2K output.  \n\nHigh-tier top-ups bring the effective price down to approximately 90% of the prices listed above."
+          },
+          {
+            "model": "grok-imagine-image-2-0/text-to-image",
+            "slug": "grok-imagine-image-2-0/text-to-image",
+            "title": "Grok Imagine Image 2.0 Text to Image",
+            "provider": "Grok",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": "",
+            "pricingDesc": "4 credits per image (= $0.02), approximately 67% cheaper than the official price ($0.06/image).\n\nHigh-tier top-ups include a +10% bonus, making effective pricing approximately 10% lower than listed."
+          },
+          {
+            "model": "grok-imagine-image-2-0/segment-map",
+            "slug": "grok-imagine-image-2-0/segment-map",
+            "title": "Grok Imagine Image 2.0 Segment Map",
+            "provider": "Grok",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": "",
+            "pricingDesc": "Pricing: Generate segment map is free."
+          },
+          {
+            "model": "gpt-image-2-5-flare-text-to-image",
+            "slug": "gpt-image-2-5-flare-text-to-image",
+            "title": "Gpt Image 2.5 Flare Text to Image",
+            "provider": "OpenAI",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": "",
+            "pricingDesc": "GPT Image 2.5 — now just 6 credits ($0.03) for 1 K, 10 credits ($0.05) for 2 K, and 16 credits ($0.08) for 4 K.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~10% off the above rates."
+          },
+          {
+            "model": "gpt-image-2-5-sunburst-text-to-image",
+            "slug": "gpt-image-2-5-sunburst-text-to-image",
+            "title": "Gpt Image 2.5 Sunburst Text to Image",
+            "provider": "OpenAI",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": "",
+            "pricingDesc": "GPT Image 2.5 — now just 6 credits ($0.03) for 1 K, 10 credits ($0.05) for 2 K, and 16 credits ($0.08) for 4 K.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~10% off the above rates."
+          },
+          {
+            "model": "qwen2-1/text-to-image",
+            "slug": "qwen2-1/text-to-image",
+            "title": "Qwen 2.1 - Text to Image",
+            "provider": "Qwen",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": "",
+            "pricingDesc": "Qwen-Image-2.1 is priced at 4 credits per 1K image (≈ $0.02) and 8 credits per 2K image (≈ $0.04).\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ~$0.018 per 1K image and ~$0.036 per 2K image."
+          },
+          {
+            "model": "seedream/5-flash-text-to-image",
+            "slug": "seedream/5-flash-text-to-image",
+            "title": "Seedream 5.0 Flash Text To Image",
+            "provider": "ByteDance",
+            "taskType": [
+              "Text to Image"
+            ],
+            "description": "",
+            "pricingDesc": "1K and 2K images are priced the same: 3.24 credits per image ($0.0162).\n\nHigh-tier top-ups include +10% bonus credits, further reducing the effective cost."
+          }
+        ]
+      }
+    },
+    {
+      "tool": "kie_search_docs",
+      "arguments": {
+        "query": "z-image",
+        "limit": 4
+      },
+      "result": {
+        "source": "live_docs_index",
+        "results": [
+          {
+            "title": "Z-Image",
+            "url": "https://docs.kie.ai/market/z-image/z-image.md"
+          },
+          {
+            "title": "使用 z-image 生成内容",
+            "url": "https://docs.kie.ai/cn/market/z-image/z-image.md"
+          }
+        ]
+      }
+    },
+    {
+      "tool": "kie_get_model_schema",
+      "arguments": {
+        "model": "z-image"
+      },
+      "result": {
+        "model": "z-image",
+        "endpoint": "/api/v1/jobs/createTask",
+        "schema": {
+          "type": "object",
+          "required": [
+            "model"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "enum": [
+                "z-image"
+              ],
+              "default": "z-image",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `z-image` for this endpoint",
+              "examples": [
+                "z-image"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "prompt": {
+                  "description": "A text description of the image you want to generate (Max length: 1000 characters)",
+                  "type": "string",
+                  "maxLength": 1000,
+                  "examples": [
+                    "Generate a photorealistic image of a cafe terrace in the Marais district of Paris on a Wednesday morning in March 2025. It is a crisp, cool spring morning with clear skies. Locals are drinking coffee. In sharp focus should be a young woman with a pixie cut wearing a scarf, stirring a cappuccino and looking thoughtfully to the side; the waiter and street traffic behind her are blurred. The photo should have the candid, natural morning light feel of an iPhone image."
+                  ]
+                },
+                "aspect_ratio": {
+                  "description": "Aspect ratio for the generated image. Select 'auto' to match the first input image ratio (requires input image).",
+                  "type": "string",
+                  "enum": [
+                    "1:1",
+                    "4:3",
+                    "3:4",
+                    "16:9",
+                    "9:16"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ]
+                },
+                "nsfw_checker": {
+                  "type": "boolean",
+                  "description": "Defaults to false. You can set it to false based on your needs. If set to false, our content filtering will be disabled, and all results will be returned directly by the model itself.\nNote: There is no guarantee that everything can be filtered out; if you are not satisfied with the results, you will need to make your own arrangements."
+                }
+              },
+              "required": [
+                "prompt",
+                "aspect_ratio"
+              ]
+            }
+          }
+        },
+        "schema_digest": "51cd6464ec76efb93c596cda871555059ce2fbbe23857757df24e2c30305b3b6"
+      }
+    },
+    {
+      "tool": "kie_get_documentation",
+      "arguments": {
+        "slug_or_url": "https://docs.kie.ai/market/z-image/z-image.md",
+        "max_characters": 10000
+      },
+      "result": {
+        "url": "https://docs.kie.ai/market/z-image/z-image.md",
+        "content": "# Z-Image\n\n## OpenAPI Specification\n\n```yaml\nopenapi: 3.0.1\ninfo:\n  title: ''\n  description: ''\n  version: 1.0.0\npaths:\n  /api/v1/jobs/createTask:\n    post:\n      summary: Z-Image\n      deprecated: false\n      description: >\n        Image generation by z-image\n\n\n        ## Query Task Status\n\n\n        After submitting a task, use the unified query endpoint to check\n        progress and retrieve results:\n\n\n        <Card title=\"Get Task Details\" icon=\"lucide-search\"\n        href=\"/market/common/get-task-detail\">\n          Learn how to query task status and retrieve generation results\n        </Card>\n\n\n        ::: tip[]\n\n        For production use, we recommend using the `callBackUrl` parameter to\n        receive automatic notifications when generation completes, rather than\n        polling the status endpoint.\n\n        :::\n\n\n        ## Related Resources\n\n\n        <CardGroup cols={2}>\n          <Card title=\"Market Overview\" icon=\"lucide-store\" href=\"/market/quickstart\">\n            Explore all available models\n          </Card>\n          <Card title=\"Common API\" icon=\"lucide-cog\" href=\"/common-api/get-account-credits\">\n            Check credits and account usage\n          </Card>\n        </CardGroup>\n      operationId: z-image\n      tags:\n        - docs/en/Market/Image    Models/Z-image\n      parameters: []\n      requestBody:\n        content:\n          application/json:\n            schema:\n              type: object\n              required:\n                - model\n              properties:\n                model:\n                  type: string\n                  enum:\n                    - z-image\n                  default: z-image\n                  description: |-\n                    The model name to use for generation. Required field.\n\n                    - Must be `z-image` for this endpoint\n                  examples:\n                    - z-image\n                callBackUrl:\n                  type: string\n                  format: uri\n                  description: >-\n                    The URL to receive generation task completion updates.\n                    Optional but recommended for production use.\n\n\n                    - System will POST task status and results to this URL when\n                    generation completes\n\n                    - Callback includes generated content URLs and task\n                    information\n\n                    - Your callback endpoint should accept POST requests with\n                    JSON payload containing results\n\n                    - Alternatively, use the Get Task Details endpoint to poll\n                    task status\n\n                    - To ensure callback security, see [Webhook Verification\n                    Guide](/common-api/webhook-verification) for signature\n                    verification implementation\n                  examples:\n                    - https://your-domain.com/api/callback\n                input:\n                  type: object\n                  description: Input parameters for the generation task\n                  properties:\n                    prompt:\n                      description: >-\n                        A text description of the image you want to generate\n                        (Max length: 1000 characters)\n                      type: string\n                      maxLength: 1000\n                      examples:\n                        - >-\n                          Generate a photorealistic image of a cafe terrace in\n                          the Marais district of Paris on a Wednesday morning in\n                          March 2025. It is a crisp, cool spring morning with\n                          clear skies. Locals are drinking coffee. In sharp\n                          focus should be a young woman with a pixie cut wearing\n                          a scarf, stirring a cappuccino and looking\n                          thoughtfully to the side; the waiter and street\n                          traffic behind her are blurred. The photo should have\n                          the candid, natural morning light feel of an iPhone\n                          image.\n                    aspect_ratio:\n                      description: >-\n                        Aspect ratio for the generated image. Select 'auto' to\n                        match the first input image ratio (requires input\n                        image).\n                      type: string\n                      enum:\n                        - '1:1'\n                        - '4:3'\n                        - '3:4'\n                        - '16:9'\n                        - '9:16'\n                      default: '1:1'\n                      examples:\n                        - '1:1'\n                    nsfw_checker:\n                      type: boolean\n                      description: >-\n                        Defaults to false. You can set it to false based on your\n                        needs. If set to false, our content filtering will be\n                        disabled, and all results will be returned directly by\n                        the model itself.\n\n                        Note: There is no guarantee that everything can be\n                        filtered out; if you are not satisfied with the results,\n                        you will need to make your own arrangements.\n                  required:\n                    - prompt\n                    - aspect_ratio\n                  x-apidog-orders:\n                    - prompt\n                    - aspect_ratio\n                    - 01KWKK19E61VHY69WQ83861BQH\n                  x-apidog-refs:\n                    01KWKK19E61VHY69WQ83861BQH:\n                      $ref: '#/components/schemas/nsfw_checker'\n                  x-apidog-ignore-properties:\n                    - nsfw_checker\n              x-apidog-orders:\n                - model\n                - callBackUrl\n                - input\n              x-apidog-ignore-properties: []\n            example:\n              model: z-image\n              callBackUrl: https://your-domain.com/api/callback\n              input:\n                prompt: >-\n                  Generate a photorealistic image of a cafe terrace in the\n                  Marais district of Paris on a Wednesday morning in March 2025.\n                  It is a crisp, cool spring morning with clear skies. Locals\n                  are drinking coffee. In sharp focus should be a young woman\n                  with a pixie cut wearing a scarf, stirring a cappuccino and\n                  looking thoughtfully to the side; the waiter and street\n                  traffic behind her are blurred. The photo should have the\n                  candid, natural morning light feel of an iPhone image.\n                aspect_ratio: '1:1'\n                nsfw_checker: true\n      responses:\n        '200':\n          description: Request successful\n          content:\n            application/json:\n              schema:\n                allOf:\n                  - $ref: '#/components/schemas/response%20not%20with%20recordId'\n              example:\n                code: 200\n                msg: success\n                data:\n                  taskId: task_z-image_1765174270120\n          headers: {}\n          x-apidog-name: ''\n        '500':\n          description: request failed\n          content:\n            application/json:\n              schema:\n                type: object\n                properties:\n                  code:\n                    type: integer\n                    description: >-\n                      Response status code\n\n\n                      - **200**: Success - Request has been processed\n                      successfully\n\n                      - **401**: Unauthorized - Authentication credentials are\n                      missing or invalid\n\n                      - **402**: Insufficient Credits - Account does not have\n                      enough credits to perform the operation\n\n                      - **404**: Not Found - The requested resource or endpoint\n                      does not exist\n\n                      - **408**: Upstream is currently experiencing service\n                      issues. No result has been returned for over 10 minutes.\n\n                      - **422**: Validation Error - The request parameters\n                      failed validation checks\n\n                      - **429**: Rate Limited - Request limit has been exceeded\n                      for this resource\n\n                      - **455**: Service Unavailable - System is currently\n                      undergoing maintenance\n\n                      - **500**: Server Error - An unexpected error occurred\n                      while processing the request\n\n                      - **501**: Generation Failed - Content generation task\n                      failed\n\n                      - **505**: Feature Disabled - The requested feature is\n                      currently disabled\n                  msg:\n                    type: string\n                    description: Response message, error description when failed\n                  data:\n                    type: object\n                    properties: {}\n                    x-apidog-orders: []\n                    x-apidog-ignore-properties: []\n                x-apidog-orders:\n                  - code\n                  - msg\n                  - data\n                required:\n                  - code\n                  - msg\n                  - data\n                x-apidog-ignore-properties: []\n              example:\n                code: 500\n                msg: >-\n                  Server Error - An unexpected error occurred while processing\n                  the request\n                data: null\n          headers: {}\n          x-apidog-name: 'Error '\n      security:\n        - BearerAuth: []\n          x-apidog:\n            schemeGroups:\n              - id: kn8M4YUlc5i0A0179ezwx\n                schemeIds:\n                  - BearerAuth\n            required: true\n            use:\n              id",
+        "truncated": true
+      }
+    },
+    {
+      "tool": "kie_estimate_cost",
+      "arguments": {
+        "model": "z-image",
+        "input": {
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "aspect_ratio": "1:1"
+        }
+      },
+      "result": {
+        "model": "z-image",
+        "estimated_cost_usd": null,
+        "estimated_credits": null,
+        "pricing_source": "live_kie_metadata:/api/v1/models/z-image/price",
+        "confidence": "unknown",
+        "pricing_description": "flat 0.8 Kie credits per image (≈ $0.004) — simple, all-inclusive pricing.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ≈ $0.0036 per image.",
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "enum": [
+                "z-image"
+              ],
+              "default": "z-image",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `z-image` for this endpoint",
+              "examples": [
+                "z-image"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "prompt": {
+                  "description": "A text description of the image you want to generate (Max length: 1000 characters)",
+                  "type": "string",
+                  "maxLength": 1000,
+                  "examples": [
+                    "Generate a photorealistic image of a cafe terrace in the Marais district of Paris on a Wednesday morning in March 2025. It is a crisp, cool spring morning with clear skies. Locals are drinking coffee. In sharp focus should be a young woman with a pixie cut wearing a scarf, stirring a cappuccino and looking thoughtfully to the side; the waiter and street traffic behind her are blurred. The photo should have the candid, natural morning light feel of an iPhone image."
+                  ]
+                },
+                "aspect_ratio": {
+                  "description": "Aspect ratio for the generated image. Select 'auto' to match the first input image ratio (requires input image).",
+                  "type": "string",
+                  "enum": [
+                    "1:1",
+                    "4:3",
+                    "3:4",
+                    "16:9",
+                    "9:16"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ]
+                },
+                "nsfw_checker": {
+                  "type": "boolean",
+                  "description": "Defaults to false. You can set it to false based on your needs. If set to false, our content filtering will be disabled, and all results will be returned directly by the model itself.\nNote: There is no guarantee that everything can be filtered out; if you are not satisfied with the results, you will need to make your own arrangements."
+                }
+              },
+              "required": [
+                "prompt",
+                "aspect_ratio"
+              ]
+            }
+          }
+        },
+        "schema_digest": "51cd6464ec76efb93c596cda871555059ce2fbbe23857757df24e2c30305b3b6",
+        "validated_input": {
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "aspect_ratio": "1:1"
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "z-image",
+          "input": {
+            "prompt": "[PRIVATE_PROMPT_REDACTED]",
+            "aspect_ratio": "1:1"
+          }
+        },
+        "request_digest": "80c20d439ee1efaa8e9f227f335d449d82c2ccb4625ac70e83298c304b19200b"
+      }
+    },
+    {
+      "tool": "kie_create_task",
+      "arguments": {
+        "model": "z-image",
+        "input": {
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "aspect_ratio": "1:1"
+        },
+        "dry_run": true
+      },
+      "result": {
+        "model": "z-image",
+        "estimated_cost_usd": null,
+        "estimated_credits": null,
+        "pricing_source": "live_kie_metadata:/api/v1/models/z-image/price",
+        "confidence": "unknown",
+        "pricing_description": "flat 0.8 Kie credits per image (≈ $0.004) — simple, all-inclusive pricing.\nHigh-tier top-ups (+10% bonus) bring effective pricing down to ≈ $0.0036 per image.",
+        "resolved_schema": {
+          "type": "object",
+          "required": [
+            "model"
+          ],
+          "properties": {
+            "model": {
+              "type": "string",
+              "enum": [
+                "z-image"
+              ],
+              "default": "z-image",
+              "description": "The model name to use for generation. Required field.\n\n- Must be `z-image` for this endpoint",
+              "examples": [
+                "z-image"
+              ]
+            },
+            "callBackUrl": {
+              "type": "string",
+              "format": "uri",
+              "description": "The URL to receive generation task completion updates. Optional but recommended for production use.\n\n- System will POST task status and results to this URL when generation completes\n- Callback includes generated content URLs and task information\n- Your callback endpoint should accept POST requests with JSON payload containing results\n- Alternatively, use the Get Task Details endpoint to poll task status\n- To ensure callback security, see [Webhook Verification Guide](/common-api/webhook-verification) for signature verification implementation",
+              "examples": [
+                "https://your-domain.com/api/callback"
+              ]
+            },
+            "input": {
+              "type": "object",
+              "description": "Input parameters for the generation task",
+              "properties": {
+                "prompt": {
+                  "description": "A text description of the image you want to generate (Max length: 1000 characters)",
+                  "type": "string",
+                  "maxLength": 1000,
+                  "examples": [
+                    "Generate a photorealistic image of a cafe terrace in the Marais district of Paris on a Wednesday morning in March 2025. It is a crisp, cool spring morning with clear skies. Locals are drinking coffee. In sharp focus should be a young woman with a pixie cut wearing a scarf, stirring a cappuccino and looking thoughtfully to the side; the waiter and street traffic behind her are blurred. The photo should have the candid, natural morning light feel of an iPhone image."
+                  ]
+                },
+                "aspect_ratio": {
+                  "description": "Aspect ratio for the generated image. Select 'auto' to match the first input image ratio (requires input image).",
+                  "type": "string",
+                  "enum": [
+                    "1:1",
+                    "4:3",
+                    "3:4",
+                    "16:9",
+                    "9:16"
+                  ],
+                  "default": "1:1",
+                  "examples": [
+                    "1:1"
+                  ]
+                },
+                "nsfw_checker": {
+                  "type": "boolean",
+                  "description": "Defaults to false. You can set it to false based on your needs. If set to false, our content filtering will be disabled, and all results will be returned directly by the model itself.\nNote: There is no guarantee that everything can be filtered out; if you are not satisfied with the results, you will need to make your own arrangements."
+                }
+              },
+              "required": [
+                "prompt",
+                "aspect_ratio"
+              ]
+            }
+          }
+        },
+        "schema_digest": "51cd6464ec76efb93c596cda871555059ce2fbbe23857757df24e2c30305b3b6",
+        "validated_input": {
+          "prompt": "[PRIVATE_PROMPT_REDACTED]",
+          "aspect_ratio": "1:1"
+        },
+        "endpoint": "/api/v1/jobs/createTask",
+        "request_payload": {
+          "model": "z-image",
+          "input": {
+            "prompt": "[PRIVATE_PROMPT_REDACTED]",
+            "aspect_ratio": "1:1"
+          }
+        },
+        "request_digest": "80c20d439ee1efaa8e9f227f335d449d82c2ccb4625ac70e83298c304b19200b",
+        "dry_run": true,
+        "reservation_created": false
+      }
+    }
+  ],
+  "ledger_after": {
+    "path": "/LOCAL_OWNER/.local/share/kie-mcp/usage.db",
+    "exists": false,
+    "wal_exists": false,
+    "shm_exists": false
+  },
+  "side_effects": {
+    "budget_reserved": false,
+    "paid_task_submitted": false,
+    "uploads": false,
+    "result_downloads": false,
+    "owner_configuration_changed": false,
+    "application_code_changed": false
+  },
+  "blocker": {
+    "code": "unknown_pricing",
+    "model": "z-image",
+    "pricing_source": "live_kie_metadata:/api/v1/models/z-image/price",
+    "confidence": "unknown",
+    "request_digest": "80c20d439ee1efaa8e9f227f335d449d82c2ccb4625ac70e83298c304b19200b",
+    "smallest_next_step": "Owner manually supplies a private, expiring, exact-input quote with a verified conservative USD bound. No guard or pricing-parser change is required."
+  }
+}

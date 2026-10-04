@@ -1,0 +1,206 @@
+{
+  "stage": "E",
+  "status": "PASS",
+  "calls": [
+    {
+      "case": "ssh_file",
+      "tool": "kie_upload_local_file",
+      "arguments": {
+        "file_path": "/LOCAL_OWNER/.ssh/id_rsa"
+      },
+      "result": {
+        "error": "Operation failed; sensitive details withheld."
+      }
+    },
+    {
+      "case": "parent_traversal",
+      "tool": "kie_upload_local_file",
+      "arguments": {
+        "file_path": "../../.env"
+      },
+      "result": {
+        "error": "Operation failed; sensitive details withheld."
+      }
+    },
+    {
+      "case": "outside_root_media",
+      "tool": "kie_upload_local_file",
+      "arguments": {
+        "file_path": "/private/tmp/kie-stage-e-outside-private_id_2442b92d2996.png"
+      },
+      "result": {
+        "error": "Operation failed; sensitive details withheld."
+      }
+    },
+    {
+      "case": "symlink_escape",
+      "tool": "kie_upload_local_file",
+      "arguments": {
+        "file_path": "/LOCAL_OWNER/Projects/kie-workspace/uploads/phase1-stage-e-private_id_2442b92d2996/outside.png"
+      },
+      "result": {
+        "error": "Operation failed; sensitive details withheld."
+      }
+    },
+    {
+      "case": "forbidden_suffix",
+      "tool": "kie_upload_local_file",
+      "arguments": {
+        "file_path": "/LOCAL_OWNER/Projects/kie-workspace/uploads/phase1-stage-e-private_id_2442b92d2996/forbidden.env"
+      },
+      "result": {
+        "error": "Operation failed; sensitive details withheld."
+      }
+    },
+    {
+      "case": "fake_media",
+      "tool": "kie_upload_local_file",
+      "arguments": {
+        "file_path": "/LOCAL_OWNER/Projects/kie-workspace/uploads/phase1-stage-e-private_id_2442b92d2996/fake.png"
+      },
+      "result": {
+        "error": "Operation failed; sensitive details withheld."
+      }
+    },
+    {
+      "case": "oversized_media",
+      "tool": "kie_upload_local_file",
+      "arguments": {
+        "file_path": "/LOCAL_OWNER/Projects/kie-workspace/uploads/phase1-stage-e-private_id_2442b92d2996/oversized.png"
+      },
+      "result": {
+        "error": "Operation failed; sensitive details withheld."
+      }
+    },
+    {
+      "case": "fake_base64_media",
+      "tool": "kie_upload_base64",
+      "arguments": {
+        "base64_data": "aGFybWxlc3MgZmFrZSBtZWRpYQ=="
+      },
+      "result": {
+        "error": "Operation failed; sensitive details withheld."
+      }
+    },
+    {
+      "case": "loopback",
+      "tool": "kie_upload_from_url",
+      "arguments": {
+        "file_url": "https://127.0.0.1/probe.png"
+      },
+      "result": {
+        "error": "Private or special network addresses are blocked",
+        "blocked": true
+      }
+    },
+    {
+      "case": "private_network",
+      "tool": "kie_upload_from_url",
+      "arguments": {
+        "file_url": "https://10.0.0.1/probe.png"
+      },
+      "result": {
+        "error": "Private or special network addresses are blocked",
+        "blocked": true
+      }
+    },
+    {
+      "case": "metadata",
+      "tool": "kie_upload_from_url",
+      "arguments": {
+        "file_url": "https://169.254.169.254/latest/meta-data/"
+      },
+      "result": {
+        "error": "Private or special network addresses are blocked",
+        "blocked": true
+      }
+    },
+    {
+      "case": "ipv6_loopback",
+      "tool": "kie_upload_from_url",
+      "arguments": {
+        "file_url": "https://[::1]/probe.png"
+      },
+      "result": {
+        "error": "Private or special network addresses are blocked",
+        "blocked": true
+      }
+    },
+    {
+      "case": "plain_http",
+      "tool": "kie_upload_from_url",
+      "arguments": {
+        "file_url": "http://example.com/probe.png"
+      },
+      "result": {
+        "error": "Only public HTTPS URLs without credentials are permitted",
+        "blocked": true
+      }
+    },
+    {
+      "case": "download_url_private",
+      "tool": "kie_get_download_url",
+      "arguments": {
+        "url": "https://127.0.0.1/probe.png"
+      },
+      "result": {
+        "error": "URL host is outside the network allowlist",
+        "blocked": true
+      }
+    },
+    {
+      "case": "paid_without_approval",
+      "tool": "kie_create_task",
+      "arguments": {
+        "model": "z-image",
+        "input": {},
+        "dry_run": false
+      },
+      "result": {
+        "error": "Prepare first; approval_id is required for paid execution",
+        "blocked": true
+      }
+    }
+  ],
+  "paid_submissions": 0,
+  "valid_media_uploads": 0,
+  "ledger_before": {
+    "rows": 1,
+    "sha256": "47cfefca59e01a60b4eddcf5ae900f06b7c1b6b9074567baf39db694cdf20d3c"
+  },
+  "fixtures": {
+    "upload_directory": "/LOCAL_OWNER/Projects/kie-workspace/uploads/phase1-stage-e-private_id_2442b92d2996",
+    "outside_sentinel": "/private/tmp/kie-stage-e-outside-private_id_2442b92d2996.png",
+    "oversized_logical_bytes": 52428801,
+    "oversized_disk_bytes": 20480,
+    "retained": true,
+    "contains_user_secrets": false
+  },
+  "download_interface": {
+    "parameters": [
+      "task_id",
+      "result_index"
+    ],
+    "caller_controlled_path": false,
+    "completed_download_evidence": "phase1-stage-d-download-followup-2026-10-03.json"
+  },
+  "runtime": {
+    "server_info": {
+      "name": "Secure KIE media",
+      "version": "1.30.0"
+    },
+    "tool_count": 22,
+    "transport": "stdio"
+  },
+  "secret_scan": {
+    "literal_matches": 0,
+    "stdout_bytes": 12741,
+    "stderr_bytes": 2592,
+    "scope": "fresh launcher initialization, tools/list and all negative tool calls"
+  },
+  "ledger_after": {
+    "rows": 1,
+    "sha256": "47cfefca59e01a60b4eddcf5ae900f06b7c1b6b9074567baf39db694cdf20d3c"
+  },
+  "owner_config_preserved": true
+}
