@@ -95,11 +95,20 @@ Pricing is conservative: a narrow unconditional grammar and reviewed model-speci
 prose profiles are recognised. Profiles match complete descriptions, exact allowed
 input conditions and current live amounts; top-up discounts are ignored. Unsupported
 fields/branches/tariffs return unknown pricing. Monetary rounding is upward.
-Other unrecognised pricing blocks execution unless the owner writes an exact
-request-specific, private, expiring quote. No tool can write that quote or submit a
-self-reported price. The owner verifies its conservative bound. Tariff/provider
-changes can exceed a local estimate, so separate provider-side hourly/daily/total
-caps are mandatory operational policy. Owner controls model allowlists/IP policy.
+When pricing is unknown, prepare first returns a warning without reserving or
+submitting. A separate, explicit per-request user acknowledgement may authorize
+preparation with unknown pricing. The ledger reserves the configured per-task limit
+as a local liability and records the acknowledgement with the immutable request.
+This reserve is not a provider-side price cap; KIE can charge more than it. The user
+must see that warning before acknowledging. Known estimates still show their source
+and conditions and are checked again against the reserved amount before submission.
+After completion, the MCP records and reports actual USD only if KIE includes `costUsd`
+in the task response. If it is absent, the exact charge remains unknown; credits or
+balance changes are not converted into a task price.
+An exact-input owner quote remains available; no tool can write a quote or submit a
+self-reported price. Tariff/provider changes can exceed a local estimate, so separate
+provider-side hourly/daily/total caps are mandatory operational policy. Owner controls
+model allowlists/IP policy.
 
 ## External clients and hard sandbox
 
@@ -141,16 +150,21 @@ comparison without uploads, media fetches or ledger mutation. User choice is the
 default; cheapest selection among the first 20 candidates is explicit opt-in.
 Image comparisons also work without a source, using a labelled one-image placeholder
 for conditional pricing, never an executable approval. The read-only `kie_preflight`
-reports operation/model requirements, missing inputs and parameter errors before
-uploads or reservations. It does not open/verify local files or validate actual media
-URLs; the existing upload, URL, budget and immutable-execution guards still apply.
-Russian tool descriptions and approval summaries help explain actions; they do not
-control client-owned approval buttons or add another approval/security boundary.
+reports operation/model requirements, missing inputs, declared video-input constraints,
+duration support and parameter errors before uploads or reservations. Video duration
+support is classified from the live schema and recognizable KIE description text;
+uncertain limits are not reported as confirmed. It does not open/verify local files or
+validate actual media URLs. A supplied input-video duration is user-reported, not
+measured; the exact value is stored with its approval and reused during execute
+revalidation. A model's video reference field does not establish frame-accurate editing;
+the existing upload, URL, budget and immutable-execution guards still apply. Russian
+tool descriptions and approval summaries help explain actions; they do not control
+client-owned approval buttons or add another approval/security boundary.
 Quality descriptions are provider claims; no independent quality/speed scores exist.
 With an explicit model, all six friendly tools have a dry-run preview without a
 paid submission/reservation.
-Local/external image previews can upload media to obtain an exact payload; trusted
-KIE input URLs are reused and still checked by the URL/public-DNS guard.
+Local/external image or video previews can upload media to obtain an exact payload;
+trusted KIE input URLs are reused and still checked by the URL/public-DNS guard.
 Live previews and all six friendly paid flows passed after reviewed tariff profiles
 were added; both Mini video modes, removal and upscale results were downloaded and
 inspected. Historical Lite Internal Error and parallel-metadata 429 were followed

@@ -71,6 +71,8 @@ class Ledger:
                     provider_task_id TEXT, fingerprint TEXT NOT NULL, status TEXT NOT NULL,
                     estimated_cost_usd INTEGER NOT NULL, estimated_credits REAL,
                     actual_cost_usd INTEGER, actual_credits REAL, pricing_source TEXT NOT NULL,
+                    unknown_price_accepted INTEGER NOT NULL DEFAULT 0,
+                    input_video_duration_seconds REAL,
                     input_hash TEXT NOT NULL, output_count INTEGER NOT NULL DEFAULT 0,
                     expires_at REAL NOT NULL, submitted_at REAL
                 );
@@ -79,6 +81,16 @@ class Ledger:
                     WHERE provider_task_id IS NOT NULL;
             """)
         with self.transaction() as db:
+            columns = {row["name"] for row in db.execute("PRAGMA table_info(usage)")}
+            if "unknown_price_accepted" not in columns:
+                db.execute(
+                    "ALTER TABLE usage ADD COLUMN unknown_price_accepted "
+                    "INTEGER NOT NULL DEFAULT 0"
+                )
+            if "input_video_duration_seconds" not in columns:
+                db.execute(
+                    "ALTER TABLE usage ADD COLUMN input_video_duration_seconds REAL"
+                )
             policy = json.dumps(limits.__dict__, sort_keys=True)
             db.execute("INSERT OR IGNORE INTO policy VALUES (1, ?)", (policy,))
             if db.execute("SELECT value FROM policy WHERE id=1").fetchone()[0] != policy:
@@ -116,17 +128,27 @@ class Ledger:
     @staticmethod
     def _public(row, session):
         item = dict(row)
+        owns_approval = item["agent_session_id"] == session
+        unknown_price_accepted = owns_approval and bool(
+            item.get("unknown_price_accepted", 0)
+        )
+        reserved_cost = item["estimated_cost_usd"] / 1_000_000
         result = {
             "status": item["status"],
             "request_digest": item["fingerprint"],
             "task_id": item["provider_task_id"],
             "expires_at": item["expires_at"],
-            "estimated_cost_usd": item["estimated_cost_usd"] / 1_000_000,
+            "estimated_cost_usd": None if unknown_price_accepted else reserved_cost,
+            "reserved_cost_usd": reserved_cost,
             "estimated_credits": item["estimated_credits"],
             "pricing_source": item["pricing_source"],
+            "unknown_price_accepted": unknown_price_accepted,
         }
-        if item["agent_session_id"] == session:
+        if owns_approval:
             result["approval_id"] = item["id"]
+            result["input_video_duration_seconds"] = item.get(
+                "input_video_duration_seconds"
+            )
         return result
 
     def prepare(
@@ -140,13 +162,28 @@ class Ledger:
         client_name="unknown",
         client_version="unknown",
         operation="generation",
+        unknown_price_accepted: bool = False,
+        input_video_duration_seconds: float | None = None,
         now: float | None = None,
     ) -> dict[str, Any]:
+        if type(unknown_price_accepted) is not bool:
+            raise GuardError("Unknown-price acceptance must be an explicit boolean")
+        if input_video_duration_seconds is not None:
+            if (
+                isinstance(input_video_duration_seconds, bool)
+                or not isinstance(input_video_duration_seconds, (int, float))
+                or not math.isfinite(float(input_video_duration_seconds))
+                or input_video_duration_seconds <= 0
+            ):
+                raise GuardError("Invalid input-video duration assumption")
+            input_video_duration_seconds = float(input_video_duration_seconds)
         if cost_usd is None:
             raise GuardError(
-                "Unknown cost requires owner-supplied verified pricing; execution blocked"
+                "Unknown cost requires an explicit liability reserve before preparation"
             )
         cost = money(cost_usd)
+        if unknown_price_accepted and cost != money(self.limits.task_usd):
+            raise GuardError("Unknown-price acceptance must reserve the full per-task limit")
         if credits is not None and (not math.isfinite(credits) or credits < 0):
             raise GuardError("Invalid credit estimate")
         if cost > money(self.limits.task_usd):
@@ -163,6 +200,28 @@ class Ledger:
                 (fingerprint, now - self.limits.duplicate_ttl),
             ).fetchone()
             if row:
+                if row["input_video_duration_seconds"] != input_video_duration_seconds:
+                    raise GuardError(
+                        "The same request is already prepared with a different input-video duration assumption"
+                    )
+                if (
+                    unknown_price_accepted
+                    and not row["unknown_price_accepted"]
+                    and row["status"] == "prepared"
+                    and row["agent_session_id"] == session
+                ):
+                    old_cost = row["estimated_cost_usd"]
+                    upgraded_cost = max(old_cost, cost)
+                    additional = upgraded_cost - old_cost
+                    if additional:
+                        self._check_budget_caps(db, session, row["day"], additional)
+                    db.execute(
+                        "UPDATE usage SET estimated_cost_usd=?,estimated_credits=NULL,"
+                        "pricing_source=?,unknown_price_accepted=1 "
+                        "WHERE id=? AND status='prepared'",
+                        (upgraded_cost, pricing_source, row["id"]),
+                    )
+                    row = db.execute("SELECT * FROM usage WHERE id=?", (row["id"],)).fetchone()
                 return {**self._public(row, session), "duplicate": True}
             active = db.execute(
                 "SELECT count(*) FROM usage WHERE status IN "
@@ -170,40 +229,14 @@ class Ledger:
             ).fetchone()[0]
             if active >= self.limits.concurrent:
                 raise GuardError("Concurrent task limit reached")
-            for query, args, cap, label in (
-                (
-                    "SELECT COALESCE(SUM(COALESCE(actual_cost_usd,estimated_cost_usd)),0) "
-                    "FROM usage WHERE status NOT IN ('expired','rejected') AND agent_session_id=?",
-                    (session,),
-                    self.limits.session_usd,
-                    "session",
-                ),
-                (
-                    "SELECT COALESCE(SUM(COALESCE(actual_cost_usd,estimated_cost_usd)),0) "
-                    "FROM usage WHERE status NOT IN ('expired','rejected') "
-                    "AND (day=? OR status IN ('submitting','submitted','unknown'))",
-                    (day,),
-                    self.limits.daily_usd,
-                    "daily",
-                ),
-                (
-                    "SELECT COALESCE(SUM(COALESCE(actual_cost_usd,estimated_cost_usd)),0) "
-                    "FROM usage WHERE status NOT IN ('expired','rejected')",
-                    (),
-                    self.limits.total_usd,
-                    "total",
-                ),
-            ):
-                spent = db.execute(query, args).fetchone()[0]
-                if spent + cost > money(cap):
-                    raise GuardError(f"Generation blocked: {label} budget exceeded")
+            self._check_budget_caps(db, session, day, cost)
             approval = uuid.uuid4().hex
             db.execute(
                 "INSERT INTO usage (id,created_at,day,client_name,client_version,agent_session_id,"
                 "mcp_process_id,correlation_id,operation,model,fingerprint,status,"
-                "estimated_cost_usd,"
-                "estimated_credits,pricing_source,input_hash,expires_at) "
-                "VALUES (?,?,?,?,?,?,?,?,?,?,?,'prepared',?,?,?,?,?)",
+                "estimated_cost_usd,estimated_credits,pricing_source,unknown_price_accepted,"
+                "input_video_duration_seconds,input_hash,expires_at) "
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?,'prepared',?,?,?,?,?,?,?)",
                 (
                     approval,
                     now,
@@ -219,12 +252,43 @@ class Ledger:
                     cost,
                     credits,
                     pricing_source,
+                    int(unknown_price_accepted),
+                    input_video_duration_seconds,
                     digest(payload.get("input", {})),
                     now + self.limits.approval_ttl,
                 ),
             )
             row = db.execute("SELECT * FROM usage WHERE id=?", (approval,)).fetchone()
             return {**self._public(row, session), "duplicate": False}
+
+    def _check_budget_caps(self, db, session: str, day: str, additional_cost: int) -> None:
+        for query, args, cap, label in (
+            (
+                "SELECT COALESCE(SUM(COALESCE(actual_cost_usd,estimated_cost_usd)),0) "
+                "FROM usage WHERE status NOT IN ('expired','rejected') AND agent_session_id=?",
+                (session,),
+                self.limits.session_usd,
+                "session",
+            ),
+            (
+                "SELECT COALESCE(SUM(COALESCE(actual_cost_usd,estimated_cost_usd)),0) "
+                "FROM usage WHERE status NOT IN ('expired','rejected') "
+                "AND (day=? OR status IN ('submitting','submitted','unknown'))",
+                (day,),
+                self.limits.daily_usd,
+                "daily",
+            ),
+            (
+                "SELECT COALESCE(SUM(COALESCE(actual_cost_usd,estimated_cost_usd)),0) "
+                "FROM usage WHERE status NOT IN ('expired','rejected')",
+                (),
+                self.limits.total_usd,
+                "total",
+            ),
+        ):
+            spent = db.execute(query, args).fetchone()[0]
+            if spent + additional_cost > money(cap):
+                raise GuardError(f"Generation blocked: {label} budget exceeded")
 
     def claim(
         self, approval: str, payload: dict[str, Any], session: str, *, operation="generation"

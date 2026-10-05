@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 from mcp.server.fastmcp import Context, FastMCP
 
@@ -29,17 +29,25 @@ mcp = FastMCP(
         "Общайтесь с пользователем по-русски. Перед разрешением на вызов объясняйте "
         "по-русски действие, передачу файлов и возможные расходы; не предлагайте "
         "подтверждать непонятный текст. Для сравнения исходное фото не нужно. "
+        "Для видео учитывайте длительность из prompt/duration и показывайте статус "
+        "совместимости каждой модели. Для input_type=video показывайте "
+        "task_types/is_video_to_video_model отдельно от reference-полей; "
+        "видеореференс не гарантирует покадровое редактирование. "
         "После выбора модели вызовите kie_preflight до загрузки/preview/prepare. "
         "Показывайте message_ru, требования, недостающие поля и предварительность цены. "
         "Перед платным выполнением покажите confirmation_summary_ru и параметры. "
         "Медиа-инструменты работают через локальный stdio. Сначала получите живые "
         "модели, схемы и цены. kie_create_task по умолчанию делает dry_run; prepare "
         "резервирует бюджет, execute требует approval_id и неизменённый запрос. "
-        "Неизвестная цена блокирует запуск без точной котировки, настроенной владельцем. "
+        "Неизвестная цена требует явного согласия пользователя на риск через "
+        "accept_unknown_price=true при подготовке; локально резервируется лимит задачи, "
+        "а фактическое списание KIE может быть выше. "
+        "После завершения сообщайте USD только если billing_reconciliation.cost_status="
+        "reported_by_kie; не переводите кредиты или изменение баланса в USD. "
         "Без model удобные команды возвращают сравнение: покажите варианты и дождитесь "
         "выбора. auto_select=true допустим только при явном поручении выбрать самый "
         "дешёвый вариант среди первых 20 кандидатов. С model команда готовит одну "
-        "задачу или preview при dry_run=true; preview по фото может загрузить исходник. "
+        "задачу или preview при dry_run=true; preview по фото/видео может загрузить исходник. "
         "Выполнение, ожидание и скачивание — отдельные шаги. Не обходите защиту "
         "через shell, прямые API или другие медиа-навыки."
     ),
@@ -73,6 +81,51 @@ async def safe_call(coro: Any) -> dict[str, Any]:
                 "Сравнить модели можно без фото через kie_compare_models."
             ),
             "Supply one image source": "Укажите один исходник: image_path или image_url.",
+            "Supply one video source": "Укажите один исходный ролик: video_path или video_url.",
+            "Supply the image source once": "Укажите изображение только одним способом.",
+            "Supply the video source once": "Укажите видео только одним способом.",
+            "Supply either an image input or a video input, not both": (
+                "Для generate_video выберите один тип входа: изображение или видео."
+            ),
+            "input_type must be auto, text, image or video": (
+                "input_type должен быть auto, text, image или video."
+            ),
+            "Text-to-Video cannot include an image or video source": (
+                "Для Text-to-Video не передавайте исходное изображение или видео."
+            ),
+            "Image-to-Video requires an input image": (
+                "Для Image-to-Video укажите исходное изображение через image_path или image_url."
+            ),
+            "Video-to-Video requires an input video": (
+                "Для Video-to-Video укажите исходный ролик через video_path или video_url."
+            ),
+            "Video input is only supported for generate_video": (
+                "Входное видео поддерживается только инструментом generate_video."
+            ),
+            "input_type and video input are only supported for generate_video": (
+                "input_type и видеовход доступны только для generate_video."
+            ),
+            "input_video_duration_seconds requires Video-to-Video input": (
+                "input_video_duration_seconds применяется только к Video-to-Video."
+            ),
+            "input_video_duration_seconds must be a positive number": (
+                "Укажите положительную длительность исходного ролика в секундах."
+            ),
+            "Model has no unambiguous declared video-input field": (
+                "В схеме выбранной модели нет однозначного поля для входного видео."
+            ),
+            "input_type conflicts with the supplied media source": (
+                "Выбранный input_type не совпадает с переданным типом исходного файла."
+            ),
+            "Requested video duration is outside provider-declared limits": (
+                "Выбранная длительность выходит за ограничения этой модели KIE."
+            ),
+            "Input-video duration is outside provider-declared limits": (
+                "Длительность исходного ролика превышает опубликованный предел модели KIE."
+            ),
+            "Input-video duration is required by the provider limits; run kie_preflight and supply it": (
+                "Схема KIE требует длительность исходного ролика для проверки лимита; укажите её в kie_preflight."
+            ),
             "Input does not satisfy the live model schema": (
                 "Данные не соответствуют схеме модели. Вызовите kie_preflight: "
                 "он покажет обязательные поля и допустимые параметры."
@@ -112,7 +165,8 @@ def docs_overview() -> str:
             "api_base": settings.api_base,
             "upload_base": settings.upload_base,
             "paid_flow": "prepare/execute",
-            "unknown_pricing": "blocked",
+            "unknown_pricing": "explicit_user_risk_acknowledgement_required",
+            "unknown_price_reserve": "configured_per_task_limit; provider charge may exceed",
             "temporary_results": True,
         }
     )
@@ -180,21 +234,52 @@ async def kie_get_model_schema(model: str) -> dict:
 
 
 @mcp.tool()
-async def kie_estimate_cost(model: str, input: dict[str, Any]) -> dict:
-    """Проверить данные по живой схеме и оценить цену запроса; unknown означает неизвестную цену."""
-    return await safe_call(service.estimate(model, input))
+async def kie_estimate_cost(
+    model: str,
+    input: dict[str, Any],
+    input_video_duration_seconds: float | None = None,
+) -> dict:
+    """Проверить схему и цену. unknown значит, что перед подготовкой потребуется явное согласие на риск."""
+    return await safe_call(
+        service.estimate(
+            model,
+            input,
+            input_video_duration_seconds=input_video_duration_seconds,
+        )
+    )
 
 
 @mcp.tool()
-async def kie_prepare_task(ctx: Context, model: str, input: dict[str, Any], dry_run: bool = False):
+async def kie_prepare_task(
+    ctx: Context,
+    model: str,
+    input: dict[str, Any],
+    dry_run: bool = False,
+    accept_unknown_price: bool = False,
+    input_video_duration_seconds: float | None = None,
+):
     """Подготовить неизменённый запрос и зарезервировать бюджет.
 
     Сначала kie_preflight и просмотр модели, параметров, цены по-русски.
     dry_run=true не резервирует деньги и не отправляет платную задачу.
-    Покажите confirmation_summary_ru перед выполнением запроса.
+    Для Video-to-Video input_video_duration_seconds — оценка пользователя, не проверенная по файлу;
+    значение сохраняется в approval и повторно используется при execute.
+    Если confidence=unknown, сначала покажите предупреждение пользователю и дождитесь
+    явного согласия на риск. Только после согласия повторите вызов с
+    accept_unknown_price=true. Будет зарезервирован лимит одной задачи; списание KIE
+    может оказаться выше. Этот вызов только готовит запрос; покажите
+    confirmation_summary_ru перед execute.
     """
     identity(ctx)
-    return await safe_call(service.prepare(model, input, dry_run=dry_run))
+    return await safe_call(
+        service.prepare(
+            model,
+            input,
+            dry_run=dry_run,
+            accept_unknown_price=accept_unknown_price,
+            input_video_duration_seconds=input_video_duration_seconds,
+        )
+    )
 
 
 @mcp.tool()
@@ -205,7 +290,7 @@ async def kie_create_task(
     dry_run: bool = True,
     approval_id: str | None = None,
 ):
-    """Просмотр запроса по умолчанию; платный запуск требует подготовленного approval_id."""
+    """Просмотр по умолчанию. Для платного запуска подготовьте approval_id; при unknown сначала получите явное согласие на риск через kie_prepare_task."""
     identity(ctx)
     if dry_run:
         return await safe_call(service.prepare(model, input, dry_run=True))
@@ -222,7 +307,7 @@ async def kie_create_task(
 async def kie_execute_task(ctx: Context, approval_id: str, model: str, input: dict[str, Any]):
     """Выполнить один подготовленный платный запрос с теми же model/input.
 
-    Перед разрешением объясните по-русски модель, параметры и стоимость из prepare.
+    Перед разрешением объясните по-русски модель, параметры и стоимость или риск из prepare.
     При таймауте или неизвестном результате отправки не повторяйте запрос.
     """
     identity(ctx)
@@ -231,13 +316,13 @@ async def kie_execute_task(ctx: Context, approval_id: str, model: str, input: di
 
 @mcp.tool()
 async def kie_get_task(task_id: str):
-    """Получить статус и результаты задачи, сверить расходы после её завершения."""
+    """Получить статус; фактический USD появится только если KIE вернёт costUsd."""
     return await safe_call(service.get_task(task_id))
 
 
 @mcp.tool()
 async def kie_wait_for_task(task_id: str, timeout_seconds: int = 900):
-    """Дождаться задачи с интервалами 2/3/5/8/10/15 секунд в пределах таймаута владельца."""
+    """Дождаться задачи; сообщить costUsd только если его вернул KIE."""
     return await safe_call(service.wait(task_id, max(1, timeout_seconds)))
 
 
@@ -292,6 +377,10 @@ async def kie_compare_models(
     cursor: int = 0,
     limit: int = 5,
     include_metrics: bool = False,
+    input_type: Literal["auto", "text", "image", "video"] = "auto",
+    video_path: str | None = None,
+    video_url: str | None = None,
+    input_video_duration_seconds: float | None = None,
 ):
     """Сравнить живые модели, параметры и цены; фото для сравнения не требуется.
 
@@ -299,9 +388,20 @@ async def kie_compare_models(
     upscale_image или product_image_create. parameters: duration, resolution,
     aspect_ratio, output_format, scale, target_resolution. Покажите варианты по-русски
     и дождитесь выбора; next_cursor даёт следующую страницу. Сравнение не загружает
-    файлы и не резервирует деньги. Без исходника цена предварительная для одного
-    входного фото. Качество — описание провайдера, не независимая оценка.
-    После выбора вызовите kie_preflight до точного preview, который может загрузить фото.
+    файлы и не резервирует деньги. Для generate_video длительность берётся из duration
+    или однозначного указания в prompt; duration_matches перечисляет подходящие модели
+    текущей страницы, а duration_support показывает supported,
+    unsupported, uncertain или automatic и источник ограничения. Просмотрите все
+    страницы next_cursor.
+    input_type=video ищет Video-to-Video и модели с видеовходом. Поля task_types,
+    is_video_to_video_model и video_input_semantics различают типы кандидатов;
+    video_to_video_reference_field означает, что каталог относит модель к V2V,
+    а её схема принимает reference-видео. Reference поле не гарантирует покадровое
+    редактирование. video_input_matches перечисляет модели на текущей странице.
+    input_video_duration_seconds —
+    указанная пользователем длительность исходника, файл не анализируется.
+    Качество — описание провайдера, не независимая оценка. После выбора вызовите
+    kie_preflight до preview/prepare; точный preview может загрузить исходное медиа в KIE.
     """
     return await safe_call(
         service.compare_models(
@@ -315,6 +415,10 @@ async def kie_compare_models(
             cursor=cursor,
             limit=limit,
             include_metrics=include_metrics,
+            input_type=input_type,
+            video_path=video_path,
+            video_url=video_url,
+            input_video_duration_seconds=input_video_duration_seconds,
         )
     )
 
@@ -328,15 +432,26 @@ async def kie_preflight(
     image_url: str | None = None,
     parameters: dict | None = None,
     model_input: dict | None = None,
+    input_type: Literal["auto", "text", "image", "video"] = "auto",
+    video_path: str | None = None,
+    video_url: str | None = None,
+    input_video_duration_seconds: float | None = None,
 ):
     """Заранее узнать требования и недостающие данные без загрузок и резервирования денег.
 
     operation как в kie_compare_models; model — выбранная пользователем модель.
-    Покажите required_fields, fields, missing_inputs, invalid_fields и message_ru.
+    Покажите required_fields, fields, video_input_constraints, duration_support,
+    missing_inputs, invalid_fields и message_ru. Для списка моделей используйте
+    kie_compare_models; здесь duration_support показывает статус выбранной модели.
+    Статус бывает supported, unsupported, uncertain или automatic; последний означает,
+    что точную длительность выбирает сама модель.
+    input_type=video включает Video-to-Video и видео-референсы.
     Форматы и размеры из описаний провайдера не переводятся автоматически: объясните
-    их по-русски. Исходный файл не открывается и не проверяется. Цена для фото
-    предварительная и предполагает один исходник; это не разрешение на выполнение.
-    Перед последующим image preview объясните передачу файла в KIE.
+    их по-русски. Исходный файл не открывается и не проверяется. Укажите
+    input_video_duration_seconds, если схема ограничивает длительность исходника или
+    сумму длительностей входа/результата; это пользовательская оценка, не замер файла.
+    Цена для входного медиа может быть предварительной; это не разрешение на выполнение.
+    Перед последующим preview объясните передачу файла в KIE.
     """
     return await safe_call(
         service.preflight(
@@ -347,6 +462,10 @@ async def kie_preflight(
             image_url,
             parameters,
             model_input,
+            input_type=input_type,
+            video_path=video_path,
+            video_url=video_url,
+            input_video_duration_seconds=input_video_duration_seconds,
         )
     )
 
@@ -362,10 +481,13 @@ async def generate_image(
     dry_run: bool = False,
     model_input: dict | None = None,
     auto_select: bool = False,
+    accept_unknown_price: bool = False,
 ):
     """Без model сравнить варианты; с model подготовить одно изображение или dry_run preview.
 
     auto_select=true разрешён только при явном поручении выбрать самый дешёвый вариант.
+    При unknown покажите предупреждение и дождитесь явного согласия до установки
+    accept_unknown_price=true; локальный резерв равен лимиту задачи, цена KIE может быть выше.
     """
     identity(ctx)
     params = {
@@ -386,6 +508,7 @@ async def generate_image(
             dry_run=dry_run,
             model_input=model_input,
             auto_select=auto_select,
+            accept_unknown_price=accept_unknown_price,
         )
     )
 
@@ -403,10 +526,13 @@ async def edit_image(
     dry_run: bool = False,
     model_input: dict | None = None,
     auto_select: bool = False,
+    accept_unknown_price: bool = False,
 ):
     """Без model сравнить варианты без фото; с model нужен исходник.
 
     Сначала kie_preflight; preview может загрузить фото.
+    При unknown покажите предупреждение и дождитесь явного согласия до установки
+    accept_unknown_price=true; локальный резерв равен лимиту задачи, цена KIE может быть выше.
     """
     identity(ctx)
     params = {
@@ -429,6 +555,7 @@ async def edit_image(
             dry_run=dry_run,
             model_input=model_input,
             auto_select=auto_select,
+            accept_unknown_price=accept_unknown_price,
         )
     )
 
@@ -440,16 +567,30 @@ async def generate_video(
     image_path: str | None = None,
     image_url: str | None = None,
     model: str | None = None,
-    duration: int | None = None,
+    duration: float | None = None,
     aspect_ratio: str | None = None,
     resolution: str | None = None,
     dry_run: bool = False,
     model_input: dict | None = None,
     auto_select: bool = False,
+    accept_unknown_price: bool = False,
+    input_type: Literal["auto", "text", "image", "video"] = "auto",
+    video_path: str | None = None,
+    video_url: str | None = None,
+    input_video_duration_seconds: float | None = None,
 ):
-    """Без model сравнить варианты видео; с model сначала kie_preflight.
+    """Сгенерировать видео по тексту, изображению или входному ролику.
 
-    Preview по фото может загрузить исходник.
+    duration задаётся в секундах; если его нет, MCP ищет однозначную длину в секундах
+    или минутах в prompt.
+    Без model сначала сравнивает модели и помечает поддержку этой длины; для Video-to-Video
+    задайте video_path/video_url или укажите input_type=video при сравнении.
+    Перед подготовкой сначала вызовите kie_preflight. Video reference может быть
+    условием генерации и не обещает покадрового редактирования. Для комбинированных
+    ограничений входа/выхода укажите input_video_duration_seconds; файл локально не измеряется.
+    Preview может загрузить исходное изображение/видео в KIE.
+    При unknown покажите предупреждение и дождитесь явного согласия до установки
+    accept_unknown_price=true; локальный резерв равен лимиту задачи, цена KIE может быть выше.
     """
     identity(ctx)
     params = {
@@ -472,6 +613,11 @@ async def generate_video(
             dry_run=dry_run,
             model_input=model_input,
             auto_select=auto_select,
+            accept_unknown_price=accept_unknown_price,
+            input_type=input_type,
+            video_path=video_path,
+            video_url=video_url,
+            input_video_duration_seconds=input_video_duration_seconds,
         )
     )
 
@@ -485,10 +631,13 @@ async def remove_background(
     dry_run: bool = False,
     model_input: dict | None = None,
     auto_select: bool = False,
+    accept_unknown_price: bool = False,
 ):
     """Без model сравнить варианты без фото; с model нужен исходник для удаления фона.
 
     Preview может загрузить фото.
+    При unknown покажите предупреждение и дождитесь явного согласия до установки
+    accept_unknown_price=true; локальный резерв равен лимиту задачи, цена KIE может быть выше.
     """
     identity(ctx)
     return await safe_call(
@@ -500,6 +649,7 @@ async def remove_background(
             dry_run=dry_run,
             model_input=model_input,
             auto_select=auto_select,
+            accept_unknown_price=accept_unknown_price,
         )
     )
 
@@ -515,10 +665,13 @@ async def upscale_image(
     dry_run: bool = False,
     model_input: dict | None = None,
     auto_select: bool = False,
+    accept_unknown_price: bool = False,
 ):
     """Без model сравнить варианты без фото; с model нужен исходник для увеличения.
 
     Preview может загрузить фото.
+    При unknown покажите предупреждение и дождитесь явного согласия до установки
+    accept_unknown_price=true; локальный резерв равен лимиту задачи, цена KIE может быть выше.
     """
     identity(ctx)
     params = {
@@ -536,6 +689,7 @@ async def upscale_image(
             dry_run=dry_run,
             model_input=model_input,
             auto_select=auto_select,
+            accept_unknown_price=accept_unknown_price,
         )
     )
 
@@ -554,12 +708,15 @@ async def product_image_create(
     dry_run: bool = False,
     model_input: dict | None = None,
     auto_select: bool = False,
+    accept_unknown_price: bool = False,
 ):
     """Фото товара: без model сравнить варианты, исходное фото пока не нужно.
 
     С выбранным model исходное image_path обязательно. Сначала kie_preflight:
     покажите требования, параметры и цену по-русски. dry_run=true может загрузить
     фото в KIE, но не отправляет платную задачу; предупредите до вызова.
+    При unknown покажите предупреждение и дождитесь явного согласия до установки
+    accept_unknown_price=true; локальный резерв равен лимиту задачи, цена KIE может быть выше.
     """
     identity(ctx)
     prompt = (
@@ -581,6 +738,7 @@ async def product_image_create(
             dry_run=dry_run,
             model_input=model_input,
             auto_select=auto_select,
+            accept_unknown_price=accept_unknown_price,
         )
     )
 

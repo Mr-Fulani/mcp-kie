@@ -18,7 +18,7 @@ MIT license; inherited attribution is preserved in [NOTICE.md](NOTICE.md).
 | Capability | Current support |
 |---|---|
 | Image generation/editing, product photos, background removal, upscale | Six friendly tools; selected models tested on live KIE |
-| Text-to-video and image-to-video | Friendly `generate_video`; selected models tested on live KIE |
+| Text-to-video, image-to-video and declared video-input models | Friendly `generate_video`; duration-aware comparison and Video-to-Video/reference inputs when the live schema supports them |
 | Audio | Compatible unified async contracts through low-level tools; no dedicated friendly audio command or live audio acceptance |
 | Model choice | Live catalog/schema/price comparison, pagination and explicit user choice |
 | Results | Local files with readable date/label/type/model/task folders; existing folders untouched |
@@ -112,11 +112,29 @@ pagination (five entries by default, at most ten per page). Each call fetches li
 catalog/schema/pricing; it does not reuse a stale local list. Provider descriptions
 are claims, not measured quality ratings; generation speed remains unknown.
 
+For video, the MCP reads an explicit `duration` parameter in seconds or one
+unambiguous length in seconds or minutes from the prompt, then reports each candidate
+as `supported`, `unsupported`, `uncertain` or `automatic` with the schema or provider
+description that supplies the limit. `automatic` means the model chooses the output
+length, so exact seconds are not guaranteed. Use `next_cursor` to review all catalog
+pages. Unclear limits are not counted as confirmed matches. `input_type="video"`
+searches Video-to-Video and declared video reference inputs; rows show `task_types`,
+`is_video_to_video_model` and `video_input_semantics` to distinguish those categories.
+A model can be catalogued as Video-to-Video and still expose a reference-video field;
+that field can guide generation without guaranteeing frame-accurate editing.
+Supply `video_path`/`video_url` to prepare a selected model.
+For combined input/output limits, `input_video_duration_seconds` is a user estimate;
+the MCP does not measure the clip locally.
+
 With the chosen `model`, use `dry_run=true` for an exact preview. Image previews can
-upload your source to KIE; metadata-only comparison cannot. Extra declared fields
-use `model_input`. Unknown or conditional prices outside reviewed profiles stay
-unknown; they are never treated as free. Explicit `auto_select=true` delegates
+upload your source to KIE; video previews can upload the clip. Metadata-only comparison
+does not upload media. Extra declared fields use `model_input`. Unknown or conditional
+prices outside reviewed profiles stay unknown; they are never treated as free. After
+the MCP warning, the user may explicitly accept that risk; the local ledger reserves
+the configured per-task limit, while KIE may charge more. Explicit `auto_select=true` delegates
 cheapest known-price selection among the first 20 candidates, not best quality.
+After completion, the MCP reports actual USD only if KIE returns `costUsd`; otherwise
+the final charge remains unknown and must not be inferred from credits or balance changes.
 
 The paid path is `preview → prepare → execute → wait/get_task → download`.
 `kie_prepare_task` reserves shared budget; `kie_execute_task` needs the approval ID
@@ -144,8 +162,10 @@ spending caps/model policy separately, especially before unattended operation.
 Uploads/downloads are disabled without explicit roots. Media signatures, bounded
 reads, anchored filesystem operations, fixed endpoints, HTTPS/public DNS pinning,
 redirect checks and approval/budget guards apply. Unknown prices need an owner's
-private exact-input quote; agents cannot create or approve their own quote.
-No MCP tool manages keys, caps, roots or policy.
+private exact-input quote or an explicit per-request user acknowledgement of the
+unknown-price risk. The latter reserves the configured per-task limit locally;
+actual KIE charges can be higher. Agents must explain this before setting
+`accept_unknown_price=true`. No MCP tool manages keys, caps, roots or policy.
 
 An agent with shell/network access under the **same OS account** can operate outside
 MCP. This server does not isolate that agent or encrypt a plaintext secret file.

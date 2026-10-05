@@ -29,8 +29,10 @@ an ambiguous submission. Real acceptance needs a separate key, owner caps, one
 reviewed immutable request and secure MCP prepare/execute/download.
 
 For changes affecting money, secrets, filesystem or network contracts, include
-focused negative tests. Preserve fail-closed unknown prices, fixed endpoints,
-DNS/TLS guards, owner policy separation and no automatic paid POST retries.
+focused negative tests. Preserve conservative unknown-price estimates and require
+an explicit per-request user risk acknowledgement before preparing an unknown-price
+task. Preserve fixed endpoints, DNS/TLS guards, owner policy separation and no
+automatic paid POST retries.
 New model pricing profiles must match complete live descriptions and declared
 conditions; include source/date/expiry fixtures, never a guessed credit conversion.
 Do not solve failures by deleting ledgers or removing safety gates.

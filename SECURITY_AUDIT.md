@@ -1,5 +1,14 @@
 # Security audit — secure-codex implementation
 
+## Unknown-price risk opt-in (2026-10-05)
+
+This is a later behavior change than the audit sections below. Unknown price still
+returns `confidence=unknown`; a separate explicit user acknowledgement can now allow
+preparation. The ledger reserves the configured per-task limit and binds the risk flag
+to the immutable approval. This local reserve cannot limit KIE billing, which may be
+higher. The historical audit conclusions below describe the revisions tested at their
+dates; this addendum has not been live-acceptance tested.
+
 ## Portable local setup update (2026-10-04)
 
 Owner-only bounded config/secret-file reads, strict config names/types, absolute

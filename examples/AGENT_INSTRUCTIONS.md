@@ -7,12 +7,20 @@ network calls or another media skill. This does not govern independent chat logi
 For this user, explain requirements and every permission request in Russian before
 the prompt appears: what happens, whether files leave the computer, and possible
 costs. Tool identifiers may stay unchanged. Client-owned buttons may remain English.
-Initial kie_compare_models needs no photo. Label provisional prices and assumptions.
-After model choice, call kie_preflight before uploads, exact preview or preparation.
-Explain required_fields, missing_inputs and field limits, translating provider format
-and size descriptions. Preflight does not verify the file; exact preview may upload
-it. Show confirmation_summary_ru and parameters before paid execution, respecting
-existing authorization without asking twice.
+Initial kie_compare_models needs no photo or video. For a requested video duration,
+show the models marked `duration_support=supported`, explain `uncertain` and
+`automatic` separately, and use next_cursor to cover every page. For `input_type="video"`,
+show `task_types`, `is_video_to_video_model` and `video_input_semantics` to distinguish
+catalogued Video-to-Video models from reference-video inputs. A model can be both
+catalogued as Video-to-Video and expose a `reference_video_*` field; report both facts.
+A provider reference-video field does not promise frame-accurate editing. If a combined-duration rule needs the source length,
+ask for `input_video_duration_seconds`; explain that the MCP does not measure it.
+Label provisional prices and assumptions. After model choice, call kie_preflight
+before uploads, exact preview or preparation. Explain required_fields, missing_inputs
+and field limits, translating provider format and size descriptions. Preflight does
+not verify the file; exact preview may upload image/video media to KIE. Show
+confirmation_summary_ru and parameters before paid execution, respecting existing
+authorization without asking twice.
 
 Without a specified model, show compatible live choices and their requested/default
 parameters, price/source/confidence and limitations. Use kie_compare_models search
@@ -20,6 +28,13 @@ and next_cursor when more candidates are needed. Wait for the user's model choic
 unless they explicitly delegated selection. auto_select=true means cheapest known
 compatible price among the first 20 candidates; it is not quality/health ranking.
 Do not fabricate quality ratings, speed estimates or a zero price for unknown costs.
+When a selected model's price is unknown, explain the possible KIE charge and the
+local per-task reserve, then ask whether the user accepts the risk. Only after an
+explicit yes may `accept_unknown_price=true` be set on preparation. The reserve is
+not a provider-side cap; actual KIE billing can be higher.
+After completion, report the KIE-provided USD only when `billing_reconciliation.cost_status`
+is `reported_by_kie`. If it is `not_reported_by_kie`, say the exact USD remains unknown;
+do not infer it from credits or balance changes.
 
 With the chosen model, inspect dry_run before preparing. Explain that exact image
 preview may upload the source; comparison does not. Prepare one immutable request,
