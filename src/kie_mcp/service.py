@@ -638,23 +638,104 @@ class KieService:
                     "не выводите её из числа кредитов или изменения баланса."
                 ),
             }
+        response = dict(response)
+        response["task_progress"] = self.task_progress(task_id, data)
         return response
 
+    @staticmethod
+    def task_progress(task_id: str, data: dict) -> dict:
+        state = data.get("state")
+        terminal = state in {"success", "fail"}
+        created = data.get("createTime")
+        elapsed = None
+        if (
+            isinstance(created, (int, float))
+            and not isinstance(created, bool)
+            and math.isfinite(created)
+            and created > 0
+        ):
+            finished = data.get("completeTime") if terminal else None
+            end = time.time()
+            if (
+                isinstance(finished, (int, float))
+                and not isinstance(finished, bool)
+                and math.isfinite(finished)
+                and finished > 0
+            ):
+                end = finished / 1000
+            elapsed = max(0, round(end - created / 1000))
+        descriptions = {
+            "waiting": "Задача в очереди KIE.",
+            "queuing": "Задача в очереди KIE.",
+            "generating": "KIE генерирует результат.",
+            "success": "Генерация завершена. Результат можно скачать.",
+            "fail": "KIE сообщил ошибку генерации. Проверьте failCode и failMsg.",
+        }
+        message = descriptions.get(
+            state, "KIE вернул неизвестный статус; готовность не подтверждена."
+        )
+        if elapsed is not None:
+            message += f" С момента создания задачи: {elapsed} с."
+        if not terminal:
+            message += (
+                " KIE не сообщает процент, позицию в очереди или время до готовности."
+                " Проверяйте эту же задачу; не отправляйте новую генерацию."
+            )
+        return {
+            "task_id": task_id,
+            "provider_state": state,
+            "terminal": terminal,
+            "elapsed_seconds": elapsed,
+            "progress_percent": None,
+            "queue_position": None,
+            "eta_seconds": None,
+            "next_step": "kie_download_result" if state == "success" else (
+                "review_provider_error" if state == "fail" else "kie_wait_for_task"
+            ),
+            "retry_after_seconds": None if terminal else 15,
+            "resubmit_allowed": False,
+            "message_ru": message,
+        }
+
     async def wait(self, task_id: str, timeout: int | None = None):
-        deadline = time.monotonic() + min(
+        started = time.monotonic()
+        deadline = started + min(
             timeout or self.settings.task_timeout, self.settings.task_timeout
         )
         intervals = [2, 3, 5, 8, 10, 15]
         attempt = 0
-        while time.monotonic() < deadline:
+        while True:
+            # Poll once more at the deadline so completion during the last sleep is visible.
             payload = await self.get_task(task_id)
-            if payload.get("data", {}).get("state") in {"success", "fail"}:
-                return payload
+            terminal = payload.get("data", {}).get("state") in {"success", "fail"}
+            elapsed = max(0, time.monotonic() - started)
+            timed_out = not terminal and time.monotonic() >= deadline
+            if terminal or timed_out:
+                result = dict(payload)
+                result["polling"] = {
+                    "status": "complete" if terminal else "pending",
+                    "timed_out": timed_out,
+                    "waited_seconds": round(elapsed, 2),
+                    "poll_count": attempt + 1,
+                    "task_id": task_id,
+                    "budget_liability_retained": not terminal,
+                    "resubmit_allowed": False,
+                    "message_ru": (
+                        "Проверка завершена: KIE вернул итоговый статус."
+                        if terminal else
+                        "Время одной проверки истекло; "
+                        "задача продолжает оставаться активной в KIE. "
+                        "Это не ошибка генерации и не разрешение на повторный запуск. "
+                        "Продолжите kie_wait_for_task или kie_get_task с тем же task_id. "
+                        "Дополнительного согласия на платный запуск не требуется; "
+                        "локальный резерв сохраняется."
+                    ),
+                }
+                return result
             await asyncio.sleep(
                 min(intervals[min(attempt, 5)], max(0, deadline - time.monotonic()))
             )
             attempt += 1
-        raise GuardError("Task polling timed out; budget liability retained")
 
     @staticmethod
     def result_urls(data: dict) -> list[str]:

@@ -108,7 +108,10 @@ async def test_dry_run_never_reserves_or_submits(tmp_path):
         preview = await service.prepare(MODEL, {"prompt": "private"}, dry_run=True)
     assert preview["estimated_cost_usd"] == 0.1
     assert preview["confidence"] == "estimated"
-    assert "Расчётная стоимость запроса: $0.1" in preview["confirmation_summary_ru"]
+    assert (
+        "Ориентировочная стоимость по текущему тарифу KIE: $0.1"
+        in preview["confirmation_summary_ru"]
+    )
     assert "может списать деньги" in preview["confirmation_summary_ru"]
     assert "private" not in preview["confirmation_summary_ru"]
     assert not (tmp_path / "usage.db").exists()
@@ -154,14 +157,18 @@ async def test_result_download_restricts_storage_hosts(tmp_path):
             await service.download("task_1")
 
 
-async def test_unknown_price_cannot_execute(tmp_path):
+async def test_unknown_price_requires_acknowledgement_before_reservation(tmp_path):
     api = FakeKie("unknown-price")
     async with httpx.AsyncClient(transport=httpx.MockTransport(api)) as http:
         service = make_service(tmp_path, http)
         preview = await service.prepare(MODEL, {"prompt": "private"}, dry_run=True)
         assert preview["confidence"] == "unknown"
-        with pytest.raises(GuardError, match="Unknown pricing"):
-            await service.prepare(MODEL, {"prompt": "private"})
+        guarded = await service.prepare(MODEL, {"prompt": "private"})
+        assert guarded["risk_ack_required"]
+        assert not guarded["risk_acknowledged"]
+        assert not guarded["reservation_created"]
+        assert guarded["execution_blocked"]
+        assert guarded["next_step"] == "confirm_unknown_price"
     assert not (tmp_path / "usage.db").exists()
 
 
