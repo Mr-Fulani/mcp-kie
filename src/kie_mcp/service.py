@@ -36,8 +36,8 @@ from .network import KIE_STORAGE_HOSTS, fetch_bytes, resolve_public, validate_ur
 from .security import open_upload
 from .storage import save_result, validate_result_label
 from .video_support import (
-    duration_support,
     duration_field_name,
+    duration_support,
     has_video_input_payload,
     is_duration_field_name,
     normalize_duration_request,
@@ -122,9 +122,7 @@ def _duration_support_message_ru(info: dict | None, seconds: int | float | None)
         if "provider_description" in sources and sources.intersection(
             {"schema_enum", "schema_range"}
         ):
-            return (
-                f"Машинная схема и описание KIE допускают длительность {duration_text}."
-            )
+            return f"Машинная схема и описание KIE допускают длительность {duration_text}."
         if "provider_description" in sources:
             return (
                 f"В описании KIE указана поддержка длительности {duration_text}; "
@@ -171,9 +169,7 @@ def _source_duration_assumptions(
         provisional = True
         assumptions["input_videos"] = 1 if has_video_source else "one reference video assumed"
         assumptions["input_video_duration_seconds"] = (
-            input_video_duration_seconds
-            if input_video_duration_seconds is not None
-            else "unknown"
+            input_video_duration_seconds if input_video_duration_seconds is not None else "unknown"
         )
         assumptions["provider_video_input_pricing"] = "not generally verified"
     return provisional, assumptions
@@ -246,9 +242,7 @@ class KieService:
         *,
         input_video_duration_seconds: int | float | None = None,
     ):
-        input_video_duration_seconds = _normalize_input_video_duration(
-            input_video_duration_seconds
-        )
+        input_video_duration_seconds = _normalize_input_video_duration(input_video_duration_seconds)
         contract = await self.contract(model)
         return await self.estimate_contract(
             contract,
@@ -260,11 +254,7 @@ class KieService:
     def unknown_price_warning_ru(
         self, *, acknowledged: bool = False, reserved_cost_usd: float | None = None
     ) -> str:
-        reserve = (
-            self.settings.limits.task_usd
-            if reserved_cost_usd is None
-            else reserved_cost_usd
-        )
+        reserve = self.settings.limits.task_usd if reserved_cost_usd is None else reserved_cost_usd
         if acknowledged:
             return (
                 "Цена KIE остаётся неизвестной. Вы подтвердили запуск на свой риск. "
@@ -338,7 +328,8 @@ class KieService:
             "duration_warning_ru": (
                 "Точная длительность не подтверждена схемой KIE; проверьте ограничение модели."
                 if duration_info and duration_info["status"] in {"uncertain", "automatic"}
-                else "Ограничение длительности прочитано из описания провайдера, а не из машинного диапазона."
+                else "Ограничение длительности прочитано из "
+                "описания провайдера, а не из машинного диапазона."
                 if duration_info and "provider_description" in (duration_info.get("source") or "")
                 else None
             ),
@@ -397,9 +388,7 @@ class KieService:
     ):
         if type(accept_unknown_price) is not bool:
             raise GuardError("Unknown-price acceptance must be an explicit boolean")
-        input_video_duration_seconds = _normalize_input_video_duration(
-            input_video_duration_seconds
-        )
+        input_video_duration_seconds = _normalize_input_video_duration(input_video_duration_seconds)
         preview = await self.estimate(
             model,
             input_data,
@@ -412,7 +401,8 @@ class KieService:
             and "Input-video duration is needed" in (duration_info.get("reason") or "")
         ):
             raise GuardError(
-                "Input-video duration is required by the provider limits; run kie_preflight and supply it"
+                "Input-video duration is required by the "
+                "provider limits; run kie_preflight and supply it"
             )
         await self._validate_media_urls(preview["validated_input"])
         unknown = preview["confidence"] == "unknown"
@@ -439,9 +429,7 @@ class KieService:
             }
         risk_accepted = unknown and accept_unknown_price
         reserve_cost = (
-            self.settings.limits.task_usd
-            if risk_accepted
-            else preview["estimated_cost_usd"]
+            self.settings.limits.task_usd if risk_accepted else preview["estimated_cost_usd"]
         )
         reserved = self.ledger.prepare(
             preview["request_payload"],
@@ -455,9 +443,7 @@ class KieService:
             input_video_duration_seconds=input_video_duration_seconds,
         )
         owns_approval = bool(reserved.get("approval_id"))
-        risk_acknowledged = owns_approval and bool(
-            reserved.get("unknown_price_accepted")
-        )
+        risk_acknowledged = owns_approval and bool(reserved.get("unknown_price_accepted"))
         can_execute = owns_approval and reserved.get("status") == "prepared"
         result_preview = {
             **preview,
@@ -468,9 +454,7 @@ class KieService:
             summary = confirmation_summary(
                 model,
                 result_preview,
-                risk_reserve_usd=(
-                    reserved.get("reserved_cost_usd") if risk_accepted else None
-                ),
+                risk_reserve_usd=(reserved.get("reserved_cost_usd") if risk_accepted else None),
             )
         elif not owns_approval:
             summary = (
@@ -483,12 +467,8 @@ class KieService:
                 f"Модель: {model}. Совпадающий запрос уже имеет статус "
                 f"{reserved.get('status')}; повторная платная отправка заблокирована."
             )
-        risk_ack_required = (
-            unknown and not risk_acknowledged and owns_approval and can_execute
-        )
-        execution_blocked = (
-            not can_execute or (unknown and not risk_acknowledged)
-        )
+        risk_ack_required = unknown and not risk_acknowledged and owns_approval and can_execute
+        execution_blocked = not can_execute or (unknown and not risk_acknowledged)
         if not owns_approval:
             message_ru = (
                 "Совпадающий запрос уже зарегистрирован другой MCP-сессией. "
@@ -634,7 +614,8 @@ class KieService:
                     "KIE сообщил сумму в USD. MCP сверяет её с локальным ledger, если задача "
                     "была создана через этот ledger."
                     if reported_cost is not None
-                    else "KIE не вернул фактическую стоимость в USD. Резерв ledger не является ценой; "
+                    else "KIE не вернул фактическую стоимость в "
+                    "USD. Резерв ledger не является ценой; "
                     "не выводите её из числа кредитов или изменения баланса."
                 ),
             }
@@ -689,9 +670,9 @@ class KieService:
             "progress_percent": None,
             "queue_position": None,
             "eta_seconds": None,
-            "next_step": "kie_download_result" if state == "success" else (
-                "review_provider_error" if state == "fail" else "kie_wait_for_task"
-            ),
+            "next_step": "kie_download_result"
+            if state == "success"
+            else ("review_provider_error" if state == "fail" else "kie_wait_for_task"),
             "retry_after_seconds": None if terminal else 15,
             "resubmit_allowed": False,
             "message_ru": message,
@@ -699,9 +680,7 @@ class KieService:
 
     async def wait(self, task_id: str, timeout: int | None = None):
         started = time.monotonic()
-        deadline = started + min(
-            timeout or self.settings.task_timeout, self.settings.task_timeout
-        )
+        deadline = started + min(timeout or self.settings.task_timeout, self.settings.task_timeout)
         intervals = [2, 3, 5, 8, 10, 15]
         attempt = 0
         while True:
@@ -722,8 +701,8 @@ class KieService:
                     "resubmit_allowed": False,
                     "message_ru": (
                         "Проверка завершена: KIE вернул итоговый статус."
-                        if terminal else
-                        "Время одной проверки истекло; "
+                        if terminal
+                        else "Время одной проверки истекло; "
                         "задача продолжает оставаться активной в KIE. "
                         "Это не ошибка генерации и не разрешение на повторный запуск. "
                         "Продолжите kie_wait_for_task или kie_get_task с тем же task_id. "
@@ -856,11 +835,11 @@ class KieService:
         input_video_duration_seconds: int | float | None = None,
     ):
         """Metadata-only comparison: no media fetch/upload, ledger mutation or submission."""
-        if cursor < 0 or not 1 <= limit <= 10:
-            raise GuardError("Comparison requires cursor >= 0 and limit between 1 and 10")
-        if operation != "generate_video" and (
-            video_path or video_url or input_type != "auto"
-        ):
+        if type(cursor) is not int or cursor < 0 or type(limit) is not int or limit < 1:
+            raise GuardError("Comparison requires an integer cursor >= 0 and integer limit >= 1")
+        requested_limit = limit
+        limit = min(limit, 10)
+        if operation != "generate_video" and (video_path or video_url or input_type != "auto"):
             raise GuardError("input_type and video input are only supported for generate_video")
         if image_path and image_url:
             raise GuardError("Supply one image source")
@@ -884,14 +863,14 @@ class KieService:
                     "media_uploaded": False,
                     "next_step": "clarify_duration",
                 }
-        input_video_duration_seconds = _normalize_input_video_duration(
-            input_video_duration_seconds
-        )
+        input_video_duration_seconds = _normalize_input_video_duration(input_video_duration_seconds)
         if (
             operation == "generate_video"
             and input_type == "auto"
             and not (image_path or image_url or video_path or video_url)
-            and not (has_video_input_payload(model_input or {}) or _model_input_has_image(model_input))
+            and not (
+                has_video_input_payload(model_input or {}) or _model_input_has_image(model_input)
+            )
             and prompt_requests_video_input(prompt)
         ):
             input_type = "video"
@@ -970,9 +949,7 @@ class KieService:
                 contract = await self.contract(name)
                 schema = contract["schema"].get("properties", {}).get("input", {})
                 video_field = (
-                    selected_video_field(schema, model_input)
-                    if comparison_has_video
-                    else None
+                    selected_video_field(schema, model_input) if comparison_has_video else None
                 )
                 if comparison_has_video:
                     row["video_field"] = video_field
@@ -1037,7 +1014,8 @@ class KieService:
                         "status": "unsupported",
                         "field": duration_field,
                         "source": "live_schema_validation",
-                        "reason": "The full live schema rejects this duration with the selected parameters.",
+                        "reason": "The full live schema rejects this "
+                        "duration with the selected parameters.",
                     }
                     row["duration_support"] = duration_info
                     row["duration_support_status"] = "unsupported"
@@ -1088,12 +1066,8 @@ class KieService:
                 )
                 unknown = preview["confidence"] == "unknown"
                 row["risk_ack_required"] = unknown
-                row["risk_reserve_usd"] = (
-                    self.settings.limits.task_usd if unknown else None
-                )
-                row["pricing_warning_ru"] = (
-                    self.unknown_price_warning_ru() if unknown else None
-                )
+                row["risk_reserve_usd"] = self.settings.limits.task_usd if unknown else None
+                row["pricing_warning_ru"] = self.unknown_price_warning_ru() if unknown else None
                 if include_metrics:
                     try:
                         row["provider_metrics"] = {
@@ -1107,6 +1081,12 @@ class KieService:
             rows.append(row)
         next_cursor = cursor + limit if cursor + limit < len(entries) else None
         message_ru = "Выберите модель. Сравнение не загружает файлы и не резервирует деньги."
+        pagination_message_ru = (
+            f"Запрошено моделей: {requested_limit}. Размер страницы ограничен 10 моделями; "
+            "для следующих моделей используйте next_cursor."
+            if requested_limit > limit
+            else None
+        )
         video_input_matches = None
         if comparison_has_video:
             reference_semantics = {
@@ -1115,15 +1095,12 @@ class KieService:
             }
             video_input_matches = {
                 "video_to_video_catalog_model_ids": [
-                    row["model"]
-                    for row in rows
-                    if row.get("is_video_to_video_model") is True
+                    row["model"] for row in rows if row.get("is_video_to_video_model") is True
                 ],
                 "compatible_video_to_video_model_ids": [
                     row["model"]
                     for row in rows
-                    if row.get("compatible")
-                    and row.get("is_video_to_video_model") is True
+                    if row.get("compatible") and row.get("is_video_to_video_model") is True
                 ],
                 "compatible_reference_field_model_ids": [
                     row["model"]
@@ -1139,8 +1116,7 @@ class KieService:
                 "video_to_video_reference_field_model_ids": [
                     row["model"]
                     for row in rows
-                    if row.get("video_input_semantics")
-                    == "video_to_video_reference_field"
+                    if row.get("video_input_semantics") == "video_to_video_reference_field"
                 ],
                 "compatible_other_video_input_model_ids": [
                     row["model"]
@@ -1158,20 +1134,17 @@ class KieService:
                 "supported_model_ids": [
                     row["model"]
                     for row in rows
-                    if row.get("compatible")
-                    and row.get("duration_support_status") == "supported"
+                    if row.get("compatible") and row.get("duration_support_status") == "supported"
                 ],
                 "uncertain_model_ids": [
                     row["model"]
                     for row in rows
-                    if row.get("compatible")
-                    and row.get("duration_support_status") == "uncertain"
+                    if row.get("compatible") and row.get("duration_support_status") == "uncertain"
                 ],
                 "automatic_duration_model_ids": [
                     row["model"]
                     for row in rows
-                    if row.get("compatible")
-                    and row.get("duration_support_status") == "automatic"
+                    if row.get("compatible") and row.get("duration_support_status") == "automatic"
                 ],
                 "unsupported_model_ids": [
                     row["model"]
@@ -1184,9 +1157,7 @@ class KieService:
                 "cursor": cursor,
                 "next_cursor": next_cursor,
             }
-            duration_matches["supported_count"] = len(
-                duration_matches["supported_model_ids"]
-            )
+            duration_matches["supported_count"] = len(duration_matches["supported_model_ids"])
             message_ru += (
                 f" Для запроса {duration_intent['seconds']:g} с каждая строка показывает "
                 "duration_support: supported, unsupported, uncertain или automatic "
@@ -1234,6 +1205,9 @@ class KieService:
             "models": rows,
             "catalog_count": len(entries),
             "cursor": cursor,
+            "requested_limit": requested_limit,
+            "effective_limit": limit,
+            "pagination_message_ru": pagination_message_ru,
             "requested_parameters": parameters,
             "next_cursor": next_cursor,
             "catalog_complete": catalog.get("catalog_complete", True),
@@ -1262,9 +1236,7 @@ class KieService:
         input_video_duration_seconds: int | float | None = None,
     ):
         """Read-only requirements check; never open/fetch/upload media or reserve budget."""
-        if operation != "generate_video" and (
-            video_path or video_url or input_type != "auto"
-        ):
+        if operation != "generate_video" and (video_path or video_url or input_type != "auto"):
             raise GuardError("input_type and video input are only supported for generate_video")
         if image_path and image_url:
             raise GuardError("Supply one image source")
@@ -1290,14 +1262,14 @@ class KieService:
                     "message_ru": _duration_intent_message_ru(duration_intent),
                     "next_step": "clarify_duration",
                 }
-        input_video_duration_seconds = _normalize_input_video_duration(
-            input_video_duration_seconds
-        )
+        input_video_duration_seconds = _normalize_input_video_duration(input_video_duration_seconds)
         if (
             operation == "generate_video"
             and input_type == "auto"
             and not (image_path or image_url or video_path or video_url)
-            and not (has_video_input_payload(model_input or {}) or _model_input_has_image(model_input))
+            and not (
+                has_video_input_payload(model_input or {}) or _model_input_has_image(model_input)
+            )
             and prompt_requests_video_input(prompt)
         ):
             input_type = "video"
@@ -1370,9 +1342,10 @@ class KieService:
                 )
                 if duration_info["status"] == "unsupported":
                     result["reason"] = duration_info.get("reason")
-                elif (
-                    duration_info["status"] == "uncertain"
-                    and "Input-video duration is needed" in (duration_info.get("reason") or "")
+                elif duration_info[
+                    "status"
+                ] == "uncertain" and "Input-video duration is needed" in (
+                    duration_info.get("reason") or ""
                 ):
                     result["missing_inputs"].append("input_video_duration_seconds")
             try:
@@ -1407,7 +1380,8 @@ class KieService:
                         "status": "unsupported",
                         "field": duration_field,
                         "source": "live_schema_validation",
-                        "reason": "The full live schema rejects this duration with the selected parameters.",
+                        "reason": "The full live schema rejects this "
+                        "duration with the selected parameters.",
                     }
                     result["duration_support"] = duration_info
                     result["duration_support_status"] = "unsupported"
@@ -1435,9 +1409,7 @@ class KieService:
                     )
                     unknown = preview["confidence"] == "unknown"
                     result["risk_ack_required"] = unknown
-                    result["risk_reserve_usd"] = (
-                        self.settings.limits.task_usd if unknown else None
-                    )
+                    result["risk_reserve_usd"] = self.settings.limits.task_usd if unknown else None
                     result["pricing_warning_ru"] = (
                         self.unknown_price_warning_ru() if unknown else None
                     )
@@ -1482,13 +1454,15 @@ class KieService:
                         "Точная длительность не подтверждена схемой или описанием KIE."
                         if resolved_duration_info
                         and resolved_duration_info["status"] == "uncertain"
-                        else "Модель выберет длительность сама; запрошенное число секунд не гарантируется."
+                        else "Модель выберет длительность сама; "
+                        "запрошенное число секунд не гарантируется."
                         if resolved_duration_info
                         and resolved_duration_info["status"] == "automatic"
                         else None
                     )
                     result["input_video_duration_note_ru"] = (
-                        "Длительность исходного ролика указана пользователем и локально не проверена."
+                        "Длительность исходного ролика указана "
+                        "пользователем и локально не проверена."
                         if comparison_has_video and input_video_duration_seconds is not None
                         else None
                     )
@@ -1540,9 +1514,7 @@ class KieService:
             raise GuardError("Supply one image source")
         if video_path and video_url:
             raise GuardError("Supply one video source")
-        if operation != "generate_video" and (
-            video_path or video_url or input_type != "auto"
-        ):
+        if operation != "generate_video" and (video_path or video_url or input_type != "auto"):
             raise GuardError("input_type and video input are only supported for generate_video")
         parameters = copy.deepcopy(parameters or {})
         duration_intent = {"status": "not_applicable", "seconds": None, "values": []}
@@ -1561,14 +1533,14 @@ class KieService:
                     "execution_blocked": True,
                     "next_step": "clarify_duration",
                 }
-        input_video_duration_seconds = _normalize_input_video_duration(
-            input_video_duration_seconds
-        )
+        input_video_duration_seconds = _normalize_input_video_duration(input_video_duration_seconds)
         if (
             operation == "generate_video"
             and input_type == "auto"
             and not (image_path or image_url or video_path or video_url)
-            and not (has_video_input_payload(model_input or {}) or _model_input_has_image(model_input))
+            and not (
+                has_video_input_payload(model_input or {}) or _model_input_has_image(model_input)
+            )
             and prompt_requests_video_input(prompt)
         ):
             input_type = "video"
@@ -1686,7 +1658,10 @@ class KieService:
                     )
                     if duration_info["status"] == "unsupported":
                         if model is not None:
-                            if duration_info.get("maximum_input_video_duration_seconds") is not None:
+                            if (
+                                duration_info.get("maximum_input_video_duration_seconds")
+                                is not None
+                            ):
                                 raise GuardError(
                                     "Input-video duration is outside provider-declared limits"
                                 )
@@ -1699,9 +1674,7 @@ class KieService:
                         if requested_seconds == -1:
                             if status not in {"automatic", "supported"}:
                                 if comparison_has_video and status == "uncertain":
-                                    uncertain_video_constraints.append(
-                                        (name, duration_info)
-                                    )
+                                    uncertain_video_constraints.append((name, duration_info))
                                 continue
                         elif requested_seconds is not None and status != "supported":
                             if comparison_has_video and status == "uncertain":
@@ -1728,9 +1701,7 @@ class KieService:
                     and requested_seconds is not None
                     and _validation_rejects_duration(schema_errors)
                 ):
-                    raise GuardError(
-                        "Requested video duration is outside provider-declared limits"
-                    )
+                    raise GuardError("Requested video duration is outside provider-declared limits")
                 preview = await self.estimate_contract(
                     contract,
                     name,
@@ -1759,26 +1730,29 @@ class KieService:
                 else:
                     options.append(option)
             else:
-                unpriced.append((
-                    None,
-                    name,
-                    data,
-                    image_field,
-                    mapping,
-                    preview,
-                    duration_info,
-                    contract,
-                ))
+                unpriced.append(
+                    (
+                        None,
+                        name,
+                        data,
+                        image_field,
+                        mapping,
+                        preview,
+                        duration_info,
+                        contract,
+                    )
+                )
         if not options:
             if model is not None and unpriced:
                 if not accept_unknown_price or dry_run:
-                    _, selected, data, image_field, mapping, preview, duration_info, contract = unpriced[0]
+                    _, selected, data, image_field, mapping, preview, duration_info, contract = (
+                        unpriced[0]
+                    )
                     source_duration_missing = (
                         comparison_has_video
                         and duration_info is not None
                         and duration_info.get("status") == "uncertain"
-                        and "Input-video duration is needed"
-                        in (duration_info.get("reason") or "")
+                        and "Input-video duration is needed" in (duration_info.get("reason") or "")
                     )
                     price_input_type = (
                         selected_input_type
@@ -1808,7 +1782,9 @@ class KieService:
                         "pricing_conditions": preview.get("pricing_conditions"),
                         "effective_parameters": {
                             key: data.get(info["field"], info.get("default"))
-                            for key, info in capabilities(contract["schema"].get("properties", {}).get("input", {})).items()
+                            for key, info in capabilities(
+                                contract["schema"].get("properties", {}).get("input", {})
+                            ).items()
                         },
                         "price_is_provisional": provisional,
                         "price_assumptions": assumptions,
@@ -1824,9 +1800,7 @@ class KieService:
                         "risk_acknowledged": False,
                         "risk_reserve_usd": self.settings.limits.task_usd,
                         "missing_inputs": (
-                            ["input_video_duration_seconds"]
-                            if source_duration_missing
-                            else []
+                            ["input_video_duration_seconds"] if source_duration_missing else []
                         ),
                         "pricing_warning_ru": self.unknown_price_warning_ru(),
                         "confirmation_summary_ru": preview["confirmation_summary_ru"],
@@ -1868,8 +1842,8 @@ class KieService:
                     _,
                     name,
                     data,
-                    image_field,
-                    mapping,
+                    _image_field,
+                    _mapping,
                     preview,
                     duration_info,
                     contract,
@@ -1940,8 +1914,12 @@ class KieService:
                     "duration_request": duration_intent,
                     "models": unknown_models,
                     "over_task_limit_models": over_limit_models,
-                    "catalog_complete": catalog.get("catalog_complete", True) if model is None else None,
-                    "failed_categories": catalog.get("failed_categories", []) if model is None else [],
+                    "catalog_complete": catalog.get("catalog_complete", True)
+                    if model is None
+                    else None,
+                    "failed_categories": catalog.get("failed_categories", [])
+                    if model is None
+                    else [],
                     "risk_ack_required": True,
                     "risk_reserve_usd": self.settings.limits.task_usd,
                     "pricing_warning_ru": self.unknown_price_warning_ru(),
@@ -1974,8 +1952,12 @@ class KieService:
                     "selection_required": True,
                     "duration_request": duration_intent,
                     "models": over_limit_models,
-                    "catalog_complete": catalog.get("catalog_complete", True) if model is None else None,
-                    "failed_categories": catalog.get("failed_categories", []) if model is None else [],
+                    "catalog_complete": catalog.get("catalog_complete", True)
+                    if model is None
+                    else None,
+                    "failed_categories": catalog.get("failed_categories", [])
+                    if model is None
+                    else [],
                     "task_limit_usd": self.settings.limits.task_usd,
                     "reservation_created": False,
                     "media_uploaded": False,
@@ -2024,9 +2006,7 @@ class KieService:
                         "и kie_preflight. Исходник не загружен."
                     ),
                     "next_step": (
-                        "supply_input_video_duration"
-                        if missing_duration
-                        else "kie_compare_models"
+                        "supply_input_video_duration" if missing_duration else "kie_compare_models"
                     ),
                 }
             else:
@@ -2038,8 +2018,12 @@ class KieService:
                         "duration_request": duration_intent,
                         "selection_required": True,
                         "models": [],
-                        "catalog_complete": catalog.get("catalog_complete", True) if model is None else None,
-                        "failed_categories": catalog.get("failed_categories", []) if model is None else [],
+                        "catalog_complete": catalog.get("catalog_complete", True)
+                        if model is None
+                        else None,
+                        "failed_categories": catalog.get("failed_categories", [])
+                        if model is None
+                        else [],
                         "reservation_created": False,
                         "media_uploaded": False,
                         "execution_blocked": True,
@@ -2065,19 +2049,14 @@ class KieService:
             selected_preview,
             selected_duration_info,
             selected_contract,
-        ) = (
-            min(options, key=lambda item: item[0]) if options[0][0] is not None else options[0]
-        )
+        ) = min(options, key=lambda item: item[0]) if options[0][0] is not None else options[0]
         selected_schema = selected_contract["schema"].get("properties", {}).get("input", {})
-        selected_duration_info = (
-            selected_preview.get("duration_support") or selected_duration_info
-        )
+        selected_duration_info = selected_preview.get("duration_support") or selected_duration_info
         if (
             comparison_has_video
             and selected_duration_info
             and selected_duration_info.get("status") == "uncertain"
-            and "Input-video duration is needed"
-            in (selected_duration_info.get("reason") or "")
+            and "Input-video duration is needed" in (selected_duration_info.get("reason") or "")
         ):
             price_input_type = "video"
             provisional, assumptions = _source_duration_assumptions(
@@ -2107,9 +2086,7 @@ class KieService:
                 "price_assumptions": assumptions,
                 "risk_ack_required": unknown and not accept_unknown_price,
                 "risk_acknowledged": unknown and accept_unknown_price,
-                "risk_reserve_usd": (
-                    self.settings.limits.task_usd if unknown else None
-                ),
+                "risk_reserve_usd": (self.settings.limits.task_usd if unknown else None),
                 "pricing_warning_ru": selected_preview.get("pricing_warning_ru"),
                 "confirmation_summary_ru": selected_preview.get("confirmation_summary_ru"),
                 "reservation_created": False,
@@ -2192,9 +2169,7 @@ class KieService:
             "price_assumptions": assumptions,
             "next_step": result.get("next_step")
             or ("kie_prepare_task" if dry_run else "kie_execute_task"),
-            "execution_blocked": bool(
-                result.get("execution_blocked", risk_ack_required)
-            ),
+            "execution_blocked": bool(result.get("execution_blocked", risk_ack_required)),
             "selected_model": selected,
             "parameter_mapping": mapping,
             "image_field": image_field,

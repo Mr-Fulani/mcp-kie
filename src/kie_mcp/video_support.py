@@ -6,7 +6,6 @@ import math
 import re
 from typing import Any
 
-
 DURATION_FIELD_NAMES = (
     "duration",
     "duration_seconds",
@@ -56,9 +55,7 @@ _VIDEO_INPUT_INTENT = re.compile(
 )
 _DURATION_UNITS = r"(?:minutes?|mins?|min|seconds?|secs?|sec|минут\w*|мин|секунд\w*|сек|s)"
 _DURATION_UNIT = rf"(?P<unit>{_DURATION_UNITS})"
-_DURATION_CAPTURE = (
-    rf"(?P<amount>\d{{1,5}}(?:[.,]\d+)?)\s*[- ]?\s*{_DURATION_UNIT}\b"
-)
+_DURATION_CAPTURE = rf"(?P<amount>\d{{1,5}}(?:[.,]\d+)?)\s*[- ]?\s*{_DURATION_UNIT}\b"
 _PROMPT_DURATION_RANGE_PATTERNS = tuple(
     re.compile(pattern, re.IGNORECASE)
     for pattern in (
@@ -136,7 +133,8 @@ _COMBINED_DURATION_LIMITS = tuple(
         r"(\d+(?:\.\d+)?)\s*(?:s|sec(?:onds?)?)?",
         r"(?:input|source|reference)(?: video)?[^.\n]{0,48}?"
         r"(?:plus|\+|and)[^.\n]{0,48}?(?:output|generated)(?: video)?"
-        r"[^.\n]{0,64}?(?:total duration|combined duration|<=|at most|not exceed(?:ing)?|no more than)"
+        r"[^.\n]{0,64}?(?:total duration|combined duration|<=|at most|"
+        r"not exceed(?:ing)?|no more than)"
         r"[^.\n]{0,32}?(\d+(?:\.\d+)?)\s*(?:s|sec(?:onds?)?)?",
     )
 )
@@ -149,9 +147,7 @@ def _number(value: Any) -> float | None:
         result = float(value)
         return result if math.isfinite(result) else None
     if isinstance(value, str):
-        match = re.fullmatch(
-            r"\s*(-?\d+(?:\.\d+)?)\s*(?:s|sec(?:onds?)?|secs?)?\s*", value, re.I
-        )
+        match = re.fullmatch(r"\s*(-?\d+(?:\.\d+)?)\s*(?:s|sec(?:onds?)?|secs?)?\s*", value, re.I)
         if match:
             try:
                 result = float(match.group(1))
@@ -212,12 +208,14 @@ def duration_field_name(properties: dict) -> str | None:
             return name
     candidates = []
     for name, prop in properties.items():
-        if not isinstance(name, str) or not is_duration_field_name(name) or not isinstance(prop, dict):
+        if (
+            not isinstance(name, str)
+            or not is_duration_field_name(name)
+            or not isinstance(prop, dict)
+        ):
             continue
         enum = prop.get("enum")
-        numeric_enum = isinstance(enum, list) and any(
-            _number(value) is not None for value in enum
-        )
+        numeric_enum = isinstance(enum, list) and any(_number(value) is not None for value in enum)
         description = prop.get("description", "")
         described_duration = isinstance(description, str) and bool(
             re.search(r"\b(?:duration|length)\b", description, re.I)
@@ -285,11 +283,7 @@ def looks_like_video_input_field(name: str, prop: dict | None = None) -> bool:
 
 def video_input_fields(schema: dict) -> list[str]:
     properties = schema.get("properties", {}) if isinstance(schema, dict) else {}
-    found = [
-        name
-        for name, prop in properties.items()
-        if looks_like_video_input_field(name, prop)
-    ]
+    found = [name for name, prop in properties.items() if looks_like_video_input_field(name, prop)]
     priorities = {name: index for index, name in enumerate(VIDEO_INPUT_FIELD_PRIORITY)}
     return sorted(found, key=lambda name: (priorities.get(name, len(priorities)), name))
 
@@ -401,9 +395,14 @@ def normalize_duration_request(
         ),
         "values": inferred["values"],
     }
-    if explicit_name and inferred["status"] == "parsed" and explicit != inferred["seconds"]:
-        intent.update(status="conflict", seconds=None)
-    elif explicit_name and inferred["status"] == "ambiguous" and explicit not in inferred["values"]:
+    if (
+        explicit_name
+        and inferred["status"] == "parsed"
+        and explicit != inferred["seconds"]
+        or explicit_name
+        and inferred["status"] == "ambiguous"
+        and explicit not in inferred["values"]
+    ):
         intent.update(status="conflict", seconds=None)
     elif not explicit_name and inferred["status"] == "parsed":
         result["duration"] = inferred["seconds"]
@@ -443,7 +442,9 @@ def _description_maximum(description: str) -> float | None:
         r"\b(?:input|source|reference)\s+(?:video\s+)?(?:duration|length)\b",
         description,
         re.I,
-    ) and not re.search(r"\b(?:output|generated)\s+(?:video\s+)?(?:duration|length)\b", description, re.I):
+    ) and not re.search(
+        r"\b(?:output|generated)\s+(?:video\s+)?(?:duration|length)\b", description, re.I
+    ):
         return None
     match = _DESCRIPTION_MAXIMUM.search(description)
     return float(match.group(1)) if match else None
@@ -507,8 +508,7 @@ def duration_support(
     video_descriptions = [
         item.get("description", "")
         for name, item in properties.items()
-        if name in video_input_fields(schema)
-        and isinstance(item.get("description", ""), str)
+        if name in video_input_fields(schema) and isinstance(item.get("description", ""), str)
     ]
     constraint_descriptions = [description, *video_descriptions]
     normalized_descriptions = [
@@ -535,16 +535,20 @@ def duration_support(
             input_limit_fields.append(name)
     input_limit = min(input_limits) if input_limits else None
     input_duration = _number(input_video_duration_seconds)
-    if has_video_input and input_limit is not None and input_duration is not None:
-        if input_duration > input_limit:
-            return {
-                "status": "unsupported",
-                "field": input_limit_fields[0] if input_limit_fields else None,
-                "source": "provider_description",
-                "maximum_input_video_duration_seconds": input_limit,
-                "input_video_duration_seconds": input_duration,
-                "reason": "Input-video duration exceeds the provider's input limit.",
-            }
+    if (
+        has_video_input
+        and input_limit is not None
+        and input_duration is not None
+        and input_duration > input_limit
+    ):
+        return {
+            "status": "unsupported",
+            "field": input_limit_fields[0] if input_limit_fields else None,
+            "source": "provider_description",
+            "maximum_input_video_duration_seconds": input_limit,
+            "input_video_duration_seconds": input_duration,
+            "reason": "Input-video duration exceeds the provider's input limit.",
+        }
     if requested is None:
         if has_video_input and input_limit is not None and input_duration is None:
             return {
@@ -552,7 +556,8 @@ def duration_support(
                 "field": input_limit_fields[0] if input_limit_fields else None,
                 "source": "provider_description",
                 "maximum_input_video_duration_seconds": input_limit,
-                "reason": "Input-video duration is needed to check the provider's input-video limit.",
+                "reason": "Input-video duration is needed to "
+                "check the provider's input-video limit.",
             }
         if has_video_input and combined_limit is not None:
             return {
@@ -561,9 +566,11 @@ def duration_support(
                 "source": "provider_description",
                 "combined_max_seconds": combined_limit,
                 "reason": (
-                    "Input-video duration is needed to check the provider's combined input/output limit."
+                    "Input-video duration is needed to check "
+                    "the provider's combined input/output limit."
                     if input_duration is None
-                    else "Output duration is not specified, so the provider's combined limit cannot be checked."
+                    else "Output duration is not specified, so the "
+                    "provider's combined limit cannot be checked."
                 ),
             }
         return {"status": "unspecified", "source": None, "reason": None}
@@ -582,9 +589,11 @@ def duration_support(
                 "combined_max_seconds": combined_limit,
                 "input_video_duration_seconds": input_duration,
                 "reason": (
-                    "Input-video duration is needed to check the provider's combined input/output limit."
+                    "Input-video duration is needed to check "
+                    "the provider's combined input/output limit."
                     if input_duration is None
-                    else "Automatic output duration cannot be checked against the provider's combined limit."
+                    else "Automatic output duration cannot be "
+                    "checked against the provider's combined limit."
                 ),
             }
         if has_video_input and input_limit is not None and input_duration is None:
@@ -593,20 +602,24 @@ def duration_support(
                 "field": input_limit_fields[0] if input_limit_fields else field,
                 "source": "provider_description",
                 "maximum_input_video_duration_seconds": input_limit,
-                "reason": "Input-video duration is needed to check the provider's input-video limit.",
+                "reason": "Input-video duration is needed to "
+                "check the provider's input-video limit.",
             }
         return {
             "status": "automatic",
             "field": field,
             "source": "schema_value",
-            "reason": "The schema accepted the -1 duration sentinel; exact output length is not guaranteed.",
+            "reason": "The schema accepted the -1 duration "
+            "sentinel; exact output length is not guaranteed.",
         }
 
     sources: list[str] = []
     allowed_values: list[float] | None = None
     enum = prop.get("enum")
     if isinstance(enum, list):
-        numeric_enum = sorted(set(number for item in enum if (number := _number(item)) is not None and number > 0))
+        numeric_enum = sorted(
+            set(number for item in enum if (number := _number(item)) is not None and number > 0)
+        )
         if numeric_enum:
             allowed_values = numeric_enum
             sources.append("schema_enum")
@@ -714,7 +727,8 @@ def duration_support(
             "status": "unsupported",
             "field": field,
             "source": "provider_description",
-            "reason": "The provider says output duration is chosen automatically when video input is used.",
+            "reason": "The provider says output duration is "
+            "chosen automatically when video input is used.",
         }
     if has_video_input and combined_limit is not None:
         if input_duration is None:
@@ -724,14 +738,16 @@ def duration_support(
                     "field": field,
                     "source": "provider_description",
                     "combined_max_seconds": combined_limit,
-                    "reason": "A video input plus this output duration would exceed the provider's combined limit.",
+                    "reason": "A video input plus this output duration "
+                    "would exceed the provider's combined limit.",
                 }
             return {
                 "status": "uncertain",
                 "field": field,
                 "source": "provider_description",
                 "combined_max_seconds": combined_limit,
-                "reason": "Input-video duration is needed to check the provider's combined input/output limit.",
+                "reason": "Input-video duration is needed to check "
+                "the provider's combined input/output limit.",
             }
         if input_duration <= 0 or input_duration + requested > combined_limit:
             return {
@@ -740,7 +756,8 @@ def duration_support(
                 "source": "provider_description",
                 "combined_max_seconds": combined_limit,
                 "input_video_duration_seconds": input_duration,
-                "reason": "Input-video duration plus requested output exceeds the provider's combined limit.",
+                "reason": "Input-video duration plus requested "
+                "output exceeds the provider's combined limit.",
             }
 
     if has_video_input and input_limit is not None and input_duration is None:
@@ -758,14 +775,16 @@ def duration_support(
             "field": field,
             "source": "provider_description",
             "maximum_seconds": description_maximum,
-            "reason": "The provider gives a maximum duration but does not publish the supported values or minimum.",
+            "reason": "The provider gives a maximum duration but "
+            "does not publish the supported values or minimum.",
         }
     if not sources:
         return {
             "status": "uncertain",
             "field": field,
             "source": None,
-            "reason": "The live schema does not publish machine-readable or recognizable duration limits.",
+            "reason": "The live schema does not publish "
+            "machine-readable or recognizable duration limits.",
         }
 
     source = "+".join(dict.fromkeys(sources))
@@ -774,8 +793,12 @@ def duration_support(
         "field": field,
         "source": source,
         "allowed_values_seconds": allowed_values,
-        "minimum_seconds": lower if lower is not None else (description_ranges[0][0] if description_ranges else None),
-        "maximum_seconds": upper if upper is not None else (description_ranges[0][1] if description_ranges else description_maximum),
+        "minimum_seconds": lower
+        if lower is not None
+        else (description_ranges[0][0] if description_ranges else None),
+        "maximum_seconds": upper
+        if upper is not None
+        else (description_ranges[0][1] if description_ranges else description_maximum),
         "input_video_duration_seconds": _number(input_video_duration_seconds),
         "reason": None,
     }

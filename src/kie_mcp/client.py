@@ -244,7 +244,7 @@ class KieClient:
         mime_type = detect_media_type(content)
         from .storage import EXTENSIONS
 
-        name = "media" + EXTENSIONS[mime_type]
+        name = "media-" + secrets.token_hex(16) + EXTENSIONS[mime_type]
         return await self.request(
             "POST",
             "/api/file-stream-upload",
@@ -272,7 +272,7 @@ class KieClient:
         body: dict[str, Any] = {
             "base64Data": encoded,
             "uploadPath": "mcp/base64",
-            "fileName": "media" + EXTENSIONS[mime_type],
+            "fileName": "media-" + secrets.token_hex(16) + EXTENSIONS[mime_type],
         }
         return await self.request("POST", "/api/file-base64-upload", base="upload", json_body=body)
 
@@ -289,7 +289,7 @@ class KieClient:
         ) as (handle, mime_type):
             from .storage import EXTENSIONS
 
-            name = "media" + EXTENSIONS[mime_type]
+            name = "media-" + secrets.token_hex(16) + EXTENSIONS[mime_type]
             files = {"file": (name, handle, mime_type)}
             return await self.request(
                 "POST",

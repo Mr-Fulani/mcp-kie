@@ -92,15 +92,17 @@ async def test_video_preview_maps_live_string_duration_without_reservation(tmp_p
             parameters={"duration": 5, "resolution": "480P", "aspect_ratio": "16:9"},
             dry_run=True,
         )
-    assert result["validated_input"]["duration"] == "5"
-    assert result["validated_input"]["resolution"] == "480p"
+    assert result["effective_parameters"]["duration"] == "5"
+    assert result["effective_parameters"]["resolution"] == "480p"
     assert result["confidence"] == "unknown" and result["execution_blocked"]
-    assert result["next_step"] == "owner_verified_quote"
+    assert result["next_step"] == "confirm_unknown_price"
+    assert result["risk_ack_required"] and not result["risk_acknowledged"]
+    assert not result["media_uploaded"]
     assert not result["reservation_created"]
     assert not (tmp_path / "usage.db").exists()
 
 
-async def test_image_video_uses_required_first_image_and_preserves_exact_quote_input(
+async def test_unknown_image_video_reports_mapping_without_upload_or_reservation(
     tmp_path,
     monkeypatch,
 ):
@@ -121,8 +123,12 @@ async def test_image_video_uses_required_first_image_and_preserves_exact_quote_i
             dry_run=True,
         )
     assert result["image_field"] == "image_url"
-    assert result["validated_input"]["image_url"] == URL
-    assert "end_image_url" not in result["validated_input"]
+    assert result["next_step"] == "confirm_unknown_price"
+    assert result["risk_ack_required"] and result["execution_blocked"]
+    assert not result["media_uploaded"] and not result["reservation_created"]
+    assert "approval_id" not in result and "validated_input" not in result
+    assert all(request.method == "GET" for request in api.calls)
+    assert not (tmp_path / "usage.db").exists()
 
 
 @pytest.mark.parametrize(
@@ -198,8 +204,13 @@ async def test_explicit_unsupported_parameter_fails_before_upload(tmp_path):
 async def test_unknown_video_price_still_blocks_preparation(tmp_path):
     api = MediaAPI(contract(video_fields(), ["prompt"]))
     async with httpx.AsyncClient(transport=httpx.MockTransport(api)) as http:
-        with pytest.raises(GuardError, match="No verified compatible price"):
-            await make_service(tmp_path, http).friendly("generate_video", "A boat", MODEL)
+        result = await make_service(tmp_path, http).friendly("generate_video", "A boat", MODEL)
+    assert result["confidence"] == "unknown"
+    assert result["next_step"] == "confirm_unknown_price"
+    assert result["risk_ack_required"] and not result["risk_acknowledged"]
+    assert result["execution_blocked"] and not result["reservation_created"]
+    assert not result["media_uploaded"] and "approval_id" not in result
+    assert all(request.method == "GET" for request in api.calls)
     assert not (tmp_path / "usage.db").exists()
 
 

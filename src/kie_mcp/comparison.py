@@ -35,7 +35,10 @@ def operation_requirements(
         "message_ru": (
             "Для сравнения фото не нужно. Перед обработкой потребуется исходное фото товара."
             if image_required
-            else "Для сравнения исходник не нужен. Для Video-to-Video потребуется исходный ролик; поле video reference само по себе не гарантирует покадровое редактирование."
+            else (
+                "Для сравнения исходник не нужен. Для Video-to-Video потребуется исходный "
+                "ролик; поле video reference само по себе не гарантирует покадровое редактирование."
+            )
             if video_required
             else "Для сравнения исходник не нужен. Параметры уточняются по схеме выбранной модели."
         ),
@@ -108,9 +111,7 @@ def confirmation_summary(
                 "Запрос подготовлен и отправится только после вызова execute."
             )
         reserve_text = (
-            f"${risk_reserve_usd:g}"
-            if risk_reserve_usd is not None
-            else "лимит одной задачи"
+            f"${risk_reserve_usd:g}" if risk_reserve_usd is not None else "лимит одной задачи"
         )
         return (
             f"Модель: {model}. Параметры: {parameter_summary}. Цена KIE неизвестна. "

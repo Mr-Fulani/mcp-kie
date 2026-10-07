@@ -84,13 +84,10 @@ class Ledger:
             columns = {row["name"] for row in db.execute("PRAGMA table_info(usage)")}
             if "unknown_price_accepted" not in columns:
                 db.execute(
-                    "ALTER TABLE usage ADD COLUMN unknown_price_accepted "
-                    "INTEGER NOT NULL DEFAULT 0"
+                    "ALTER TABLE usage ADD COLUMN unknown_price_accepted INTEGER NOT NULL DEFAULT 0"
                 )
             if "input_video_duration_seconds" not in columns:
-                db.execute(
-                    "ALTER TABLE usage ADD COLUMN input_video_duration_seconds REAL"
-                )
+                db.execute("ALTER TABLE usage ADD COLUMN input_video_duration_seconds REAL")
             policy = json.dumps(limits.__dict__, sort_keys=True)
             db.execute("INSERT OR IGNORE INTO policy VALUES (1, ?)", (policy,))
             if db.execute("SELECT value FROM policy WHERE id=1").fetchone()[0] != policy:
@@ -129,9 +126,7 @@ class Ledger:
     def _public(row, session):
         item = dict(row)
         owns_approval = item["agent_session_id"] == session
-        unknown_price_accepted = owns_approval and bool(
-            item.get("unknown_price_accepted", 0)
-        )
+        unknown_price_accepted = owns_approval and bool(item.get("unknown_price_accepted", 0))
         reserved_cost = item["estimated_cost_usd"] / 1_000_000
         result = {
             "status": item["status"],
@@ -146,9 +141,7 @@ class Ledger:
         }
         if owns_approval:
             result["approval_id"] = item["id"]
-            result["input_video_duration_seconds"] = item.get(
-                "input_video_duration_seconds"
-            )
+            result["input_video_duration_seconds"] = item.get("input_video_duration_seconds")
         return result
 
     def prepare(
@@ -202,7 +195,8 @@ class Ledger:
             if row:
                 if row["input_video_duration_seconds"] != input_video_duration_seconds:
                     raise GuardError(
-                        "The same request is already prepared with a different input-video duration assumption"
+                        "The same request is already prepared with "
+                        "a different input-video duration assumption"
                     )
                 if (
                     unknown_price_accepted

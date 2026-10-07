@@ -127,8 +127,12 @@ async def safe_call(coro: Any) -> dict[str, Any]:
             "Input-video duration is outside provider-declared limits": (
                 "Длительность исходного ролика превышает опубликованный предел модели KIE."
             ),
-            "Input-video duration is required by the provider limits; run kie_preflight and supply it": (
-                "Схема KIE требует длительность исходного ролика для проверки лимита; укажите её в kie_preflight."
+            (
+                "Input-video duration is required by the "
+                "provider limits; run kie_preflight and supply it"
+            ): (
+                "Схема KIE требует длительность исходного ролика "
+                "для проверки лимита; укажите её в kie_preflight."
             ),
             "Input does not satisfy the live model schema": (
                 "Данные не соответствуют схеме модели. Вызовите kie_preflight: "
@@ -243,7 +247,10 @@ async def kie_estimate_cost(
     input: dict[str, Any],
     input_video_duration_seconds: float | None = None,
 ) -> dict:
-    """Проверить схему и цену. unknown значит, что перед подготовкой потребуется явное согласие на риск."""
+    """Проверить схему и цену.
+
+    unknown значит, что перед подготовкой потребуется явное согласие на риск.
+    """
     return await safe_call(
         service.estimate(
             model,
@@ -294,7 +301,10 @@ async def kie_create_task(
     dry_run: bool = True,
     approval_id: str | None = None,
 ):
-    """Просмотр по умолчанию. Для платного запуска подготовьте approval_id; при unknown сначала получите явное согласие на риск через kie_prepare_task."""
+    """Просмотр по умолчанию. Для платного запуска подготовьте approval_id.
+
+    При unknown сначала получите явное согласие на риск через kie_prepare_task.
+    """
     identity(ctx)
     if dry_run:
         return await safe_call(service.prepare(model, input, dry_run=True))
@@ -398,8 +408,11 @@ async def kie_compare_models(
     operation: generate_image, edit_image, generate_video, remove_background,
     upscale_image или product_image_create. parameters: duration, resolution,
     aspect_ratio, output_format, scale, target_resolution. Покажите варианты по-русски
-    и дождитесь выбора; next_cursor даёт следующую страницу. Сравнение не загружает
-    файлы и не резервирует деньги. Для generate_video длительность берётся из duration
+    и дождитесь выбора; next_cursor даёт следующую страницу.
+    Сравнение не загружает файлы и не резервирует деньги.
+    limit — положительное целое число, по умолчанию 5. Если запрошено больше 10,
+    MCP вернёт до 10 моделей без ошибки, effective_limit=10 и next_cursor.
+    Для generate_video длительность берётся из duration
     или однозначного указания в prompt; duration_matches перечисляет подходящие модели
     текущей страницы, а duration_support показывает supported,
     unsupported, uncertain или automatic и источник ограничения. Просмотрите все

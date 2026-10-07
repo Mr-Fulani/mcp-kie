@@ -21,7 +21,7 @@ async def test_image_comparison_without_source_is_provisional_and_cannot_execute
         assert result["models"][1]["compatible"]
         assert result["models"][1]["estimated_cost_usd"] == 0.05
         assert result["models"][1]["price_is_provisional"]
-        assert result["models"][1]["price_assumptions"] == {"input_images": 1}
+        assert result["models"][1]["price_assumptions"] == {"input_images": "one image assumed"}
         assert result["requirements"]["missing_inputs"] == ["image_source"]
         assert not result["requirements"]["image_required_for_comparison"]
         assert result["requirements"]["image_required_for_execution"]
@@ -127,7 +127,8 @@ async def test_default_choice_is_metadata_only_and_unknown_is_not_free(tmp_path)
     assert "approval_id" not in result and "request_payload" not in result
     unknown, cheap, expensive = result["models"][:3]
     assert unknown["compatible"] and unknown["estimated_cost_usd"] is None
-    assert unknown["pricing_requires_owner_quote"] and unknown["within_task_limit"] is None
+    assert unknown["risk_ack_required"] and unknown["within_task_limit"] is None
+    assert unknown["pricing_warning_ru"] and unknown["risk_reserve_usd"] == 0.075
     assert cheap["within_task_limit"] and not expensive["within_task_limit"]
     assert cheap["quality"]["score"] is None and cheap["speed"]["expected_seconds"] is None
     assert cheap["quality"]["description"] == "Provider quality claim"
@@ -149,7 +150,8 @@ async def test_comparison_parameters_capabilities_and_unavailable_metrics(tmp_pa
         )
     incompatible, video = result["models"]
     assert not incompatible["compatible"] and "reason" in incompatible
-    assert video["compatible"] and video["pricing_requires_owner_quote"]
+    assert video["compatible"] and video["risk_ack_required"]
+    assert video["confidence"] == "unknown" and video["pricing_warning_ru"]
     assert video["effective_parameters"]["duration"] == "5"
     assert video["effective_parameters"]["resolution"] == "480p"
     assert video["capabilities"]["duration"]["enum"] == ["5", "10"]
@@ -169,7 +171,9 @@ async def test_comparison_can_reach_models_after_twenty_and_filter(tmp_path):
     assert all(r.url.host == "api.kie.ai" for r in api.calls)
 
 
-@pytest.mark.parametrize("cursor,limit", [(-1, 5), (0, 0), (0, 11)])
+@pytest.mark.parametrize(
+    "cursor,limit", [(-1, 5), (0, 0), (0, -1), (True, 5), (0, True), (0, 2.5), (0.5, 5)]
+)
 async def test_invalid_comparison_page_fails_before_metadata(tmp_path, cursor, limit):
     api = ComparisonAPI()
     async with httpx.AsyncClient(transport=httpx.MockTransport(api)) as http:
@@ -178,6 +182,33 @@ async def test_invalid_comparison_page_fails_before_metadata(tmp_path, cursor, l
                 "generate_image", cursor=cursor, limit=limit
             )
     assert not api.calls
+
+
+@pytest.mark.parametrize("requested_limit", [11, 20, 1000])
+async def test_large_comparison_limit_is_capped_without_skipping_models(tmp_path, requested_limit):
+    api = ComparisonAPI()
+    async with httpx.AsyncClient(transport=httpx.MockTransport(api)) as http:
+        service = make_service(tmp_path, http)
+        pages = []
+        cursor = 0
+        while cursor is not None:
+            page = await service.compare_models(
+                "edit_image", cursor=cursor, limit=requested_limit
+            )
+            pages.append(page)
+            cursor = page["next_cursor"]
+    assert [len(page["models"]) for page in pages] == [10, 10, 5]
+    assert [page["cursor"] for page in pages] == [0, 10, 20]
+    assert [row["model"] for page in pages for row in page["models"]] == [
+        f"fixture/m{i}" for i in range(25)
+    ]
+    for page in pages:
+        assert page["requested_limit"] == requested_limit
+        assert page["effective_limit"] == 10
+        assert page["pagination_message_ru"]
+        assert not page["reservation_created"] and not page["media_uploaded"]
+    assert all(request.method == "GET" for request in api.calls)
+    assert not (tmp_path / "usage.db").exists()
 
 
 async def test_auto_selection_is_explicit_and_ignores_unknown_price(tmp_path, monkeypatch):
