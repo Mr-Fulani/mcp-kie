@@ -77,8 +77,9 @@ async def test_preflight_invalid_parameters_report_field_names_without_private_v
 
 
 class ComparisonAPI:
-    def __init__(self):
+    def __init__(self, model_count=25):
         self.calls = []
+        self.model_count = model_count
 
     def __call__(self, request):
         self.calls.append(request)
@@ -87,7 +88,7 @@ class ComparisonAPI:
             data = {
                 "models": [
                     {"model": f"fixture/m{i}", "description": "Provider quality claim"}
-                    for i in range(25)
+                    for i in range(self.model_count)
                 ]
             }
         elif path.endswith("/schema"):
@@ -184,9 +185,20 @@ async def test_invalid_comparison_page_fails_before_metadata(tmp_path, cursor, l
     assert not api.calls
 
 
-@pytest.mark.parametrize("requested_limit", [11, 20, 1000])
-async def test_large_comparison_limit_is_capped_without_skipping_models(tmp_path, requested_limit):
-    api = ComparisonAPI()
+@pytest.mark.parametrize(
+    "requested_limit,expected_page_sizes,expected_cursors",
+    [
+        (11, [11, 11, 3], [0, 11, 22]),
+        (20, [20, 5], [0, 20]),
+        (100, [100, 25], [0, 100]),
+        (1000, [100, 25], [0, 100]),
+    ],
+)
+async def test_larger_comparison_pages_without_skipping_models(
+    tmp_path, requested_limit, expected_page_sizes, expected_cursors
+):
+    model_count = sum(expected_page_sizes)
+    api = ComparisonAPI(model_count=model_count)
     async with httpx.AsyncClient(transport=httpx.MockTransport(api)) as http:
         service = make_service(tmp_path, http)
         pages = []
@@ -197,15 +209,15 @@ async def test_large_comparison_limit_is_capped_without_skipping_models(tmp_path
             )
             pages.append(page)
             cursor = page["next_cursor"]
-    assert [len(page["models"]) for page in pages] == [10, 10, 5]
-    assert [page["cursor"] for page in pages] == [0, 10, 20]
+    assert [len(page["models"]) for page in pages] == expected_page_sizes
+    assert [page["cursor"] for page in pages] == expected_cursors
     assert [row["model"] for page in pages for row in page["models"]] == [
-        f"fixture/m{i}" for i in range(25)
+        f"fixture/m{i}" for i in range(model_count)
     ]
     for page in pages:
         assert page["requested_limit"] == requested_limit
-        assert page["effective_limit"] == 10
-        assert page["pagination_message_ru"]
+        assert page["effective_limit"] == (100 if requested_limit > 100 else requested_limit)
+        assert bool(page["pagination_message_ru"]) == (requested_limit > 100)
         assert not page["reservation_created"] and not page["media_uploaded"]
     assert all(request.method == "GET" for request in api.calls)
     assert not (tmp_path / "usage.db").exists()

@@ -838,7 +838,7 @@ class KieService:
         if type(cursor) is not int or cursor < 0 or type(limit) is not int or limit < 1:
             raise GuardError("Comparison requires an integer cursor >= 0 and integer limit >= 1")
         requested_limit = limit
-        limit = min(limit, 10)
+        limit = min(limit, 100)
         if operation != "generate_video" and (video_path or video_url or input_type != "auto"):
             raise GuardError("input_type and video input are only supported for generate_video")
         if image_path and image_url:
@@ -1082,7 +1082,7 @@ class KieService:
         next_cursor = cursor + limit if cursor + limit < len(entries) else None
         message_ru = "Выберите модель. Сравнение не загружает файлы и не резервирует деньги."
         pagination_message_ru = (
-            f"Запрошено моделей: {requested_limit}. Размер страницы ограничен 10 моделями; "
+            f"Запрошено моделей: {requested_limit}. Размер страницы ограничен 100 моделями; "
             "для следующих моделей используйте next_cursor."
             if requested_limit > limit
             else None
